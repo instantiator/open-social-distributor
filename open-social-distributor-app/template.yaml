@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  SAM application template for open-social-distributor-app
+
+Globals:
+  Function:
+    Timeout: 10
+    MemorySize: 128
+
+Resources:
+  DistributionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./src/DistributionFunction/
+      Handler: DistributionFunction::Distribution.LambdaFunction::FunctionHandler
+      Runtime: dotnet6
+      Architectures:
+      - arm64
+      MemorySize: 256
+      Environment:
+        Variables:
+          PARAM1: VALUE
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /distribute
+            Method: get
+
+Outputs:
+  DistributeEndpoint:
+    Description: API Gateway endpoint URL for Prod stage for Hello World function
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/distribute/"
+
+  DistributionFunction:
+    Description: Distribution function ARN
+    Value: !GetAtt DistributionFunction.Arn
+
+  # DistributionFunctionIamRole:
+  #   Description: Implicit IAM Role created for distribution function
+  #   Value: !GetAtt DistributionFunctionRole.Arn

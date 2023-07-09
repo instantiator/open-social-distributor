@@ -1,0 +1,9 @@
+# SAM
+.aws-sam
+
+# Mac OS
+.DS_Store
+
+# dotnet
+bin/
+obj/
