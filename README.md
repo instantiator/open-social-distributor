@@ -3,7 +3,16 @@
 ## TODOs
 
 - [ ] Import read and prepare code
-- [ ] Modify publish code
+- [ ] Document CSV structure
+- [ ] Modify publish code, and document
+    - [ ] Discord
+    - [ ] Twitter
+    - [ ] Mastodon
+    - [ ] Facebook
+    - [ ] LinkedIn
+- [ ] Have Discord indicate status of other posts
+- [ ] Add scheduled event trigger
+- [ ] Create CLI distribution option
 
 ## Build and deploy scripts
 
