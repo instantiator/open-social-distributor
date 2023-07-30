@@ -1,5 +1,9 @@
 # open-social-distributor
 
+**UNDER DEVELOPMENT**
+
+A tool for managing social posts across multiple platforms. Simple to configure, with options to run through as a Docker container or as an AWS Lambda function.
+
 ## TODOs
 
 - [ ] Import read and prepare code
