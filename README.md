@@ -6,14 +6,14 @@ A tool for managing social posts across multiple platforms. Simple to configure,
 
 ## TODOs
 
-- [ ] Import read and prepare code
-- [ ] Document CSV structure
-- [ ] Modify publish code, and document
+- [ ] Social network configuration
+- [ ] Publishing code for social networks
     - [ ] Discord
-    - [ ] Twitter
+    - [ ] Twitter(?)
     - [ ] Mastodon
     - [ ] Facebook
     - [ ] LinkedIn
+- [ ] Document CSV structure
 - [ ] Have Discord indicate status of other posts
 - [ ] Add scheduled event trigger
 - [ ] Create CLI distribution option
