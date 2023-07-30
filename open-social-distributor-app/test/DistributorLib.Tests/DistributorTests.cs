@@ -1,5 +1,6 @@
 using DistributorLib;
 using DistributorLib.Network;
+using DistributorLib.Network.Implementations;
 using DistributorLib.Post;
 
 namespace DistributorLib.Tests;
@@ -25,6 +26,6 @@ public class DistributorTests
         Assert.Single(result);
         Assert.True(result.Single().Success);
         Assert.Equal(distributor.Networks.Single(), result.Single().Network);
-        Assert.Equal("Test Message", result.Single().Message.Message);
+        Assert.Equal("Test Message", result.Single().Message.Parts[SocialMessagePart.Message]);
     }
 }

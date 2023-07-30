@@ -1,10 +1,10 @@
 using DistributorLib.Post;
 
-namespace DistributorLib.Network;
+namespace DistributorLib.Network.Implementations;
 
 public class ConsoleNetwork : AbstractNetwork
 {
-    public ConsoleNetwork() : base("Console", "Console.Network")
+    public ConsoleNetwork() : base("Console", "Console.Network", PostVariantFactory.Console)
     {
     }
 
@@ -20,8 +20,9 @@ public class ConsoleNetwork : AbstractNetwork
 
     public override async Task<PostResult> PostAsync(ISocialMessage message)
     {
+        var text = PostVariant.Compose(message);
         Console.WriteLine($"{ShortCode} posting message to {NetworkName}...");
-        Console.WriteLine($" - Message: {message.Message}");
+        Console.WriteLine($" - Message: {text}");
         foreach (var image in message.Images ?? Array.Empty<ISocialImage>())
         {
             Console.WriteLine($" - Image Uri:   {image.Uri}");

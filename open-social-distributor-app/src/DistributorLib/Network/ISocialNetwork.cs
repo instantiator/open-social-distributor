@@ -1,6 +1,6 @@
 ﻿using DistributorLib.Post;
 
-namespace DistributorLib;
+namespace DistributorLib.Network;
 
 public interface ISocialNetwork : IAsyncDisposable
 {

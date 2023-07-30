@@ -1,7 +1,7 @@
 using DistributorLib.Post;
 using RestSharp;
 
-namespace DistributorLib.Network;
+namespace DistributorLib.Network.Implementations;
 
 /// <summary>
 /// LinkedIn network implementation.
@@ -18,7 +18,7 @@ public class LinkedInNetwork : AbstractNetwork
     private string accessToken;
     private DateTime accessTokenExpiry;
 
-    public LinkedInNetwork(string code, string clientId, string clientSecret) : base(code, "LinkedIn")
+    public LinkedInNetwork(string code, string clientId, string clientSecret) : base(code, "LinkedIn", PostVariantFactory.LinkedIn)
     {
         this.clientId = clientId;
         this.clientSecret = clientSecret;

@@ -1,3 +1,4 @@
+using DistributorLib.Network;
 using DistributorLib.Post;
 
 namespace DistributorLib;
@@ -9,7 +10,6 @@ public class Distributor : IAsyncDisposable
 
     public Distributor()
     {
-
     }
 
     public IEnumerable<ISocialNetwork> Networks => networks;

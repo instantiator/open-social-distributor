@@ -3,16 +3,19 @@ using DistributorLib.Post;
 namespace DistributorLib.Network;
 public abstract class AbstractNetwork : ISocialNetwork
 {
-    protected AbstractNetwork(string code, string network, string? accountId = null)
+    protected AbstractNetwork(string shortcode, string networkName, IPostVariant postVariant, string? accountId = null)
     {
-        ShortCode = code;
-        NetworkName = network;
+        ShortCode = shortcode;
+        NetworkName = networkName;
         NetworkAccountId = accountId;
+        PostVariant = postVariant;
     }
 
     public string ShortCode { get; private set; }
 
     public string NetworkName { get; private set; }
+
+    public IPostVariant PostVariant { get; private set; }
 
     public string? NetworkAccountId { get; private set; }
 
