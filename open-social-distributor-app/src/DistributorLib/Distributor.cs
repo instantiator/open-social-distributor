@@ -12,6 +12,16 @@ public class Distributor : IAsyncDisposable
     {
     }
 
+    public Distributor(IEnumerable<ISocialNetwork> networks)
+    {
+        this.networks.AddRange(networks);
+    }
+
+    public Distributor(params ISocialNetwork[] networks)
+    {
+        this.networks.AddRange(networks);
+    }
+
     public IEnumerable<ISocialNetwork> Networks => networks;
 
     public IEnumerable<PostResult> History => history;

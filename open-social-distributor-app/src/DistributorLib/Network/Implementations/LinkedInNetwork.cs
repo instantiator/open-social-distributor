@@ -24,12 +24,12 @@ public class LinkedInNetwork : AbstractNetwork
         this.clientSecret = clientSecret;
     }
 
-    public override ValueTask DisposeAsync()
+    protected override Task DisposeClientAsync()
     {
         throw new NotImplementedException();
     }
 
-    public override async Task InitClientAsync()
+    protected override async Task InitClientAsync()
     {
         var moment = DateTime.Now;
         var access = await GetAccessTokenAsync(clientId, clientSecret);
@@ -52,7 +52,12 @@ public class LinkedInNetwork : AbstractNetwork
         }
     }
 
-    public override Task<PostResult> PostAsync(ISocialMessage message)
+    protected override async Task<bool> TestConnectionImplementationAsync()
+    {
+        throw new NotImplementedException();
+    }
+
+    protected override Task<PostResult> PostImplementationAsync(ISocialMessage message)
     {
         throw new NotImplementedException("It is not possible to post with just the client credentials flow.");
     }

@@ -20,5 +20,5 @@ public class SimpleSocialMessage : ISocialMessage
     private List<ISocialImage> images {get; set; } = new List<ISocialImage>();
 
     public IEnumerable<SocialMessageContent> Parts => parts;
-    public IEnumerable<ISocialImage>? Images => images;
+    public IEnumerable<ISocialImage> Images => images;
 }

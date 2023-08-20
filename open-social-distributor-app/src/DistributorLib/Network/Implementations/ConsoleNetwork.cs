@@ -8,21 +8,25 @@ public class ConsoleNetwork : AbstractNetwork
     {
     }
 
-    public override async ValueTask DisposeAsync()
+    protected override async Task DisposeClientAsync()
     {
-        Console.WriteLine($"Disposing {ShortCode}...");
+        Console.WriteLine($"{ShortCode} disposed.");
     }
 
-    public override async Task InitClientAsync()
+    protected override async Task InitClientAsync()
     {
-        Console.WriteLine($"Initialising {ShortCode}...");
+        Console.WriteLine($"{ShortCode} ready.");
     }
 
-    public override async Task<PostResult> PostAsync(ISocialMessage message)
+    protected override async Task<bool> TestConnectionImplementationAsync()
+    {
+        return true;
+    }
+
+    protected override async Task<PostResult> PostImplementationAsync(ISocialMessage message)
     {
         var text = PostVariant.Compose(message);
-        Console.WriteLine($"{ShortCode} posting message to {NetworkName}...");
-        Console.WriteLine($" - Message: {text}");
+        Console.WriteLine(text);
         foreach (var image in message.Images ?? Array.Empty<ISocialImage>())
         {
             Console.WriteLine($" - Image Uri:   {image.Uri}");

@@ -13,16 +13,31 @@ public class MastodonNetwork : AbstractNetwork
         this.token = token;
     }
 
-    public override async ValueTask DisposeAsync()
+    protected override async Task DisposeClientAsync()
     {
     }
 
-    public override async Task InitClientAsync()
+    protected override async Task InitClientAsync()
     {
         client = new MastodonClient(NetworkName, token);
     }
 
-    public override async Task<PostResult> PostAsync(ISocialMessage message)
+    protected override async Task<bool> TestConnectionImplementationAsync()
+    {
+        try
+        {
+            var account = await client!.GetCurrentUser();
+            return account != null;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private string NetworkUrl => $"https://{NetworkName}";
+
+    protected override async Task<PostResult> PostImplementationAsync(ISocialMessage message)
     {
         var text = PostVariant.Compose(message);
         var mediaIds = new List<string>();

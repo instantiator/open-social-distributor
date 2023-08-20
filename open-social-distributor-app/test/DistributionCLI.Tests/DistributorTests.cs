@@ -1,6 +1,6 @@
 namespace DistributionCLI.Tests;
 
-public class ApplicationTests
+public class DistributorTests
 {
     [Fact]
     public void AppInitialises()
