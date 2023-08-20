@@ -2,7 +2,7 @@ namespace DistributorLib.Post
 {
     public enum SocialMessagePart
     {
-        Message,
+        Text,
         AccountReference,
         Tag
     }

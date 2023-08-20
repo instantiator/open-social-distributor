@@ -30,7 +30,7 @@ Resources:
 
 Outputs:
   DistributeEndpoint:
-    Description: API Gateway endpoint URL for Prod stage for Hello World function
+    Description: API Gateway endpoint URL for Prod stage for DistributionFunction function
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/distribute/"
 
   DistributionFunction:

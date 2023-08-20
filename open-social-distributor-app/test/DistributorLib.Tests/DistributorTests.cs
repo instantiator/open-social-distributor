@@ -26,6 +26,6 @@ public class DistributorTests
         Assert.Single(result);
         Assert.True(result.Single().Success);
         Assert.Equal(distributor.Networks.Single(), result.Single().Network);
-        Assert.Equal("Test Message", result.Single().Message.Parts[SocialMessagePart.Message]);
+        Assert.Equal("Test Message", result.Single().Message.Parts.Single().ToStringFor(NetworkType.Any));
     }
 }

@@ -6,6 +6,7 @@ A tool for managing social posts across multiple platforms. Simple to configure,
 
 ## TODOs
 
+- [ ] Self-test during startup
 - [ ] Social network configuration
 - [ ] Publishing code for social networks
     - [ ] Discord

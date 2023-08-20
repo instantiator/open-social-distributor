@@ -8,7 +8,7 @@ public class MastodonNetwork : AbstractNetwork
     private string token;
     private MastodonClient? client;
 
-    public MastodonNetwork(string code, string instance, string token) : base(code, instance, PostVariantFactory.Mastodon)
+    public MastodonNetwork(string code, string instance, string token) : base(NetworkType.Mastodon, code, instance, PostVariantFactory.Mastodon)
     {
         this.token = token;
     }

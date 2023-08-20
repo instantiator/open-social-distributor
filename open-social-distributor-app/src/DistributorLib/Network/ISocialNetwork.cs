@@ -6,6 +6,7 @@ public interface ISocialNetwork : IAsyncDisposable
 {
     bool Initialised { get; }
     string ShortCode { get; }
+    NetworkType NetworkType { get; }
     string NetworkName { get; }
     string? NetworkAccountId { get; }
     Task<PostResult> PostAsync(ISocialMessage message);

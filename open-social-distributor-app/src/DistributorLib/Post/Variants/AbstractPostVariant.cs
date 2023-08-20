@@ -1,4 +1,4 @@
-namespace DistributorLib.Post
+namespace DistributorLib.Post.Variants
 {
     public abstract class AbstractPostVariant : IPostVariant
     {

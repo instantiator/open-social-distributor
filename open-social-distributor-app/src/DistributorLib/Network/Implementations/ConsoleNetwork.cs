@@ -4,7 +4,7 @@ namespace DistributorLib.Network.Implementations;
 
 public class ConsoleNetwork : AbstractNetwork
 {
-    public ConsoleNetwork() : base("Console", "Console.Network", PostVariantFactory.Console)
+    public ConsoleNetwork() : base(NetworkType.Console, "Console", "Console.Network", PostVariantFactory.Console)
     {
     }
 

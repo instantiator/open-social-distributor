@@ -1,19 +1,24 @@
+using DistributorLib.Network;
+
 namespace DistributorLib.Post;
 
 public class SimpleSocialMessage : ISocialMessage
 {
     public SimpleSocialMessage(string message, IEnumerable<ISocialImage>? images = null)
     {
-        Parts = new Dictionary<SocialMessagePart, string>() { { SocialMessagePart.Message, message } };
-        Images = images;
+        parts = new List<SocialMessageContent>() { new SocialMessageContent(message, NetworkType.Any, SocialMessagePart.Text) };
+        images = images ?? new List<ISocialImage>();
     }
 
-    public SimpleSocialMessage(Dictionary<SocialMessagePart, string> parts, IEnumerable<ISocialImage>? images = null)
+    public SimpleSocialMessage(IEnumerable<SocialMessageContent> parts, IEnumerable<ISocialImage>? images = null)
     {
-        Parts = parts;
-        Images = images;
+        this.parts.AddRange(parts);
+        this.images.AddRange(images ?? new List<ISocialImage>());
     }
 
-    public Dictionary<SocialMessagePart, string> Parts { get; private set; }
-    public IEnumerable<ISocialImage>? Images { get; private set; }
+    private List<SocialMessageContent> parts { get; set; } = new List<SocialMessageContent>();
+    private List<ISocialImage> images {get; set; } = new List<ISocialImage>();
+
+    public IEnumerable<SocialMessageContent> Parts => parts;
+    public IEnumerable<ISocialImage>? Images => images;
 }
