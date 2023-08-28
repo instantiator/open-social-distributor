@@ -84,21 +84,27 @@ Testing scripts are found at the root of the `open-social-distributor-app` direc
 
 - [x] Self-test during startup
 - [x] Social network configuration (connection strings)
-- [ ] Publishing code for social networks
-    - [x] Console _(not really a network)_
-    - [ ] Discord
-    - [ ] Twitter
-    - [x] Mastodon
-    - [x] Facebook
-    - [ ] LinkedIn
-- [ ] Add CLI features
+- [ ] Social media features...
+
+| Network | Post simple message | Message formatting | Image upload |
+|-|-|-|-|
+| Console | ✅ | ✅ | |
+| Discord | | | |
+| Twitter | | | |
+| Mastodon | ✅ | | |
+| Facebook | ✅ | | |
+| LinkedIn | | | |
+
+- [ ] CLI features
     - [ ] More complex posting options
     - [ ] Support for image upload
     - [ ] Publish binaries of the CLI
-- [ ] Develop scheduled posting projects
-    - [ ] DistributionService
-    - [ ] DistributionFunction
+- [ ] Scheduled posting for service and function
+    - [ ] Define message store formats
+    - [ ] Build `DistributionService`
+    - [ ] Build `DistributionFunction`
     - [ ] Docker build and run for the service
     - [ ] Docker build and run for the CLI
-- [ ] Document scheduled post structure
+    - [ ] AWS CloudWatch stack publishing
+- [ ] Document message store formats
 - [ ] Offer Discord icons / updates for the status of other posts
