@@ -1,7 +1,12 @@
 # Facebook
 
+To post to pages you control, it's sufficient to create an app and request the appropriate scopes (see below) when generating your access tokens.
+
+If you want to post to pages you do not own (ie. on behalf of other businesses or people), you'll need advanced API permissions and you'll need to pass additional approvals by Facebook. _This capability is out of scope for this project._
+
 ## Tools
 
+* [Meta for Developers](https://developers.facebook.com/) (Facebook developer console)
 * [Graph API Explorer](https://developers.facebook.com/tools/explorer?method=GET&path=me%3Ffields%3Did%2Cname&version=v17.0)
 * [Access Token Debugger](https://developers.facebook.com/tools/debug/accesstoken/)
 
