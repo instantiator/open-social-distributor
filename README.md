@@ -88,7 +88,14 @@ Testing scripts are found at the root of the `open-social-distributor-app` direc
     - [x] Mastodon
     - [ ] Facebook
     - [ ] LinkedIn
-- [ ] Document CSV structure
-- [ ] Have Discord indicate status of other posts
-- [ ] Add scheduled event trigger
-- [ ] Create CLI distribution option
+- [ ] Add CLI features
+    - [ ] More complex posting options
+    - [ ] Support for image upload
+    - [ ] Publish binaries of the CLI
+- [ ] Develop scheduled posting projects
+    - [ ] DistributionService
+    - [ ] DistributionFunction
+    - [ ] Docker build and run for the service
+    - [ ] Docker build and run for the CLI
+- [ ] Document scheduled post structure
+- [ ] Offer Discord icons / updates for the status of other posts
