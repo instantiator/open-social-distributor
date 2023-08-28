@@ -32,7 +32,7 @@ public class DistributorTests
         await distributor.AddNetworkAsync(new ConsoleNetwork(), false);
         var tests = await distributor.TestNetworksAsync();
         Assert.Single(tests); // one test result
-        Assert.True(tests.Single().Value); // test passed
+        Assert.True(tests.Single().Value.Success); // test passed
         Assert.True(distributor.Networks.Single().Initialised); // network initialised
     }
 
