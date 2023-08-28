@@ -19,6 +19,13 @@ public class DistributionCLI
         public string? Text { get; set; }
     }
 
+    [Verb("test", HelpText = "Test all connections in the configuration file.")]
+    public class TestOptions
+    {
+        [Option('c', "config", Required = true, HelpText = "Path to the config file.")]
+        public string? ConfigPath { get; set; }
+    }
+
     public static void Main(params string[] args)
     {
         Parser.Default
@@ -26,6 +33,23 @@ public class DistributionCLI
             .MapResult(
                 (PostOptions opts) => ExecutePost(opts),
                 errs => 1);
+    }
+
+    public static int ExecuteTest(TestOptions options)
+    {
+        var json = File.ReadAllText(options.ConfigPath!);
+        var config = JsonConvert.DeserializeObject<Config>(json);
+        var networks = NetworkFactory.FromConfig(config!);
+        Console.WriteLine($"Identified {networks.Count()} networks.");
+
+        var distributor = new Distributor(networks);
+        var testResults = distributor.TestNetworksAsync().Result;
+        var i = 0;
+        foreach (var result in testResults)
+        {
+            Console.WriteLine($"{++i} - {result.Key.ShortCode} ({result.Key.NetworkType}): {(result.Value ? "OK" : "fail")}");
+        }
+        return testResults.All(r => r.Value) ? 0 : 1;
     }
 
     public static int ExecutePost(PostOptions options)

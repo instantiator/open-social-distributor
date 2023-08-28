@@ -8,12 +8,32 @@ namespace DistributorLib.Tests;
 public class DistributorTests
 {
     [Fact]
-    public async void DistributorAddNetwork_AddsAndInitialisesNetwork()
+    public async void DistributorAddNetwork_WithTrue_AddsAndInitialisesNetwork()
     {
         var distributor = new Distributor();
         await distributor.AddNetworkAsync(new ConsoleNetwork(), true);
         Assert.Single(distributor.Networks);
         Assert.True(distributor.Networks.Single().Initialised);
+    }
+
+    [Fact]
+    public async void DistributorAddNetwork_WithFalse_AddsNetwork()
+    {
+        var distributor = new Distributor();
+        await distributor.AddNetworkAsync(new ConsoleNetwork(), false);
+        Assert.Single(distributor.Networks);
+        Assert.False(distributor.Networks.Single().Initialised);
+    }
+
+    [Fact]
+    public async void DistributorTestNetworks_InitialisesAndTestsNetworks()
+    {
+        var distributor = new Distributor();
+        await distributor.AddNetworkAsync(new ConsoleNetwork(), false);
+        var tests = await distributor.TestNetworksAsync();
+        Assert.Single(tests); // one test result
+        Assert.True(tests.Single().Value); // test passed
+        Assert.True(distributor.Networks.Single().Initialised); // network initialised
     }
 
     [Fact]

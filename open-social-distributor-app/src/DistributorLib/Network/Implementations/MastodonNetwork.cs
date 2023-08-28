@@ -42,6 +42,6 @@ public class MastodonNetwork : AbstractNetwork
         var text = PostVariant.Compose(message);
         var mediaIds = new List<string>();
         var status = await client!.PublishStatus(text, Visibility.Public, null, mediaIds, false, null, null, null, null);
-        return new PostResult((ISocialNetwork)this, message, status != null, status == null ? "Status null" : null);
+        return new PostResult(this, message, status != null, status == null ? "Status null" : null);
     }
 }

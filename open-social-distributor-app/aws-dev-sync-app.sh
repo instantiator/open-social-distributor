@@ -15,7 +15,7 @@ EOF
 }
 
 # defaults
-source ./export-defaults.sh
+source ./export-aws-defaults.sh
 
 # parameters
 while [ -n "$1" ]; do

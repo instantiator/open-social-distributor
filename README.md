@@ -51,12 +51,12 @@ Ensure that the _write_ permissions are granted for your access token.
 
 ## TODOs
 
-- [ ] Self-test during startup
-- [ ] Social network configuration
+- [x] Self-test during startup
+- [x] Social network configuration (connection strings)
 - [ ] Publishing code for social networks
     - [ ] Discord
     - [ ] Twitter(?)
-    - [ ] Mastodon
+    - [x] Mastodon
     - [ ] Facebook
     - [ ] LinkedIn
 - [ ] Document CSV structure

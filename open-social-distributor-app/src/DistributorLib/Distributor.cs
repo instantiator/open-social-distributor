@@ -41,6 +41,22 @@ public class Distributor : IAsyncDisposable
         networks.Clear();
     }
 
+    public async Task<Dictionary<ISocialNetwork,bool>> TestNetworksAsync()
+    {
+        var result = new Dictionary<ISocialNetwork, bool>();
+        foreach (var network in networks)
+        {
+            result.Add(network, await TestNetworkAsync(network));
+        }
+        return result;
+    }
+
+    public async Task<bool> TestNetworkAsync(ISocialNetwork network)
+    {
+        if (!network.Initialised) await network.InitAsync();
+        return await network.TestConnectionAsync();
+    }
+
     public async Task<IEnumerable<PostResult>> PostAsync(ISocialMessage message)
     {
         var results = new List<PostResult>();
