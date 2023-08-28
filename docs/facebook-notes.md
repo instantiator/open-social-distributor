@@ -5,6 +5,13 @@
 * [Graph API Explorer](https://developers.facebook.com/tools/explorer?method=GET&path=me%3Ffields%3Did%2Cname&version=v17.0)
 * [Access Token Debugger](https://developers.facebook.com/tools/debug/accesstoken/)
 
+## Scripts
+
+| Script | Purpose |
+|-|-|
+| `/scripts/fb-get-long-user-access-token.sh` | Exchange an app's short-lived user access token for a long-lived one. |
+| `/scripts/fb-get-all-page-access-tokens.sh` | Retrieve all page access tokens for the given user. |
+
 ## Access tokens
 
 | Duration | User token | Page token |
