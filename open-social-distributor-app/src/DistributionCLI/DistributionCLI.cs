@@ -29,9 +29,10 @@ public class DistributionCLI
     public static void Main(params string[] args)
     {
         Parser.Default
-            .ParseArguments<PostOptions>(args)
+            .ParseArguments<PostOptions, TestOptions>(args)
             .MapResult(
                 (PostOptions opts) => ExecutePost(opts),
+                (TestOptions opts) => ExecuteTest(opts),
                 errs => 1);
     }
 
@@ -47,9 +48,33 @@ public class DistributionCLI
         var i = 0;
         foreach (var result in testResults)
         {
-            Console.WriteLine($"{++i} - {result.Key.ShortCode} ({result.Key.NetworkType}): {(result.Value ? "OK" : "fail")}");
+            Console.WriteLine($"{++i} - {result.Key.ShortCode} ({result.Key.NetworkType}): {(result.Value.Success ? "OK" : "fail")}");
         }
-        return testResults.All(r => r.Value) ? 0 : 1;
+
+        var fails = testResults.Where(r => !r.Value.Success);
+        if (fails.Count() > 0)
+        {
+            Console.WriteLine($"{fails.Count()} issues found:");
+            foreach (var result in fails)
+            {
+                var message = result.Value.Message;
+                var exceptionType = result.Value.Exception?.GetType().Name;
+                var report = "";
+                if (!string.IsNullOrWhiteSpace(message)) {
+                    report += message;
+                }
+                if (!string.IsNullOrWhiteSpace(exceptionType)) {
+                    if (!string.IsNullOrWhiteSpace(report)) report += " ";
+                    report += $"({exceptionType})";
+                }
+                Console.WriteLine($"❌ - {result.Key.ShortCode} ({result.Key.NetworkType}): {report}");
+                if (result.Value.Network is FacebookNetwork)
+                {
+                    Console.WriteLine($"Facebook token: {(result.Value.Network as FacebookNetwork)!.pageToken}");
+                }
+            }
+        }
+        return testResults.All(r => r.Value.Success) ? 0 : 1;
     }
 
     public static int ExecutePost(PostOptions options)

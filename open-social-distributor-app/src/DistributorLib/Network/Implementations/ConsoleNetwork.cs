@@ -18,9 +18,9 @@ public class ConsoleNetwork : AbstractNetwork
         Console.WriteLine($"{ShortCode} ready.");
     }
 
-    protected override async Task<bool> TestConnectionImplementationAsync()
+    protected override async Task<ConnectionTestResult> TestConnectionImplementationAsync()
     {
-        return true;
+        return new ConnectionTestResult(this, true);
     }
 
     protected override async Task<PostResult> PostImplementationAsync(ISocialMessage message)

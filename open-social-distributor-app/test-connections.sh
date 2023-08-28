@@ -44,7 +44,9 @@ echo "Config file path: $CONFIG_PATH"
 echo
 
 echo "Building CLI..."
+HUSH_ASYNC_WARNING="/nowarn:CS1998"
 dotnet build src/DistributionCLI/DistributionCLI.csproj $HUSH_ASYNC_WARNING
 echo
 
 echo "Executing initialisation and self-test..."
+dotnet run --project src/DistributionCLI/DistributionCLI.csproj test --config $CONFIG_PATH

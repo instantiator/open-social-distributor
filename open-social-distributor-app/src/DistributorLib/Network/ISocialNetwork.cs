@@ -8,8 +8,7 @@ public interface ISocialNetwork : IAsyncDisposable
     string ShortCode { get; }
     NetworkType NetworkType { get; }
     string NetworkName { get; }
-    string? NetworkAccountId { get; }
-    Task<bool> TestConnectionAsync();
+    Task<ConnectionTestResult> TestConnectionAsync();
     Task<PostResult> PostAsync(ISocialMessage message);
     Task InitAsync();
 }

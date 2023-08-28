@@ -41,9 +41,9 @@ public class Distributor : IAsyncDisposable
         networks.Clear();
     }
 
-    public async Task<Dictionary<ISocialNetwork,bool>> TestNetworksAsync()
+    public async Task<Dictionary<ISocialNetwork,ConnectionTestResult>> TestNetworksAsync()
     {
-        var result = new Dictionary<ISocialNetwork, bool>();
+        var result = new Dictionary<ISocialNetwork, ConnectionTestResult>();
         foreach (var network in networks)
         {
             result.Add(network, await TestNetworkAsync(network));
@@ -51,7 +51,7 @@ public class Distributor : IAsyncDisposable
         return result;
     }
 
-    public async Task<bool> TestNetworkAsync(ISocialNetwork network)
+    public async Task<ConnectionTestResult> TestNetworkAsync(ISocialNetwork network)
     {
         if (!network.Initialised) await network.InitAsync();
         return await network.TestConnectionAsync();

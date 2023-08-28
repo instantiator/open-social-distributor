@@ -22,16 +22,23 @@ public class MastodonNetwork : AbstractNetwork
         client = new MastodonClient(NetworkName, token);
     }
 
-    protected override async Task<bool> TestConnectionImplementationAsync()
+    protected override async Task<ConnectionTestResult> TestConnectionImplementationAsync()
     {
         try
         {
             var account = await client!.GetCurrentUser();
-            return account != null;
+            if (account != null)
+            {
+                return new ConnectionTestResult(this, true);
+            }
+            else
+            {
+                return new ConnectionTestResult(this, false, "Could not read current user account");
+            }
         }
-        catch
+        catch (Exception e)
         {
-            return false;
+            return new ConnectionTestResult(this, false, e.Message, e);
         }
     }
 

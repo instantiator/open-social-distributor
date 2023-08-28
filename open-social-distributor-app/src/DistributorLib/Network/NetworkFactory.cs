@@ -24,13 +24,26 @@ public class NetworkFactory
         switch (networkType) {
             case NetworkType.Console:
                 return new ConsoleNetwork();
-            case NetworkType.LinkedIn:
-                throw new NotImplementedException();
+            case NetworkType.Facebook:
+                var fb_code = parameters["code"];
+                var fb_mode = Enum.Parse<FacebookNetwork.Mode>(parameters["mode"], true);
+                switch (fb_mode) 
+                {
+                    case FacebookNetwork.Mode.Page:
+                        var fb_pageId = parameters["page_id"];
+                        var fb_pageToken = parameters["page_token"];
+                        return new FacebookNetwork(fb_code, fb_mode, userToken: null, pageId: fb_pageId, pageToken: fb_pageToken);
+                    case FacebookNetwork.Mode.User:
+                        var fb_userToken = parameters["user_token"];
+                        return new FacebookNetwork(fb_code, fb_mode, userToken: fb_userToken, pageId: null, pageToken: null);
+                    default:
+                        throw new NotImplementedException($"FacebookNetwork mode {fb_mode} not implemented");
+                }
             case NetworkType.Mastodon:
-                var code = parameters["code"];
-                var instance = parameters["instance"];
-                var token = parameters["token"];
-                return new MastodonNetwork(code, instance, token);
+                var ma_code = parameters["code"];
+                var ma_instance = parameters["instance"];
+                var ma_token = parameters["token"];
+                return new MastodonNetwork(ma_code, ma_instance, ma_token);
             case NetworkType.Any:
                 throw new ArgumentException("\"Any\" is not a network type.");
             default:

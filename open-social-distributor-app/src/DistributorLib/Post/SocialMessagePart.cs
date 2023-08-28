@@ -4,6 +4,7 @@ namespace DistributorLib.Post
     {
         Text,
         AccountReference,
-        Tag
+        Tag,
+        Link
     }
 }
