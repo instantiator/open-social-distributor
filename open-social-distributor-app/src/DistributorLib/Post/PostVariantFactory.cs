@@ -1,11 +1,11 @@
-using DistributorLib.Post.Variants;
+using DistributorLib.Post.Formatters;
 
 namespace DistributorLib.Post
 {
     public class PostVariantFactory
     {
-        public static IPostVariant Console => new ConsolePostVariant();
-        public static IPostVariant Mastodon => new ConsolePostVariant();
-        public static IPostVariant Facebook => new ConsolePostVariant();
+        public static IPostFormatter Console => new ConsolePostFormatter();
+        public static IPostFormatter Mastodon => new ConsolePostFormatter();
+        public static IPostFormatter Facebook => new ConsolePostFormatter();
     }
 }

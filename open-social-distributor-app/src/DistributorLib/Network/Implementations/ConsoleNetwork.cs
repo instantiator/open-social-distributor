@@ -25,7 +25,7 @@ public class ConsoleNetwork : AbstractNetwork
 
     protected override async Task<PostResult> PostImplementationAsync(ISocialMessage message)
     {
-        var text = PostVariant.Compose(message);
+        var text = Formatter.FormatText(message);
         Console.WriteLine(text);
         foreach (var image in message.Images ?? Array.Empty<ISocialImage>())
         {

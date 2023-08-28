@@ -1,14 +1,15 @@
 using DistributorLib.Post;
+using DistributorLib.Post.Formatters;
 
 namespace DistributorLib.Network;
 public abstract class AbstractNetwork : ISocialNetwork
 {
-    protected AbstractNetwork(NetworkType type, string shortcode, string networkName, IPostVariant postVariant)
+    protected AbstractNetwork(NetworkType type, string shortcode, string networkName, IPostFormatter formatter)
     {
         NetworkType = type;
         ShortCode = shortcode;
         NetworkName = networkName;
-        PostVariant = postVariant;
+        Formatter = formatter;
     }
 
     public NetworkType NetworkType { get; private set; }
@@ -17,7 +18,7 @@ public abstract class AbstractNetwork : ISocialNetwork
 
     public string NetworkName { get; private set; }
 
-    public IPostVariant PostVariant { get; private set; }
+    public IPostFormatter Formatter { get; private set; }
 
     public bool Initialised { get; private set; } = false;
 

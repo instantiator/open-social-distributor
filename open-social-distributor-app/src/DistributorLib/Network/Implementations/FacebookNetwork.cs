@@ -54,21 +54,28 @@ public class FacebookNetwork : AbstractNetwork
 
     protected override async Task<PostResult> PostImplementationAsync(ISocialMessage message)
     {
-        var text = PostVariant.Compose(message);
-        
-        switch (mode)
+        var texts = Formatter.FormatText(message);
+        var responses = new List<RestResponse>();
+        foreach (var text in texts)
         {
-            case Mode.Page:
-                var request = new RestRequest($"/{pageId}/feed", Method.Post);
-                request.AddParameter("message", text);
-                request.AddParameter("access_token", pageToken);
-                var response = await graphClient!.ExecuteAsync(request);
-                return new PostResult(this, message, response.IsSuccessful, response.ErrorMessage);
-            case Mode.User:
-                throw new NotImplementedException("TODO: user posts not implemented");
-            default:
-                throw new NotImplementedException($"{mode} not supported");
+            // TODO: ensure that each post is a response to the previous
+            switch (mode)
+            {
+                case Mode.Page:
+                    var request = new RestRequest($"/{pageId}/feed", Method.Post);
+                    request.AddParameter("message", text);
+                    request.AddParameter("access_token", pageToken);
+                    responses.Add(await graphClient!.ExecuteAsync(request));
+                    break;
+                case Mode.User:
+                    throw new NotImplementedException("TODO: user posts not implemented");
+                default:
+                    throw new NotImplementedException($"{mode} not supported");
+            }
         }
+        var aok = responses.All(r => r.IsSuccessful);
+        var errors = responses.Where(r => !r.IsSuccessful).Select(r => r.ErrorMessage);
+        return new PostResult(this, message, aok, string.Join('\n', errors));
     }
 
     protected override async Task<ConnectionTestResult> TestConnectionImplementationAsync()
@@ -76,7 +83,6 @@ public class FacebookNetwork : AbstractNetwork
         switch (mode)
         {
             case Mode.Page:
-                // var request = new RestRequest($"/{pageId}/feed", Method.Get);
                 var request = new RestRequest($"/me?fields=id,name");
                 request.AddParameter("access_token", pageToken);
                 var response = await graphClient!.ExecuteAsync(request);
