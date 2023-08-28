@@ -7,10 +7,16 @@ A tool for managing social posts across multiple platforms. Simple to configure.
 ## CLI options
 
 ```text
--c, --config     Required. Path to the config file.
--m, --message    Required. Simple message text.
---help           Display this help screen.
---version        Display version information.
+DistributionCLI <verb> <options...>
+```
+
+### Verbs
+
+```text
+  post       Post a message to one or more social networks.
+  test       Test all connections in the configuration file.
+  help       Display more information on a specific command.
+  version    Display version information.
 ```
 
 ## Config format
