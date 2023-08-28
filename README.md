@@ -86,7 +86,7 @@ Testing scripts are found at the root of the `open-social-distributor-app` direc
     - [ ] Discord
     - [ ] Twitter
     - [x] Mastodon
-    - [ ] Facebook
+    - [x] Facebook
     - [ ] LinkedIn
 - [ ] Add CLI features
     - [ ] More complex posting options
