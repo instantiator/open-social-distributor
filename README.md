@@ -82,7 +82,7 @@ Testing scripts are found at the root of the `open-social-distributor-app` direc
 - [x] Self-test during startup
 - [x] Social network configuration (connection strings)
 - [ ] Publishing code for social networks
-    - [ ] Console
+    - [x] Console _(not really a network)_
     - [ ] Discord
     - [ ] Twitter
     - [x] Mastodon
