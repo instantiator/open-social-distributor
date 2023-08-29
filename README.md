@@ -99,12 +99,21 @@ Testing scripts are found at the root of the `open-social-distributor-app` direc
     - [ ] More complex posting options
     - [ ] Support for image upload
     - [ ] Publish binaries of the CLI
+    - [ ] Docker build, test, and run for the CLI
+
 - [ ] Scheduled posting for service and function
     - [ ] Define message store formats
-    - [ ] Build `DistributionService`
-    - [ ] Build `DistributionFunction`
+    - [ ] Document message store formats
+
+- [ ] `DistributionService` (Background Service)
+    - [ ] Periodically post from a CSV (drawn from a URL)
+    - [ ] Periodically follow more complex post selection rules
     - [ ] Docker build and run for the service
-    - [ ] Docker build and run for the CLI
+
+- [ ] `DistributionFunction` (Lambda function)
     - [ ] AWS CloudWatch stack publishing
-- [ ] Document message store formats
+    - [ ] Store state in config
+    - [ ] Periodically post from a CSV (drawn from a URL) when invoked
+    - [ ] Periodically follow more complex post selection rules when invoked
+
 - [ ] Offer Discord icons / updates for the status of other posts
