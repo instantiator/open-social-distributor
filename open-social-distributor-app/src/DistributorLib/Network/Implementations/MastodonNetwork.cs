@@ -53,9 +53,10 @@ public class MastodonNetwork : AbstractNetwork
         foreach (var text in texts)
         {
             // TODO: image uploads - add images to the first post, figure out something for subsequent posts if necessary
-            // TODO: ensure that each status is posted IN REPLY to the one that came before
             var mediaIds = new List<string>();
-            statuses.Add(await client!.PublishStatus(text, Visibility.Public, null, mediaIds, false, null, null, null, null));
+            var previousStatus = statuses.LastOrDefault();
+            var status = await client!.PublishStatus(text, Visibility.Public, previousStatus?.Id, mediaIds, false, null, null, null, null);
+            statuses.Add(status);
         }
         var aok = statuses.All(s => s != null && !string.IsNullOrWhiteSpace(s.Id));
         return new PostResult(this, message, aok, aok ? null : "Unable to post all statuses");
