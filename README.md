@@ -91,8 +91,8 @@ Testing scripts are found at the root of the `open-social-distributor-app` direc
 | Console | ✅ | ✅ | |
 | Discord | | | |
 | Twitter | | | |
-| Mastodon | ✅ | | |
-| Facebook | ✅ | | |
+| Mastodon | ✅ | ✅ | |
+| Facebook | ✅ | ✅ | |
 | LinkedIn | | | |
 
 - [ ] CLI features
