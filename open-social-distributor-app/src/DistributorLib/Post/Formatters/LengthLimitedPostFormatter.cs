@@ -64,7 +64,7 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
             var nextWord = index + 1 < words.Count() ? words.ElementAt(index+1) : null;
 
             var decision = DetermineAction(currentMessage!, word, nextWord, IndexWord(currentMessageIndex));
-            Console.WriteLine($"Decision: {decision} for: {word}");
+            // Console.WriteLine($"Decision: {decision} for: {word}");
             switch (decision)
             {
                 case Decision.AddWord:

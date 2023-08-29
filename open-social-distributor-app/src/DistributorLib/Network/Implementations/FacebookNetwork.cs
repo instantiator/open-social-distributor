@@ -1,4 +1,5 @@
 using DistributorLib.Post;
+using DistributorLib.Post.Formatters;
 using RestSharp;
 
 namespace DistributorLib.Network.Implementations;
@@ -21,7 +22,7 @@ public class FacebookNetwork : AbstractNetwork
     public FacebookNetwork(string code, Mode mode, 
         string? userToken = null, 
         string? pageId = null, string? pageToken = null) 
-            : base(NetworkType.Facebook, code, "facebook", PostVariantFactory.Facebook)
+            : base(NetworkType.Facebook, code, "facebook", PostFormatVariantFactory.Facebook)
     {
         this.mode = mode;
         this.pageToken = pageToken;
