@@ -1,5 +1,6 @@
 using DistributorLib.Post;
 using DistributorLib.Post.Formatters;
+using Newtonsoft.Json;
 using RestSharp;
 
 namespace DistributorLib.Network.Implementations;
@@ -56,17 +57,38 @@ public class FacebookNetwork : AbstractNetwork
     protected override async Task<PostResult> PostImplementationAsync(ISocialMessage message)
     {
         var texts = Formatter.FormatText(message);
-        var responses = new List<RestResponse>();
+        var link = Formatter.GetLink(message);
+        var responses = new List<Tuple<RestResponse, FacebookPostResponse>>();
         foreach (var text in texts)
         {
             // TODO: ensure that each post is a response to the previous
+            // link is not in the text
             switch (mode)
             {
                 case Mode.Page:
-                    var request = new RestRequest($"/{pageId}/feed", Method.Post);
-                    request.AddParameter("message", text);
-                    request.AddParameter("access_token", pageToken);
-                    responses.Add(await graphClient!.ExecuteAsync(request));
+                    if (responses.Count() == 0)
+                    {
+                        // first post is a real post
+                        var request = new RestRequest($"/{pageId}/feed", Method.Post);
+                        request.AddParameter("message", text);
+                        request.AddParameter("access_token", pageToken);
+                        if (link != null) { request.AddParameter("link", link); }
+                        var response = await graphClient!.ExecuteAsync(request);
+                        var fb_response = JsonConvert.DeserializeObject<FacebookPostResponse>(response.Content!);
+                        responses.Add(new Tuple<RestResponse, FacebookPostResponse>(response, fb_response!));
+                    }
+                    else
+                    {
+                        // all subsequent posts are comments
+                        // if you post something long enough to exceed the post character limit, good luck to you
+                        var postId = responses.First().Item2.id!;
+                        var request = new RestRequest($"/{postId}/comments", Method.Post);
+                        request.AddParameter("message", text);
+                        request.AddParameter("access_token", pageToken);
+                        var response = await graphClient!.ExecuteAsync(request);
+                        var fb_response = JsonConvert.DeserializeObject<FacebookPostResponse>(response.Content!);
+                        responses.Add(new Tuple<RestResponse, FacebookPostResponse>(response, fb_response!));
+                    }
                     break;
                 case Mode.User:
                     throw new NotImplementedException("TODO: user posts not implemented");
@@ -74,8 +96,8 @@ public class FacebookNetwork : AbstractNetwork
                     throw new NotImplementedException($"{mode} not supported");
             }
         }
-        var aok = responses.All(r => r.IsSuccessful);
-        var errors = responses.Where(r => !r.IsSuccessful).Select(r => r.ErrorMessage);
+        var aok = responses.All(r => r.Item1.IsSuccessful && !string.IsNullOrWhiteSpace(r.Item2.id));
+        var errors = responses.Where(r => !r.Item1.IsSuccessful).Select(r => r.Item1.ErrorMessage);
         return new PostResult(this, message, aok, string.Join('\n', errors));
     }
 
@@ -101,4 +123,19 @@ public class FacebookNetwork : AbstractNetwork
                 throw new NotImplementedException($"{mode} not supported");
         }
     }
+
+    private class FacebookPostResponse
+    {
+        public string? id { get; set; }
+        public FacebookPostResponseError? error { get; set; }
+
+        public class FacebookPostResponseError
+        {
+            public string? message { get; set; }
+            public string? type { get; set; }
+            public int? code { get; set; }
+            public string? fbtrace_id { get; set; }
+        }
+    }
+
 }

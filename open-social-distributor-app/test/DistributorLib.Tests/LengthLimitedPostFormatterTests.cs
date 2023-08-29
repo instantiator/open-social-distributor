@@ -21,6 +21,19 @@ public class LengthLimitedPostFormatterTests
     }
 
     [Fact]
+    public void LengthLimitedPostFormatter_FormatText_RecognisesFirstAndSubsequentLimits()
+    {
+        var formatter = new LengthLimitedPostFormatter(NetworkType.Any, 20, false, 10);
+        var message = new SimpleSocialMessage("This is a test message indeed so");
+        var result = formatter.FormatText(message);
+        Assert.Equal(4, result.Count());
+        Assert.Equal("This is a test /1", result.ElementAt(0));
+        Assert.Equal("message /2", result.ElementAt(1));
+        Assert.Equal("indeed /3", result.ElementAt(2));
+        Assert.Equal("so", result.ElementAt(3));
+    }
+
+    [Fact]
     public void LengthLimitedPostFormatter_FormatText_HandlesAwkwardEdgeCase()
     {
         var formatter = new LengthLimitedPostFormatter(NetworkType.Any, 10, false);

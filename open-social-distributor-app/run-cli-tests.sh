@@ -3,6 +3,8 @@
 set -e
 set -o pipefail
 
+HUSH_ASYNC_WARNING="/nowarn:CS1998"
+
 echo "Building CLI tests..."
 dotnet build test/DistributionCLI.Tests/DistributionCLI.Tests.csproj $HUSH_ASYNC_WARNING --verbosity:minimal
 echo
