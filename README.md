@@ -62,11 +62,11 @@ Build and deploy scripts are found at the root of the `open-social-distributor-a
 
 | Script | Purpose |
 |-|-|
-| `build-applications.sh` | Builds the CLI, lambda function, and service projects as .NET binaries |
-| `build-cli-docker.sh` | Under development |
-| `run-cli-docker.sh` |  Under development |
-| `build-service-docker.sh` | Under development |
-| `run-service-docker.sh` | Under development |
+| `build-all.sh` | Builds the CLI, lambda function, and service projects as .NET binaries |
+| `docker-build-cli.sh` | Under development |
+| `docker-run-cli.sh` |  Under development |
+| `docker-build-service.sh` | Under development |
+| `docker-run-service.sh` | Under development |
 
 ## Config support
 
