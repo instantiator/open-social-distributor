@@ -57,10 +57,19 @@ Build and deploy scripts are found at the root of the `open-social-distributor-a
 | Script | Purpose |
 |-|-|
 | `export-aws-defaults.sh` | Exports some default AWS environment variables. |
-| `build-applications.sh` | Builds the CLI, lambda function, and service projects |
-| `dev-sync-app.sh` | Builds and synchronises the project code with an AWS CloudFormation stack |
+| `aws-sync-app-dev.sh` | Builds and synchronises the project code with an AWS CloudFormation stack |
+| `aws-deploy-app.sh` | Under development |
 
-## Config tests
+
+| Script | Purpose |
+|-|-|
+| `build-applications.sh` | Builds the CLI, lambda function, and service projects as .NET binaries |
+| `build-cli-docker.sh` | Under development |
+| `run-cli-docker.sh` |  Under development |
+| `build-service-docker.sh` | Under development |
+| `run-service-docker.sh` | Under development |
+
+## Config support
 
 Testing scripts are found at the root of the `open-social-distributor-app` directory. The CLI supports configuration tests. Scripts are provided as a shortcut to build and invoke the CLI:
 
@@ -74,11 +83,11 @@ Testing scripts are found at the root of the `open-social-distributor-app` direc
 
 | Script | Purpose |
 |-|-|
-| `open-social-distributor-app/run-all-tests.sh` | builds and runs all the unit tests |
-| `open-social-distributor-app/run-library-tests.sh` | builds and runs unit tests for `DistributorLib` |
-| `open-social-distributor-app/run-cli-tests.sh` | builds and runs the CLI unit tests |
-| `open-social-distributor-app/run-function-tests.sh` | builds and runs the lambda function unit tests |
-| `open-social-distributor-app/run-service-tests.sh` | builds and runs the service unit tests |
+| `test-unit-all.sh` | builds and runs the unit tests for each project |
+| `test-unit-lib.sh` | builds and runs unit tests for `DistributorLib` |
+| `test-unit-cli.sh` | builds and runs the CLI unit tests |
+| `test-unit-function.sh` | builds and runs the lambda function unit tests |
+| `test-unit-service.sh` | builds and runs the service unit tests |
 
 ## TODOs
 
