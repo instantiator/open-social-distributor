@@ -2,7 +2,10 @@
 
 **UNDER DEVELOPMENT**
 
-A tool for managing social posts across multiple platforms. Simple to configure. Offers a CLI for basic configuration and message posting. Optionally run a scheduled service as a Docker container or as an AWS Lambda stack.
+A tool for managing social posts across multiple platforms. Simple to configure. Offers:
+
+* A CLI for basic configuration and message posting
+* A scheduled posting service, as a Docker container or as an AWS stack
 
 ## CLI options
 
@@ -62,7 +65,11 @@ Build and deploy scripts are found at the root of the `open-social-distributor-a
 
 | Script | Purpose |
 |-|-|
-| `build-all.sh` | Builds the CLI, lambda function, and service projects as .NET binaries |
+| `build-all.sh` | Builds dev versions of the CLI, lambda function, and service projects as .NET binaries |
+| `release-all.sh` | Under development |
+
+| Script | Purpose |
+|-|-|
 | `docker-build-cli.sh` | Under development |
 | `docker-run-cli.sh` |  Under development |
 | `docker-build-service.sh` | Under development |
