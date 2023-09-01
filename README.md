@@ -57,9 +57,8 @@ Build and deploy scripts are found at the root of the `open-social-distributor-a
 | Script | Purpose |
 |-|-|
 | `export-aws-defaults.sh` | Exports some default AWS environment variables. |
-| `aws-sync-app-dev.sh` | Builds and synchronises the project code with an AWS CloudFormation stack |
-| `aws-deploy-app.sh` | Under development |
-
+| `aws-sync-stack.sh` | Builds and synchronises the project code with an AWS CloudFormation stack |
+| `aws-deploy-stack.sh` | Under development |
 
 | Script | Purpose |
 |-|-|
