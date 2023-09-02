@@ -1,5 +1,6 @@
 using DistributorLib.Post;
 using DistributorLib.Post.Formatters;
+using DistributorLib.Post.Images;
 
 namespace DistributorLib.Network.Implementations;
 
@@ -27,11 +28,19 @@ public class ConsoleNetwork : AbstractNetwork
     protected override async Task<PostResult> PostImplementationAsync(ISocialMessage message)
     {
         var text = Formatter.FormatText(message);
-        Console.WriteLine(text);
+        Console.WriteLine(string.Join("\n", text));
+
         foreach (var image in message.Images ?? Array.Empty<ISocialImage>())
         {
-            Console.WriteLine($" - Image Uri:   {image.Uri}");
-            Console.WriteLine($" - Description: {image.Description}");
+            Console.WriteLine($"Image uri: {image.SourceUri}");
+            Console.WriteLine($"Image description: {image.Description}");
+            
+            using (var stream = await image.GetStreamAsync())
+            using (var reader = new StreamReader(stream))
+            {
+                var len = (await reader.ReadToEndAsync()).Length;
+                Console.WriteLine($"Image size: {len} bytes");
+            }
         }
         return new PostResult(this, message, true);
     }

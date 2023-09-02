@@ -3,6 +3,7 @@ using DistributorLib;
 using DistributorLib.Network;
 using DistributorLib.Network.Implementations;
 using DistributorLib.Post;
+using DistributorLib.Post.Images;
 using Newtonsoft.Json;
 
 namespace DistributionCLI;
@@ -13,17 +14,29 @@ public class DistributionCLI
     public class PostOptions
     {
         [Option('c', "config", Required = true, HelpText = "Path to the config file.")]
-        public string? ConfigPath { get; set; }
+        public string ConfigPath { get; set; } = string.Empty;
 
         [Option('m', "message", Required = true, HelpText = "Simple message text.")]
-        public string? Text { get; set; }
+        public string Message { get; set; } = string.Empty;
+
+        [Option('l', "link", Required = false, HelpText = "Link for this message.")]
+        public string? Link { get; set; }
+
+        [Option('i', "images", Required = false, Separator = ',', HelpText = "URIs to images, semi-colon separated (;)")]
+        public IEnumerable<string>? Images { get; set; }
+
+        [Option('d', "image-descriptions", Required = false, Separator = ';', HelpText = "Image descriptions, semi-colon separated (;)")]
+        public IEnumerable<string>? ImageDescriptions { get; set; }
+
+        [Option('t', "tags", Required = true, Separator = ';', HelpText = "A list of tags (without # prefix), semi-colon separated (;)")]
+        public IEnumerable<string>? Tags { get; set; }
     }
 
     [Verb("test", HelpText = "Test all connections in the configuration file.")]
     public class TestOptions
     {
         [Option('c', "config", Required = true, HelpText = "Path to the config file.")]
-        public string? ConfigPath { get; set; }
+        public string ConfigPath { get; set; } = string.Empty;
     }
 
     public static void Main(params string[] args)
@@ -86,8 +99,16 @@ public class DistributionCLI
 
         var distributor = new Distributor(networks);
 
-        var message = new SimpleSocialMessage(options.Text!);
-        var result = distributor.PostAsync(message).Result;
+        var text = options.Message;
+        var link = options.Link;
+        var tags = options.Tags;
+        var images = options.Images != null ? SocialImageFactory.FromUrisAndDescriptions(options.Images, options.ImageDescriptions) : null;
+        var message = new SimpleSocialMessage(text, images, link, tags);
+        var results = distributor.PostAsync(message).Result;
+        foreach (var result in results)
+        {
+            Console.WriteLine($"{(result.Success ? "✅" : "❌")} {result.Network.ShortCode} ({result.Network.NetworkType})");
+        }
         return 0;
     }
 }

@@ -28,6 +28,42 @@ DistributionCLI <verb> <options...>
   version    Display version information.
 ```
 
+### Examples
+
+Here's a simple example you can use to explore the CLI.
+
+First, build the CLI:
+
+```bash
+./release-cli.sh
+```
+
+Now you can invoke it to `post` a simple message with a link, a few tags, and an image:
+
+```bash
+./release/osx-x64/DistributionCLI post \
+  --config sample-config/console-only.json \
+  --message "Meet the lads from Sev'ral Timez" \
+  --images "https://static.wikia.nocookie.net/gravityfalls/images/9/92/S1e17_show_end.png/revision/latest/scale-to-width-down/1000?cb=20130412112159" \
+  --image-descriptions "Creggy G., Greggy C., Leggy P., Chubby Z. and Deep Chris" \
+  --tags "GravityFalls;SevralTimez" \
+  --link "https://gravityfalls.fandom.com/wiki/Sev%27ral_Timez"
+```
+
+Here's the same example, but for a local file. The options have been shortened:
+
+```bash
+./release/osx-x64/DistributionCLI post \
+  -c sample-config/console-only.json \
+  -m "Meet the lads from Sev'ral Timez" \
+  -i "file:///Users/lewiswestbury/Desktop/sev'ral timez.png" \
+  -d "Creggy G., Greggy C., Leggy P., Chubby Z. and Deep Chris" \
+  -t "GravityFalls;SevralTimez" \
+  -l "https://gravityfalls.fandom.com/wiki/Sev%27ral_Timez"
+```
+
+**Tip:** You can include more than 1 image, and more than 1 image description by separating values with a `;` semi-colon.
+
 ## Config format
 
 Configuration is provided through a json file, with details of various connections and settings.
@@ -106,16 +142,16 @@ Support scripts are found at the root of the `open-social-distributor-app` direc
 
 | Network | Post simple message | Message formatting | Image upload |
 |-|-|-|-|
-| Console | ✅ | ✅ | |
-| Discord | | | |
-| Twitter | | | |
+| Console | ✅ | ✅ | ✅ |
 | Mastodon | ✅ | ✅ | |
 | Facebook | ✅ | ✅ | |
+| Discord | | | |
+| Twitter | | | |
 | LinkedIn | | | |
 
 - [ ] CLI features
-    - [ ] More complex posting options
-    - [ ] Support for image upload
+    - [x] More complex posting options
+    - [x] Support for image upload
     - [x] Publish binaries of the CLI
 
 - [ ] Scheduled posting for service and function
