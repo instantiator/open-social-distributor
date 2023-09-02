@@ -36,7 +36,10 @@ The limit allows space for:
 
 Tags are selected in a random order, to help in situations where they might not fit.
 
+You can force the formatted to break to a new post by including the speak break word: `$$`
+
 ### Facebook notes
 
 * The formatter for Facebook posts does not include the link in the text of the post, as it is included separately as a special property of the post.
 * Facebook does not have the concept of threads. If the content for the first post exceeds the limit, subsequent posts are made as comments.
+* Instead of forcing a new post, the break word `$$` creates a paragraph break with 2 newline characters.
