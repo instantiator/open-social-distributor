@@ -2,10 +2,16 @@
 
 **UNDER DEVELOPMENT**
 
-A tool for managing social posts across multiple platforms. Simple to configure. Offers:
+A tool for managing social posts across multiple platforms. Simple to configure.
 
-* A CLI for basic configuration and message posting
-* A scheduled posting service, as a Docker container or as an AWS stack
+| Component | Purpose |
+|-|-|
+| `DistributionCLI` | A CLI for basic configuration and message posting |
+| `DistributionFunction` | A scheduled posting function, run as an AWS CloudWatch application stack |
+| `DistributionService` | A scheduled posting service, runs as a Docker container |
+| `DistributorLib` | Shared code with functionality to support the above 3 use cases |
+
+You can use the CLI to make an ad-hoc post to any number of social networks, or launch a service to regularly post from a dataset of posts you provide.
 
 ## CLI options
 
@@ -70,16 +76,7 @@ Build and deploy scripts are found at the root of the `open-social-distributor-a
 
 | Script | Purpose |
 |-|-|
-| `docker-build-service.sh` | Under development |
-| `docker-run-service.sh` | Under development |
-
-## Config support
-
-Testing scripts are found at the root of the `open-social-distributor-app` directory. The CLI supports configuration tests. Scripts are provided as a shortcut to build and invoke the CLI:
-
-| Script | Purpose |
-|-|-|
-| `test-connections.sh` | Builds and invokes the CLI to test the connections defined in a configuration file |
+| `docker-run-service.sh` | Builds, tests, and runs the service for the `int` or `prod` environment |
 
 ## Unit tests
 
@@ -92,6 +89,14 @@ Testing scripts are found at the root of the `open-social-distributor-app` direc
 | `test-unit-cli.sh` | builds and runs the CLI unit tests |
 | `test-unit-function.sh` | builds and runs the lambda function unit tests |
 | `test-unit-service.sh` | builds and runs the service unit tests |
+
+## Config support
+
+Support scripts are found at the root of the `open-social-distributor-app` directory. The CLI supports configuration tests. Scripts are provided as a shortcut to build and invoke the CLI:
+
+| Script | Purpose |
+|-|-|
+| `test-connections.sh` | Builds and invokes the CLI to test the connections defined in a configuration file |
 
 ## TODOs
 
@@ -120,9 +125,10 @@ Testing scripts are found at the root of the `open-social-distributor-app` direc
 - [ ] `DistributionService` (Background Service)
     - [ ] Periodically post from a CSV (drawn from a URL)
     - [ ] Periodically follow more complex post selection rules
-    - [ ] Docker build and run for the service
+    - [x] Docker build and run for the service
 
 - [ ] `DistributionFunction` (Lambda function)
+    - [x] AWS CloudWatch stack sync for development
     - [ ] AWS CloudWatch stack publishing
     - [ ] Store state in config
     - [ ] Periodically post from a CSV (drawn from a URL) when invoked
