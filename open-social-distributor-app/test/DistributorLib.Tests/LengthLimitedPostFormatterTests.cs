@@ -188,6 +188,4 @@ public class LengthLimitedPostFormatterTests
         Assert.True(result.ElementAt(0).Contains("#Experiment"));
         Assert.True(result.ElementAt(0).Contains("#Formatting"));
     }
-
-
 }

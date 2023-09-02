@@ -24,9 +24,10 @@ This is a tool for managing social posts across multiple platforms. Simple to co
 | LinkedIn | | | | | |
 
 - [x] Message formatting
-    - [x] Support for length limited formatting of threads
+    - [x] Support for word wrapping into threads
+    - [x] Control where tags appear
+    - [x] Control where the link appears
     - [x] Support for message breaks: `$$`
-    - [x] Force tags into the first message
 
 - [x] CLI features
     - [x] More complex posting options
