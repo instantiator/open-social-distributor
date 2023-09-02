@@ -20,8 +20,8 @@ Each social network has a different set of character limits:
 | Network | First post | Subsequent posts | Tags | Link |
 |-|-|-|-|-|
 | Console | ∞ | ∞ | N/A | N/A |
-| Mastodon | 500 | 500 | All posts | First post |
-| Facebook | 63206 | 8000 | First post | Special |
+| Mastodon | `500` | `500` | All posts | First post |
+| Facebook | `63206` | `8000` | First post | Special |
 | Twitter | | | | |
 | Discord | | | | | 
 | LinkedIn | | | | |
