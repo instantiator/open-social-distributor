@@ -30,6 +30,7 @@ You can use the command-line interface (CLI) to make an ad-hoc post to any numbe
 
 * [CLI options](cli-options.md)
 * [Configuration](configuration.md)
+* [Post composition](post-composition.md)
 
 ## Social networks
 

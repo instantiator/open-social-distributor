@@ -13,4 +13,30 @@ Each part can be one of several types:
 
 The parts are combined and formatted during posting to ensure that the text will all fit and flow correctly. If necessary, multiple posts are created, and linked together as a thread.
 
-Some social networks, eg. Facebook, treat links as a special part of the post - and so the link itself is not included in the text of the post.
+## Thread formatting
+
+Each social network has a different set of character limits:
+
+| Network | First post | Subsequent posts | Tags | Link |
+|-|-|-|-|-|
+| Console | ∞ | ∞ | N/A | N/A |
+| Mastodon | 500 | 500 | All posts | First post |
+| Facebook | 63206 | 8000 | First post | Special |
+| Twitter | | | | |
+| Discord | | | | | 
+| LinkedIn | | | | |
+
+The formatter will wrap words on each post. If a post would exceed the limit available to it, it wraps the next word into the next post.
+
+The limit allows space for:
+
+1. The link, if it should appear in this post
+1. An index indicator (if there's more than 1 post)
+1. Any tags that will fit, if the tags should appear on the post
+
+Tags are selected in a random order, to help in situations where they might not fit.
+
+### Facebook notes
+
+* The formatter for Facebook posts does not include the link in the text of the post, as it is included separately as a special property of the post.
+* Facebook does not have the concept of threads. If the content for the first post exceeds the limit, subsequent posts are made as comments.

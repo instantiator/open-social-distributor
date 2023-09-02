@@ -114,6 +114,7 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
             CompleteMessage();
 
             // apply all decorations
+            if (Posts.Count < 2) { indices = false; }
             for (var m = 0; m < Posts.Count(); m++)
             {
                 var tags = tagWords.OrderBy(t => Guid.NewGuid()).ToList();
