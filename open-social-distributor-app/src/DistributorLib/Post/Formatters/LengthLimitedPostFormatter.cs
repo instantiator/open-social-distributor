@@ -8,26 +8,29 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
     public const string BREAK_CODE = "$$";
     public const decimal DEFAULT_TAG_COVERAGE = 0.5m;
     public enum BreakBehaviour { None, NewParagraph, NewPost }
-    public enum TagBehaviour { FirstPost, AllPosts, Inline, None }
+    public enum DecorationBehaviour { FirstPost, AllPosts, Inline, None }
 
-    protected bool linkInText;
     protected int messageLengthLimit;
     protected int subsequentLimits;
+    protected bool indices;
     protected decimal acceptableTagCoverage;
     protected BreakBehaviour breakBehaviour;
-    protected TagBehaviour tagBehaviour;
+    protected DecorationBehaviour tagBehaviour;
+    protected DecorationBehaviour linkBehaviour;
 
     public LengthLimitedPostFormatter(NetworkType network, 
         int limit, int subsequentLimits,
-        bool linkInText, 
+        bool indices,
+        DecorationBehaviour linkBehaviour = DecorationBehaviour.FirstPost, 
         BreakBehaviour breakBehaviour = BreakBehaviour.NewPost,
-        TagBehaviour tagBehaviour = TagBehaviour.FirstPost,
+        DecorationBehaviour tagBehaviour = DecorationBehaviour.FirstPost,
         decimal acceptableTagCoverage = DEFAULT_TAG_COVERAGE) : base(network)
     {
         this.messageLengthLimit = limit;
         this.subsequentLimits = subsequentLimits;
         this.acceptableTagCoverage = acceptableTagCoverage;
-        this.linkInText = linkInText;
+        this.indices = indices;
+        this.linkBehaviour = linkBehaviour;
         this.breakBehaviour = breakBehaviour;
         this.tagBehaviour = tagBehaviour;
     }
@@ -38,82 +41,110 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
             .WithNetwork(Network)
             .WithLimit(messageLengthLimit)
             .WithSubsequentLimits(subsequentLimits)
-            .WithLinkInText(linkInText)
             .WithBreakBehaviour(breakBehaviour, BREAK_CODE)
             .WithTagBehaviour(tagBehaviour)
+            .WithLinkBehaviour(linkBehaviour)
             .WithAcceptableTagCoverage(acceptableTagCoverage)
-            .WithMessage(message)
-            .Build();
+            .WithIndices(indices)
+            .Build(message);
     }
 
     public class WordWrapFormatter
     {
-        public List<string>? Messages { get; private set; }
+        public List<string> Posts { get; private set; } = new List<string>();
 
-        private int currentMessageIndex;
-        private StringBuilder? currentMessage;
-        private ISocialMessage? message;
-        private NetworkType network;
-        private int limit;
-        private int subsequentLimits;
+        private int currentMessageIndex = 1;
+        private StringBuilder currentMessage = new StringBuilder();
+        private int currentLimit = 100;
+        private NetworkType network = NetworkType.Any;
+        private int limit = 100;
+        private int subsequentLimits = 100;
         private decimal acceptableTagCoverage = DEFAULT_TAG_COVERAGE;
-        private bool link;
         private string msgBreak = BREAK_CODE;
-        private BreakBehaviour msgBreakBehaviour;
-        private TagBehaviour tagBehaviour;
+        private bool indices = true;
+        private BreakBehaviour msgBreakBehaviour = BreakBehaviour.NewPost;
+        private DecorationBehaviour tagBehaviour = DecorationBehaviour.AllPosts;
+        private DecorationBehaviour linkBehaviour = DecorationBehaviour.FirstPost;
+
+        private IEnumerable<string> words = new List<string>();
+        private IEnumerable<string> tagWords = new List<string>();
+        private string? link = null;
 
         public WordWrapFormatter WithNetwork(NetworkType network) { this.network = network; return this; }
         public WordWrapFormatter WithLimit(int limit) { this.limit = limit; return this; }
         public WordWrapFormatter WithSubsequentLimits(int subsequentLimits) { this.subsequentLimits = subsequentLimits; return this; }
         public WordWrapFormatter WithAcceptableTagCoverage(decimal coverage) { this.acceptableTagCoverage = coverage; return this; }
-        public WordWrapFormatter WithMessage(ISocialMessage message) { this.message = message; return this; }
-        public WordWrapFormatter WithLinkInText(bool link) { this.link = link; return this; }
+        public WordWrapFormatter WithLinkBehaviour(DecorationBehaviour behaviour) { this.linkBehaviour = behaviour; return this; }
         public WordWrapFormatter WithBreakBehaviour(BreakBehaviour behaviour, string msgBreak) { this.msgBreak = msgBreak; this.msgBreakBehaviour = behaviour; return this; }
-        public WordWrapFormatter WithTagBehaviour(TagBehaviour behaviour) { this.tagBehaviour = behaviour; return this; }
+        public WordWrapFormatter WithTagBehaviour(DecorationBehaviour behaviour) { this.tagBehaviour = behaviour; return this; }
+        public WordWrapFormatter WithIndices(bool indices) { this.indices = indices; return this; }
 
-        public IEnumerable<string> Build()
+        public void Reset(IEnumerable<string> words, string? link, IEnumerable<string> tagWords)
         {
-            var included = message!.GetMessageParts(link, tagBehaviour == TagBehaviour.Inline);
-            var strings = included.Select(part => part.ToStringFor(network)).Where(x => x != null).ToList();
-            var words = string.Join(' ', strings).Split(' ');
-            var tagWords = message!.Tags.Select(tag => tag.ToStringFor(network)).Where(x => x != null).Select(x => x!);
-            
-            Messages = new List<string>();
+            this.words = words;
+            this.link = link;
+            this.tagWords = tagWords;
+
+            Posts.Clear();
             currentMessageIndex = 1;
             currentMessage = new StringBuilder();
 
-            for (int i = 0; i < words.Length; i++)
-            {
-                var currentLimit = Messages.Count() == 0 ? limit : subsequentLimits;
-                if ((tagBehaviour == TagBehaviour.FirstPost && currentMessageIndex == 1) || tagBehaviour == TagBehaviour.AllPosts)
-                {
-                    currentLimit -= GetMaxTagsetLength(currentLimit, acceptableTagCoverage, tagWords!); // squeeze out some tag space
-                }
+            currentLimit = CalculateCurrentLimit(tagWords, link);
+        }
 
-                PerformAction(words, i, currentLimit);
-            }
+        public IEnumerable<string> Build(ISocialMessage message)
+        {
+            var included = message.GetMessageParts(linkBehaviour == DecorationBehaviour.Inline, tagBehaviour == DecorationBehaviour.Inline);
+            var strings = included.Select(part => part.ToStringFor(network)).Where(x => x != null).ToList();
             
+            var words = string.Join(' ', strings).Split(' ');
+            var tagWords = message.Tags.Select(tag => tag.ToStringFor(network)).Where(x => x != null).Select(x => x!);
+            var link = message.Link?.ToStringFor(network);
+
+            // init
+            Reset(words, link, tagWords);
+
+            // add words 1 at a time
+            foreach (var word in words)
+            {
+                PerformAction(word);
+            }            
+
             // finish last message
             CompleteMessage();
 
-            // apply tags
-            for (var m = 0; m < Messages.Count(); m++)
+            // apply all decorations
+            for (var m = 0; m < Posts.Count(); m++)
             {
-                var currentLimit = m == 0 ? limit : subsequentLimits;
-                var reshuffled = tagWords.OrderBy(t => Guid.NewGuid());
-                if ((m == 0 && tagBehaviour == TagBehaviour.FirstPost) || tagBehaviour == TagBehaviour.AllPosts)
+                var tags = tagWords.OrderBy(t => Guid.NewGuid()).ToList();
+                AddWordIfFits(link, m, linkBehaviour);
+                AddWordIfFits(IndexWord(m + 1), m, indices ? DecorationBehaviour.AllPosts : DecorationBehaviour.None);
+                AddWordsIfFit(tags, m, tagBehaviour);
+            }
+            return Posts;
+        }
+
+        private void AddWordsIfFit(IEnumerable<string> set, int index, DecorationBehaviour behaviour)
+        {
+            foreach (var word in set)
+            {
+                AddWordIfFits(word, index, behaviour);
+            }
+        }
+
+        private void AddWordIfFits(string? word, int index, DecorationBehaviour behaviour)
+        {
+            if (word == null) { return; }
+            var first = index == 0;
+            if ((behaviour == DecorationBehaviour.FirstPost && first) || behaviour == DecorationBehaviour.AllPosts)
+            {
+                var mLimit = first ? limit : subsequentLimits;
+                var gap = Posts[index].Length == 0 ? "" : " ";
+                if (Posts[index].Length + word.Length + gap.Length <= mLimit)
                 {
-                    foreach (var tagWord in reshuffled)
-                    {
-                        if (Messages[m].Length + tagWord!.Length + 1 <= currentLimit)
-                        {
-                            Messages[m] = $"{Messages[m]} {tagWord}";
-                        }
-                    }
+                    Posts[index] = $"{Posts[index]}{gap}{word}";
                 }
             }
-
-            return Messages;
         }
 
         private int GetMaxTagsetLength(int maxLimit, decimal acceptableCoverage, IEnumerable<string> tagWords)
@@ -121,48 +152,68 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
                 string.Join(' ', tagWords).Length, 
                 (int)(maxLimit * acceptableCoverage));
 
-        private void PerformAction(IEnumerable<string> words, int index, int currentLimit)
+        private int CalculateCurrentLimit(IEnumerable<string> tagWords, string? link)
         {
-            var word = words.ElementAt(index);
-            var nextWord = index + 1 < words.Count() ? words.ElementAt(index+1) : null;
+            var postLimit = currentMessageIndex == 1 ? limit : subsequentLimits;
 
-            var decision = DetermineAction(currentMessage!, currentLimit, word, nextWord, IndexWord(currentMessageIndex));
-            // Console.WriteLine($"Decision: {decision} for: {word}");
-            switch (decision)
+            if (tagBehaviour == DecorationBehaviour.AllPosts ||
+                (tagBehaviour == DecorationBehaviour.FirstPost && currentMessageIndex == 1))
             {
-                case Decision.AddWord:
-                    currentMessage!.Append($"{(currentMessage!.Length == 0 ? "" : " ")}{word}");
-                    break;
-                case Decision.AddIndex:
-                    currentMessage!.Append($"{(currentMessage!.Length == 0 ? "" : " ")}{IndexWord(currentMessageIndex)}");
-                    CompleteMessage();
-                    PerformAction(words, index, currentLimit);
-                    break;
-                case Decision.AddNothing:
-                    CompleteMessage();
-                    PerformAction(words, index, currentLimit);
-                    break;
-                case Decision.NewParagraph:
-                    currentMessage!.Append("\n\n");
-                    break;
-                case Decision.NewPost:
-                    currentMessage!.Append($"{(currentMessage!.Length == 0 ? "" : " ")}{IndexWord(currentMessageIndex)}");
-                    CompleteMessage();
-                    break;
-                case Decision.VeryLongWord:
-                    CompleteMessage();
+                postLimit -= GetMaxTagsetLength(currentLimit, acceptableTagCoverage, tagWords!);
+            }
+            if (linkBehaviour == DecorationBehaviour.AllPosts ||
+                (linkBehaviour == DecorationBehaviour.FirstPost && currentMessageIndex == 1))
+            {
+                postLimit -= link == null ? 0 : 1 + link!.Length;
+            }
+            if (indices)
+            {
+                postLimit -= 1 + IndexWord(currentMessageIndex).Length;
+            }
+            return postLimit;
+        }
+
+        private void PerformAction(string word)
+        {
+            var gap = currentMessage.Length == 0 ? "" : " ";
+            var fits = currentMessage.Length + gap.Length + word.Length <= currentLimit;
+
+            if (word == msgBreak && msgBreakBehaviour == BreakBehaviour.NewPost)
+            {
+                CompleteMessage();
+                return;
+            }
+
+            if (fits)
+            {
+                if (word == msgBreak && msgBreakBehaviour == BreakBehaviour.NewParagraph) 
+                { 
+                    currentMessage.Append("\n\n"); 
+                }
+                else
+                {
+                    currentMessage.Append($"{gap}{word}");
+                }
+            }
+            else
+            {
+                CompleteMessage();
+
+                // if the word is too long, split it up
+                if (word.Length > currentLimit)
+                {
                     var chunks = word.Chunk(currentLimit).Select(s => new string(s)).ToList();
-                    foreach (var chunk in chunks)
-                    {
-                        currentMessage!.Append(chunk);
-                        CompleteMessage();
-                    }
-                    break;
-                case Decision.Ignore:
-                    break;
-                case Decision.Finish:
+                    var chunk = word.Substring(0, currentLimit);
+                    var remainder = word.Substring(chunk.Length);
+                    currentMessage.Append(chunk);
                     CompleteMessage();
-                    break;
+                    PerformAction(remainder);
+                }
+                else
+                {
+                    // regular word - goes into the next message
+                    PerformAction(word);
+                }
             }
         }
 
@@ -172,49 +223,11 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
         {
             if (currentMessage!.Length > 0) 
             {
-                Messages!.Add(currentMessage!.ToString());
+                Posts!.Add(currentMessage!.ToString());
                 currentMessageIndex++;
             }
             currentMessage = new StringBuilder();
+            currentLimit = CalculateCurrentLimit(tagWords, link);
         }
-
-        private enum Decision { Ignore, NewParagraph, NewPost, AddWord, AddIndex, VeryLongWord, AddNothing, Finish }
-
-        private Decision DetermineAction(StringBuilder message, int currentLimit, string? thisWord, string? nextWord, string indexWord)
-        {
-            if (thisWord == null) return Decision.Finish;
-
-            if (thisWord == msgBreak)
-            {
-                switch (msgBreakBehaviour)
-                {
-                    case BreakBehaviour.None:
-                        return Decision.Ignore;
-                    case BreakBehaviour.NewParagraph:
-                        return Decision.NewParagraph;
-                    case BreakBehaviour.NewPost:
-                        return Decision.NewPost;
-                    default:
-                        throw new NotImplementedException($"Break behaviour not implemented: {msgBreakBehaviour}");
-                }
-            }
-
-            bool firstWordInMessage = message.Length == 0;
-            int prefixChars = firstWordInMessage ? 0 : 1;
-            bool canFitThisWord = message.Length + thisWord!.Length + prefixChars <= currentLimit;
-            bool canFitIndexWord = message.Length + indexWord.Length + prefixChars <= currentLimit;
-            bool canFitThisAndNextWord = nextWord == null ? false : message.Length + thisWord!.Length + nextWord!.Length + prefixChars + 1 <= currentLimit;
-            bool canFitThisAndIndexWord = message.Length + thisWord!.Length + indexWord.Length + prefixChars + 1 <= currentLimit;
-            bool isVeryLongWord = thisWord.Length > currentLimit;
-
-            if (canFitThisAndNextWord || canFitThisAndIndexWord) return Decision.AddWord;
-            if (message.Length == 0 && canFitThisWord) return Decision.AddWord;
-            if (message.Length == 0 && isVeryLongWord) return Decision.VeryLongWord;
-
-            return canFitIndexWord
-                ? Decision.AddIndex
-                : Decision.AddNothing; // shouldn't happen, might happen I guess
-        }
-
     }
 }

@@ -17,7 +17,7 @@ See:
 
 ## Scheduled posting
 
-This tool will also offers 2 ways to set up a scheduled posting service:
+This tool will also offer 2 ways to set up a scheduled posting service:
 
 1. As a service, running in Docker (in development)
 2. As a CloudFormation stack, running on AWS (in development)
