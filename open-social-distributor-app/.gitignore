@@ -10,3 +10,6 @@ obj/
 
 # config
 sample-config/private-*
+
+# release binaries
+release/
