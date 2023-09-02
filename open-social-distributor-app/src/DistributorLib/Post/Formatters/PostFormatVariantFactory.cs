@@ -5,7 +5,19 @@ namespace DistributorLib.Post.Formatters
     public class PostFormatVariantFactory
     {
         public static IPostFormatter Console => new ConsolePostFormatter();
-        public static IPostFormatter Mastodon => new LengthLimitedPostFormatter(Network.NetworkType.Mastodon, 500, 500, true, LengthLimitedPostFormatter.BreakBehaviour.NewPost);
-        public static IPostFormatter Facebook => new LengthLimitedPostFormatter(Network.NetworkType.Facebook, 63206, 8000, false, LengthLimitedPostFormatter.BreakBehaviour.NewParagraph);
+
+        public static IPostFormatter Mastodon => new LengthLimitedPostFormatter(
+            network: Network.NetworkType.Mastodon, 
+            limit: 500, subsequentLimits: 500,
+            linkInText: true,
+            breakBehaviour: LengthLimitedPostFormatter.BreakBehaviour.NewPost,
+            tagBehaviour: LengthLimitedPostFormatter.TagBehaviour.FirstPost);
+
+        public static IPostFormatter Facebook => new LengthLimitedPostFormatter(
+            network: Network.NetworkType.Facebook, 
+            limit: 63206, subsequentLimits: 8000, 
+            linkInText: false, 
+            breakBehaviour: LengthLimitedPostFormatter.BreakBehaviour.NewParagraph, 
+            tagBehaviour: LengthLimitedPostFormatter.TagBehaviour.FirstPost);
     }
 }

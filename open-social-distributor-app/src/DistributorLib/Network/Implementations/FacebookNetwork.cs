@@ -57,7 +57,7 @@ public class FacebookNetwork : AbstractNetwork
     protected override async Task<PostResult> PostImplementationAsync(ISocialMessage message)
     {
         var texts = Formatter.FormatText(message);
-        var link = Formatter.GetLink(message);
+        var link = message.Link;
         var responses = new List<Tuple<RestResponse, FacebookPostResponse>>();
         foreach (var text in texts)
         {
@@ -72,7 +72,7 @@ public class FacebookNetwork : AbstractNetwork
                         var request = new RestRequest($"/{pageId}/feed", Method.Post);
                         request.AddParameter("message", text);
                         request.AddParameter("access_token", pageToken);
-                        if (link != null) { request.AddParameter("link", link); }
+                        if (link != null) { request.AddParameter("link", link.ToStringFor(NetworkType)); }
                         var response = await graphClient!.ExecuteAsync(request);
                         var fb_response = JsonConvert.DeserializeObject<FacebookPostResponse>(response.Content!);
                         responses.Add(new Tuple<RestResponse, FacebookPostResponse>(response, fb_response!));

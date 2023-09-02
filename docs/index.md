@@ -22,7 +22,7 @@ This tool will also offers 2 ways to set up a scheduled posting service:
 1. As a service, running in Docker (in development)
 2. As a CloudFormation stack, running on AWS (in development)
 
-You could also automate invocations of the CLI any other way you please from your machine.
+You could also automate invocations of the CLI any other way you please from your machine, or build your own tool that uses `DistributorLib`.
 
 ## Using the CLI
 

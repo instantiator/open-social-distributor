@@ -21,7 +21,7 @@ public class SocialMessageContent
 
     public string? ToStringFor(NetworkType type)
     {
-        return Content.Count == 0
+        var text = Content.Count == 0
             ? null
             : type == NetworkType.Any
                 ? Content.First().Value
@@ -30,5 +30,7 @@ public class SocialMessageContent
                     : Content.ContainsKey(NetworkType.Any) 
                         ? Content[NetworkType.Any] 
                         : null;
+
+        return Part == SocialMessagePart.Tag ? $"#{text}" : text;
     }    
 }

@@ -87,11 +87,53 @@ public class LengthLimitedPostFormatterTests
         var formatter = new LengthLimitedPostFormatter(NetworkType.Any, 10, 10, false, LengthLimitedPostFormatter.BreakBehaviour.NewPost);
         var message = new SimpleSocialMessage("First $$ Second $$ Third");
         var result = formatter.FormatText(message);
-        Console.WriteLine(string.Join("\n", result));
         Assert.Equal(3, result.Count());
         Assert.Equal("First /1", result.ElementAt(0));
         Assert.Equal("Second /2", result.ElementAt(1));
         Assert.Equal("Third", result.ElementAt(2));
     }
+
+    [Fact]
+    public void LengthLimitedPostFormatter_FormatText_HandlesBigTextWithAllFeatures()
+    {
+        var formatter = new LengthLimitedPostFormatter(
+            NetworkType.Any, 
+            100, 100,
+            true, 
+            LengthLimitedPostFormatter.BreakBehaviour.NewPost,
+            LengthLimitedPostFormatter.TagBehaviour.AllPosts);
+    
+        var parts = new List<SocialMessageContent>()
+        {
+            new SocialMessageContent("This is a nice long test message with a whole bunch of features attached."),
+            new SocialMessageContent("It's important that there are over 100 characters across all the text, because this is an experiment with long text."),
+            new SocialMessageContent("LongText", NetworkType.Any, SocialMessagePart.Tag),
+            new SocialMessageContent("Experiment", NetworkType.Any, SocialMessagePart.Tag),
+            new SocialMessageContent("Formatting", NetworkType.Any, SocialMessagePart.Tag),
+            new SocialMessageContent("https://instantiator.dev", NetworkType.Any, SocialMessagePart.Link)
+        };
+
+        var message = new SimpleSocialMessage(parts, null);
+        var result = formatter.FormatText(message);
+
+        // Console.WriteLine(string.Join("\n", result));
+        // This is a nice long test message with a whole bunch of features /1 #LongText #Formatting #Experiment
+        // attached. It's important that there are over 100 characters /2 #Formatting #Experiment #LongText
+        // across all the text, because this is an experiment with long /3 #Experiment #Formatting #LongText
+        // text. https://instantiator.dev #Formatting #Experiment #LongText
+
+        Assert.Equal(4, result.Count());
+        Assert.StartsWith("This is a nice long test message with a whole bunch of features /1", result.ElementAt(0));
+        Assert.StartsWith("attached. It's important that there are over 100 characters /2", result.ElementAt(1));
+        Assert.StartsWith("across all the text, because this is an experiment with long /3", result.ElementAt(2));
+        Assert.StartsWith("text. https://instantiator.dev", result.ElementAt(3));
+
+        // find the tags - but they'll be in a random order
+        foreach (var msg in result)
+        {
+            Assert.True(msg.Contains("#LongText") && msg.Contains("#Experiment") && msg.Contains("#Formatting"));
+        }
+    }
+
 
 }

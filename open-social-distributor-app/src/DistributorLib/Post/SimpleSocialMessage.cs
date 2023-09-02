@@ -24,4 +24,15 @@ public class SimpleSocialMessage : ISocialMessage
 
     public IEnumerable<SocialMessageContent> Parts => parts;
     public IEnumerable<ISocialImage>? Images => images;
+    public IEnumerable<SocialMessageContent> Tags => Parts.Where(part => part.Part == SocialMessagePart.Tag);
+    public SocialMessageContent? Link => Parts.SingleOrDefault(part => part.Part == SocialMessagePart.Link);
+
+    public IEnumerable<SocialMessageContent> GetMessageParts(bool includeLink, bool includeTags)
+    {
+        return Parts.Where(part
+            => part.Part == SocialMessagePart.Text
+            || part.Part == SocialMessagePart.AccountReference
+            || (includeLink && part.Part == SocialMessagePart.Link) 
+            || (includeTags && part.Part == SocialMessagePart.Tag));
+    }
 }

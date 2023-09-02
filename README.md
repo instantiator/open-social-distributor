@@ -25,7 +25,7 @@ This is a tool for managing social posts across multiple platforms. Simple to co
 
 - [ ] Message formatting
     - [x] Support for length limited formatting of threads
-    - [x] Support for message breaks
+    - [x] Support for message breaks (`$$`)
     - [ ] Force tags and link into the first message
     - [ ] Apply images to first N messages according to network constraints
 

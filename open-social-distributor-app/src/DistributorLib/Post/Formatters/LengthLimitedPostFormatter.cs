@@ -5,20 +5,31 @@ namespace DistributorLib.Post.Formatters;
 
 public class LengthLimitedPostFormatter : AbstractPostFormatter
 {
-    public static string BREAK_CODE = "$$";
+    public const string BREAK_CODE = "$$";
+    public const decimal DEFAULT_TAG_COVERAGE = 0.5m;
     public enum BreakBehaviour { None, NewParagraph, NewPost }
+    public enum TagBehaviour { FirstPost, AllPosts, Inline, None }
 
     protected bool linkInText;
     protected int messageLengthLimit;
     protected int subsequentLimits;
+    protected decimal acceptableTagCoverage;
     protected BreakBehaviour breakBehaviour;
+    protected TagBehaviour tagBehaviour;
 
-    public LengthLimitedPostFormatter(NetworkType network, int limit, int subsequentLimits, bool linkInText, BreakBehaviour breakBehaviour = BreakBehaviour.NewPost) : base(network)
+    public LengthLimitedPostFormatter(NetworkType network, 
+        int limit, int subsequentLimits,
+        bool linkInText, 
+        BreakBehaviour breakBehaviour = BreakBehaviour.NewPost,
+        TagBehaviour tagBehaviour = TagBehaviour.FirstPost,
+        decimal acceptableTagCoverage = DEFAULT_TAG_COVERAGE) : base(network)
     {
         this.messageLengthLimit = limit;
         this.subsequentLimits = subsequentLimits;
+        this.acceptableTagCoverage = acceptableTagCoverage;
         this.linkInText = linkInText;
         this.breakBehaviour = breakBehaviour;
+        this.tagBehaviour = tagBehaviour;
     }
 
     public override IEnumerable<string> FormatText(ISocialMessage message)
@@ -27,9 +38,11 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
             .WithNetwork(Network)
             .WithLimit(messageLengthLimit)
             .WithSubsequentLimits(subsequentLimits)
-            .WithMessage(message)
             .WithLinkInText(linkInText)
             .WithBreakBehaviour(breakBehaviour, BREAK_CODE)
+            .WithTagBehaviour(tagBehaviour)
+            .WithAcceptableTagCoverage(acceptableTagCoverage)
+            .WithMessage(message)
             .Build();
     }
 
@@ -43,23 +56,28 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
         private NetworkType network;
         private int limit;
         private int subsequentLimits;
+        private decimal acceptableTagCoverage = DEFAULT_TAG_COVERAGE;
         private bool link;
-        private string msgBreak;
+        private string msgBreak = BREAK_CODE;
         private BreakBehaviour msgBreakBehaviour;
+        private TagBehaviour tagBehaviour;
 
         public WordWrapFormatter WithNetwork(NetworkType network) { this.network = network; return this; }
         public WordWrapFormatter WithLimit(int limit) { this.limit = limit; return this; }
         public WordWrapFormatter WithSubsequentLimits(int subsequentLimits) { this.subsequentLimits = subsequentLimits; return this; }
+        public WordWrapFormatter WithAcceptableTagCoverage(decimal coverage) { this.acceptableTagCoverage = coverage; return this; }
         public WordWrapFormatter WithMessage(ISocialMessage message) { this.message = message; return this; }
         public WordWrapFormatter WithLinkInText(bool link) { this.link = link; return this; }
         public WordWrapFormatter WithBreakBehaviour(BreakBehaviour behaviour, string msgBreak) { this.msgBreak = msgBreak; this.msgBreakBehaviour = behaviour; return this; }
+        public WordWrapFormatter WithTagBehaviour(TagBehaviour behaviour) { this.tagBehaviour = behaviour; return this; }
 
         public IEnumerable<string> Build()
         {
-            var included = message!.Parts.Where(part => link || part.Part != SocialMessagePart.Link);
+            var included = message!.GetMessageParts(link, tagBehaviour == TagBehaviour.Inline);
             var strings = included.Select(part => part.ToStringFor(network)).Where(x => x != null).ToList();
             var words = string.Join(' ', strings).Split(' ');
-
+            var tagWords = message!.Tags.Select(tag => tag.ToStringFor(network)).Where(x => x != null).Select(x => x!);
+            
             Messages = new List<string>();
             currentMessageIndex = 1;
             currentMessage = new StringBuilder();
@@ -67,11 +85,41 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
             for (int i = 0; i < words.Length; i++)
             {
                 var currentLimit = Messages.Count() == 0 ? limit : subsequentLimits;
+                if ((tagBehaviour == TagBehaviour.FirstPost && currentMessageIndex == 1) || tagBehaviour == TagBehaviour.AllPosts)
+                {
+                    currentLimit -= GetMaxTagsetLength(currentLimit, acceptableTagCoverage, tagWords!); // squeeze out some tag space
+                }
+
                 PerformAction(words, i, currentLimit);
             }
+            
+            // finish last message
             CompleteMessage();
+
+            // apply tags
+            for (var m = 0; m < Messages.Count(); m++)
+            {
+                var currentLimit = m == 0 ? limit : subsequentLimits;
+                var reshuffled = tagWords.OrderBy(t => Guid.NewGuid());
+                if ((m == 0 && tagBehaviour == TagBehaviour.FirstPost) || tagBehaviour == TagBehaviour.AllPosts)
+                {
+                    foreach (var tagWord in reshuffled)
+                    {
+                        if (Messages[m].Length + tagWord!.Length + 1 <= currentLimit)
+                        {
+                            Messages[m] = $"{Messages[m]} {tagWord}";
+                        }
+                    }
+                }
+            }
+
             return Messages;
         }
+
+        private int GetMaxTagsetLength(int maxLimit, decimal acceptableCoverage, IEnumerable<string> tagWords)
+            => Math.Min(
+                string.Join(' ', tagWords).Length, 
+                (int)(maxLimit * acceptableCoverage));
 
         private void PerformAction(IEnumerable<string> words, int index, int currentLimit)
         {
