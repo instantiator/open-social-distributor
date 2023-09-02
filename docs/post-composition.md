@@ -6,12 +6,12 @@ Each part can be one of several types:
 
 | `SocialMessagePart` | Description |
 |-|-|
-| `Text` | Ordinary text |
+| `Text` | Ordinary text that will appear in the post |
 | `AccountReference` | Reference to an account, eg. `@instantiator` |
-| `Tag` | An individual tag, eg. `Caturday` |
+| `Tag` | An individual tag, without the `#` prefix, eg. `Caturday` |
 | `Link` | A link that this post points to |
 
-The parts are combined and formatted during posting to ensure that the text will all fit and flow correctly. If necessary, multiple posts are created, and linked together as a thread.
+The parts are combined and formatted during posting to ensure that the text will all fit and flow correctly according to the conventions of the social network that the post is being targeted at. If necessary, multiple posts are created, and linked together as a thread.
 
 ## Thread formatting
 
