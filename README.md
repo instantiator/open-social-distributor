@@ -6,7 +6,7 @@ This is a tool for managing social posts across multiple platforms. Simple to co
 
 ## Documentation
 
-* [Open Social Distributor](docs/index.md)
+* [Open Social Distributor](https://front-line-tech.com/open-social-distributor/) ([source](docs/index.md))
 
 ## TODOs
 
