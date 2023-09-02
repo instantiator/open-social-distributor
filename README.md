@@ -4,12 +4,11 @@
 
 A tool for managing social posts across multiple platforms. Simple to configure.
 
-| Component | Purpose |
-|-|-|
-| `DistributionCLI` | A CLI for basic configuration and message posting |
-| `DistributionFunction` | A scheduled posting function, run as an AWS CloudWatch application stack |
-| `DistributionService` | A scheduled posting service, runs as a Docker container |
-| `DistributorLib` | Shared code with functionality to support the above 3 use cases |
+## Documentation
+
+* [Open Social Distributor](docs/index.md)
+
+## Making posts
 
 You can use the command-line interface (CLI) to make an ad-hoc post to any number of social networks, or launch a service to regularly post from a dataset of posts you provide.
 
@@ -17,58 +16,17 @@ See:
 
 * [CLI options](docs/cli-options.md)
 * [Configuration](docs/configuration.md)
+* [Connection strings](docs/connection-strings.md)
+* [Authorisation tokens](docs/auth-tokens.md)
 
-## Authorisation tokens
+## Scheduled posting
 
-Each social network has its own miserable process for obtaining access tokens that will grant you sufficient permission to post to accounts or pages.
+This tool will also offers 2 ways to set up a scheduled posting service:
 
-| Network | Notes | Documentation |
-|-|-|-|
-| Console | Not really a network. No tokens required. | |
-| Mastodon | Define an app, get an access token. Remarkably simple. | [mastodon-notes.md](docs/mastodon-notes.md) |
-| Facebook | Define an app, get a user access token, exchange it for a page access token. | [facebook-notes.md](docs/facebook-notes.md) |
-| LinkedIn | TBC | |
-| Twitter | TBC | |
-| Discord | TBC | |
+1. As a service, running in Docker (in development)
+2. As a CloudFormation stack, running on AWS (in development)
 
-## Build and deploy scripts
-
-Build and deploy scripts are found at the root of the `open-social-distributor-app` directory.
-
-| Script | Purpose |
-|-|-|
-| `export-aws-defaults.sh` | Exports some default AWS environment variables. |
-| `aws-sync-stack.sh` | Builds and synchronises the project code with an AWS CloudFormation stack |
-| `aws-deploy-stack.sh` | Under development |
-
-| Script | Purpose |
-|-|-|
-| `build-all.sh` | Builds dev versions of the CLI, lambda function, and service projects as .NET binaries |
-| `release-cli.sh` | Builds release binaries of the CLI for Windows, OS X, and Linux |
-
-| Script | Purpose |
-|-|-|
-| `docker-run-service.sh` | Builds, tests, and runs the service for the `int` or `prod` environment |
-
-## Unit tests
-
-Testing scripts are found at the root of the `open-social-distributor-app` directory.
-
-| Script | Purpose |
-|-|-|
-| `test-unit-all.sh` | builds and runs the unit tests for each project |
-| `test-unit-lib.sh` | builds and runs unit tests for `DistributorLib` |
-| `test-unit-cli.sh` | builds and runs the CLI unit tests |
-| `test-unit-function.sh` | builds and runs the lambda function unit tests |
-| `test-unit-service.sh` | builds and runs the service unit tests |
-
-## Config support
-
-Support scripts are found at the root of the `open-social-distributor-app` directory. The CLI supports configuration tests. Scripts are provided as a shortcut to build and invoke the CLI:
-
-| Script | Purpose |
-|-|-|
-| `test-connections.sh` | Builds and invokes the CLI to test the connections defined in a configuration file |
+You could also automate invocations of the CLI any other way you please from your machine.
 
 ## TODOs
 

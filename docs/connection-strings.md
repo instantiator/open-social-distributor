@@ -16,7 +16,9 @@ The configuration file contains a list of network connection strings, ie.
 
 Each entry in the `networks` list is a connection string describing how to connect to a single social network account.
 
-Connection strings are parsed by the `NetworkFactory` class.
+Many connection strings require an authorisation token from the social network they connect to. See:
+
+* [Authorisation tokens](auth-tokens.md)
 
 ### Console connection strings
 
@@ -60,3 +62,15 @@ type=facebook;code=<SHORTCODE>;mode=user;user_token=<USER_TOKEN>
 #### `User` mode (not yet implemented)
 
 * `USER_TOKEN` - A user access token (details TBC)
+
+## Twitter connection strings
+
+*Under development...*
+
+## Discord connection strings
+
+*Under development...*
+
+## LinkedIn connection strings
+
+*Under development...*

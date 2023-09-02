@@ -1,10 +1,5 @@
 # CLI options
 
-## Building the CLI
-
-* Run the `release-cli.sh` script to build the CLI.
-* Binaries will be placed in the `release/` directory.
-
 ## Options
 
 ```text
@@ -19,6 +14,11 @@ DistributionCLI <verb> <options...>
   help       Display more information on a specific command.
   version    Display version information.
 ```
+
+## Building the CLI
+
+* Run the `release-cli.sh` script to build the CLI.
+* Binaries will be placed in the `release/` directory.
 
 ## Examples
 
