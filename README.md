@@ -140,7 +140,7 @@ Support scripts are found at the root of the `open-social-distributor-app` direc
 - [x] Social network configuration (connection strings)
 - [ ] Social media features...
 
-| Network | Post simple message | Message formatting | Image upload |
+| Network | Post simple message | Message formatting | Images |
 |-|-|-|-|
 | Console | ✅ | ✅ | ✅ |
 | Mastodon | ✅ | ✅ | |
