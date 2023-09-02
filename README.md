@@ -23,11 +23,17 @@ This is a tool for managing social posts across multiple platforms. Simple to co
 | Twitter | | | |
 | LinkedIn | | | |
 
-- [ ] CLI features
+- [ ] Message formatting
+    - [x] Support for length limited formatting of threads
+    - [x] Support for message breaks
+    - [ ] Force tags and link into the first message
+    - [ ] Apply images to first N messages according to network constraints
+
+- [x] CLI features
     - [x] More complex posting options
     - [x] Support for image upload
-    - [x] Publish binaries of the CLI
-
+    - [x] Script publication of CLI binaries
+    
 - [ ] Scheduled posting for service and function
     - [ ] Define message store formats
     - [ ] Document message store formats

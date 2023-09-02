@@ -9,7 +9,7 @@ public class LengthLimitedPostFormatterTests
     [Fact]
     public void LengthLimitedPostFormatter_FormatText_SplitsOnWords()
     {
-        var formatter = new LengthLimitedPostFormatter(NetworkType.Any, 10, false);
+        var formatter = new LengthLimitedPostFormatter(NetworkType.Any, 10, 10, false);
         var message = new SimpleSocialMessage("This is a test message indeed so");
         var result = formatter.FormatText(message);
         Assert.Equal(5, result.Count());
@@ -23,7 +23,7 @@ public class LengthLimitedPostFormatterTests
     [Fact]
     public void LengthLimitedPostFormatter_FormatText_RecognisesFirstAndSubsequentLimits()
     {
-        var formatter = new LengthLimitedPostFormatter(NetworkType.Any, 20, false, 10);
+        var formatter = new LengthLimitedPostFormatter(NetworkType.Any, 20, 10, false);
         var message = new SimpleSocialMessage("This is a test message indeed so");
         var result = formatter.FormatText(message);
         Assert.Equal(4, result.Count());
@@ -36,7 +36,7 @@ public class LengthLimitedPostFormatterTests
     [Fact]
     public void LengthLimitedPostFormatter_FormatText_HandlesAwkwardEdgeCase()
     {
-        var formatter = new LengthLimitedPostFormatter(NetworkType.Any, 10, false);
+        var formatter = new LengthLimitedPostFormatter(NetworkType.Any, 10, 10, false);
         var message = new SimpleSocialMessage("This is a test messageX indeed");
         var result = formatter.FormatText(message);
         Assert.Equal(4, result.Count());
@@ -49,7 +49,7 @@ public class LengthLimitedPostFormatterTests
     [Fact]
     public void LengthLimitedPostFormatter_FormatText_HandlesVeryLongWords()
     {
-        var formatter = new LengthLimitedPostFormatter(NetworkType.Any, 10, false);
+        var formatter = new LengthLimitedPostFormatter(NetworkType.Any, 10, 10, false);
         var message = new SimpleSocialMessage("This is a test message WithAVeryLongWordThatRunsOn");
         var result = formatter.FormatText(message);
         Assert.Equal(6, result.Count());
@@ -64,7 +64,7 @@ public class LengthLimitedPostFormatterTests
     [Fact]
     public void LengthLimitedPostFormatter_FormatText_HandlesVeryLongWordsAndSubsequentWords()
     {
-        var formatter = new LengthLimitedPostFormatter(NetworkType.Any, 10, false);
+        var formatter = new LengthLimitedPostFormatter(NetworkType.Any, 10, 10, false);
         var message = new SimpleSocialMessage("This is a test message WithAVeryLongWordThatRuns and some words after it");
         var result = formatter.FormatText(message);
         Assert.Equal(11, result.Count());
@@ -79,6 +79,19 @@ public class LengthLimitedPostFormatterTests
         Assert.Equal("words /9", result.ElementAt(8));
         Assert.Equal("after /10", result.ElementAt(9));
         Assert.Equal("it", result.ElementAt(10));
+    }
+
+    [Fact]
+    public void LengthLimitedPostFormatter_FormatText_HandlesBreakCodes()
+    {
+        var formatter = new LengthLimitedPostFormatter(NetworkType.Any, 10, 10, false, LengthLimitedPostFormatter.BreakBehaviour.NewPost);
+        var message = new SimpleSocialMessage("First $$ Second $$ Third");
+        var result = formatter.FormatText(message);
+        Console.WriteLine(string.Join("\n", result));
+        Assert.Equal(3, result.Count());
+        Assert.Equal("First /1", result.ElementAt(0));
+        Assert.Equal("Second /2", result.ElementAt(1));
+        Assert.Equal("Third", result.ElementAt(2));
     }
 
 }

@@ -5,15 +5,20 @@ namespace DistributorLib.Post.Formatters;
 
 public class LengthLimitedPostFormatter : AbstractPostFormatter
 {
+    public static string BREAK_CODE = "$$";
+    public enum BreakBehaviour { None, NewParagraph, NewPost }
+
     protected bool linkInText;
     protected int messageLengthLimit;
     protected int subsequentLimits;
+    protected BreakBehaviour breakBehaviour;
 
-    public LengthLimitedPostFormatter(NetworkType network, int limit, bool linkInText, int? subsequentLimits = null) : base(network)
+    public LengthLimitedPostFormatter(NetworkType network, int limit, int subsequentLimits, bool linkInText, BreakBehaviour breakBehaviour = BreakBehaviour.NewPost) : base(network)
     {
         this.messageLengthLimit = limit;
-        this.subsequentLimits = subsequentLimits ?? limit;
+        this.subsequentLimits = subsequentLimits;
         this.linkInText = linkInText;
+        this.breakBehaviour = breakBehaviour;
     }
 
     public override IEnumerable<string> FormatText(ISocialMessage message)
@@ -24,6 +29,7 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
             .WithSubsequentLimits(subsequentLimits)
             .WithMessage(message)
             .WithLinkInText(linkInText)
+            .WithBreakBehaviour(breakBehaviour, BREAK_CODE)
             .Build();
     }
 
@@ -38,12 +44,15 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
         private int limit;
         private int subsequentLimits;
         private bool link;
+        private string msgBreak;
+        private BreakBehaviour msgBreakBehaviour;
 
         public WordWrapFormatter WithNetwork(NetworkType network) { this.network = network; return this; }
         public WordWrapFormatter WithLimit(int limit) { this.limit = limit; return this; }
         public WordWrapFormatter WithSubsequentLimits(int subsequentLimits) { this.subsequentLimits = subsequentLimits; return this; }
         public WordWrapFormatter WithMessage(ISocialMessage message) { this.message = message; return this; }
         public WordWrapFormatter WithLinkInText(bool link) { this.link = link; return this; }
+        public WordWrapFormatter WithBreakBehaviour(BreakBehaviour behaviour, string msgBreak) { this.msgBreak = msgBreak; this.msgBreakBehaviour = behaviour; return this; }
 
         public IEnumerable<string> Build()
         {
@@ -70,7 +79,7 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
             var nextWord = index + 1 < words.Count() ? words.ElementAt(index+1) : null;
 
             var decision = DetermineAction(currentMessage!, currentLimit, word, nextWord, IndexWord(currentMessageIndex));
-            // Console.WriteLine($"Decision: {decision} for: {word}");
+            Console.WriteLine($"Decision: {decision} for: {word}");
             switch (decision)
             {
                 case Decision.AddWord:
@@ -85,6 +94,13 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
                     CompleteMessage();
                     PerformAction(words, index, currentLimit);
                     break;
+                case Decision.NewParagraph:
+                    currentMessage!.Append("\n\n");
+                    break;
+                case Decision.NewPost:
+                    currentMessage!.Append($"{(currentMessage!.Length == 0 ? "" : " ")}{IndexWord(currentMessageIndex)}");
+                    CompleteMessage();
+                    break;
                 case Decision.VeryLongWord:
                     CompleteMessage();
                     var chunks = word.Chunk(currentLimit).Select(s => new string(s)).ToList();
@@ -93,6 +109,8 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
                         currentMessage!.Append(chunk);
                         CompleteMessage();
                     }
+                    break;
+                case Decision.Ignore:
                     break;
                 case Decision.Finish:
                     CompleteMessage();
@@ -112,11 +130,27 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
             currentMessage = new StringBuilder();
         }
 
-        private enum Decision { AddWord, AddIndex, VeryLongWord, AddNothing, Finish }
+        private enum Decision { Ignore, NewParagraph, NewPost, AddWord, AddIndex, VeryLongWord, AddNothing, Finish }
 
         private Decision DetermineAction(StringBuilder message, int currentLimit, string? thisWord, string? nextWord, string indexWord)
         {
             if (thisWord == null) return Decision.Finish;
+
+            if (thisWord == msgBreak)
+            {
+                switch (msgBreakBehaviour)
+                {
+                    case BreakBehaviour.None:
+                        return Decision.Ignore;
+                    case BreakBehaviour.NewParagraph:
+                        return Decision.NewParagraph;
+                    case BreakBehaviour.NewPost:
+                        return Decision.NewPost;
+                    default:
+                        throw new NotImplementedException($"Break behaviour not implemented: {msgBreakBehaviour}");
+                }
+            }
+
             bool firstWordInMessage = message.Length == 0;
             int prefixChars = firstWordInMessage ? 0 : 1;
             bool canFitThisWord = message.Length + thisWord!.Length + prefixChars <= currentLimit;
