@@ -14,20 +14,19 @@ This is a tool for managing social posts across multiple platforms. Simple to co
 - [x] Social network configuration (connection strings)
 - [ ] Social media features...
 
-| Network | Post simple message | Message formatting | Images |
-|-|-|-|-|
-| Console | ✅ | ✅ | ✅ |
-| Mastodon | ✅ | ✅ | |
-| Facebook | ✅ | ✅ | |
-| Discord | | | |
-| Twitter | | | |
-| LinkedIn | | | |
+| Network | Posting | Threading | Link | Tags | Images |
+|-|-|-|-|-|-|
+| Console | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Mastodon | ✅ | ✅ | ✅ | ✅ | |
+| Facebook | ✅ | ✅ | ✅ | ✅ | |
+| Discord | | | | | |
+| Twitter | | | | | |
+| LinkedIn | | | | | |
 
-- [ ] Message formatting
+- [x] Message formatting
     - [x] Support for length limited formatting of threads
-    - [x] Support for message breaks (`$$`)
+    - [x] Support for message breaks: `$$`
     - [x] Force tags into the first message
-    - [ ] Apply images to first N messages according to network constraints
 
 - [x] CLI features
     - [x] More complex posting options
