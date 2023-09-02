@@ -123,7 +123,7 @@ Support scripts are found at the root of the `open-social-distributor-app` direc
     - [ ] Document message store formats
 
 - [ ] `DistributionService` (Background Service)
-    - [ ] Periodically post from a CSV (drawn from a URL)
+    - [ ] Periodically post from a CSV (drawn from a URL or file)
     - [ ] Periodically follow more complex post selection rules
     - [x] Docker build and run for the service
 
@@ -131,7 +131,7 @@ Support scripts are found at the root of the `open-social-distributor-app` direc
     - [x] AWS CloudWatch stack sync for development
     - [ ] AWS CloudWatch stack publishing
     - [ ] Store state in config
-    - [ ] Periodically post from a CSV (drawn from a URL) when invoked
+    - [ ] Periodically post from a CSV (drawn from a URL, S3 bucket, or other source)
     - [ ] Periodically follow more complex post selection rules when invoked
 
 - [ ] Offer Discord icons / updates for the status of other posts
