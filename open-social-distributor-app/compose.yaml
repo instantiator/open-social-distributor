@@ -1,0 +1,15 @@
+version: "3.8"
+
+# the basic service is partially defined here: distributor-service
+# environment variables are provided in the int and prod compose yaml
+services:
+  distributor-service:
+    healthcheck:
+      test: bash -c "[ -f /tmp/health.ready ]"
+      interval: 5s
+      timeout: 10s
+      retries: 12
+    build:
+      context: .
+      dockerfile: src/DistributionService/Dockerfile
+    restart: unless-stopped

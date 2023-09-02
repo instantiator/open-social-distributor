@@ -111,8 +111,7 @@ Testing scripts are found at the root of the `open-social-distributor-app` direc
 - [ ] CLI features
     - [ ] More complex posting options
     - [ ] Support for image upload
-    - [ ] Publish binaries of the CLI
-    - [ ] Docker build, test, and run for the CLI
+    - [x] Publish binaries of the CLI
 
 - [ ] Scheduled posting for service and function
     - [ ] Define message store formats
