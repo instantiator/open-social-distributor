@@ -4,16 +4,31 @@
 
 This is a tool for managing social posts across multiple platforms. Simple to configure.
 
+## Social networks supported
+
+This project is in development. Additional capabilities are coming soon.
+
+| Network | Posting | Threading | Link | Tags | Images |
+|-|-|-|-|-|-|
+| Console | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Mastodon | ✅ | ✅ | ✅ | ✅ | |
+| Facebook | ✅ | ✅ | ✅ | ✅ | |
+| Discord | | | | | |
+| Twitter | | | | | |
+| LinkedIn | | | | | |
+
+See: [Outstanding TODOs](todos.md)
+
 ## Making posts
 
 You can use the command-line interface (CLI) to make an ad-hoc post to any number of social networks, or launch a service to regularly post from a dataset of posts you provide.
 
 See:
 
-* [CLI options](docs/cli-options.md)
-* [Configuration](docs/configuration.md)
-* [Connection strings](docs/connection-strings.md)
-* [Authorisation tokens](docs/auth-tokens.md)
+* [CLI options](cli-options.md)
+* [Configuration](configuration.md)
+* [Connection strings](connection-strings.md)
+* [Authorisation tokens](auth-tokens.md)
 
 ## Scheduled posting
 
