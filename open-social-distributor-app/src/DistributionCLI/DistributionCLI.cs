@@ -1,9 +1,11 @@
-﻿using CommandLine;
+﻿using System.Text.RegularExpressions;
+using CommandLine;
 using DistributorLib;
 using DistributorLib.Network;
 using DistributorLib.Network.Implementations;
 using DistributorLib.Post;
 using DistributorLib.Post.Images;
+using Mastonet.Entities;
 using Newtonsoft.Json;
 
 namespace DistributionCLI;
@@ -15,6 +17,9 @@ public class DistributionCLI
     {
         [Option('c', "config", Required = true, HelpText = "Path to the config file.")]
         public string ConfigPath { get; set; } = string.Empty;
+
+        [Option('f', "filter", Required = false, HelpText = "Regular expression filter for network short codes.")]
+        public string? Filter { get; set; } = null;
 
         [Option('m', "message", Required = true, HelpText = "Simple message text.")]
         public string Message { get; set; } = string.Empty;
@@ -37,6 +42,9 @@ public class DistributionCLI
     {
         [Option('c', "config", Required = true, HelpText = "Path to the config file.")]
         public string ConfigPath { get; set; } = string.Empty;
+
+        [Option('f', "filter", Required = false, HelpText = "Regular expression filter for network short codes.")]
+        public string? Filter { get; set; } = null;
     }
 
     public static void Main(params string[] args)
@@ -49,6 +57,12 @@ public class DistributionCLI
                 errs => 1);
     }
 
+    public static IEnumerable<ISocialNetwork> FilterNetworks(IEnumerable<ISocialNetwork> networks, string regex)
+    {
+        var filter = new Regex(regex);
+        return networks.Where(n => filter.IsMatch(n.ShortCode));
+    }
+
     public static int ExecuteTest(TestOptions options)
     {
         var json = File.ReadAllText(options.ConfigPath!);
@@ -56,7 +70,10 @@ public class DistributionCLI
         var networks = NetworkFactory.FromConfig(config!);
         Console.WriteLine($"Identified {networks.Count()} networks.");
 
-        var distributor = new Distributor(networks);
+        var filteredNetworks = options.Filter == null ? networks : FilterNetworks(networks, options.Filter);
+        Console.WriteLine($"{filteredNetworks.Count()} of {networks.Count()} networks selected for testing.");
+
+        var distributor = new Distributor(filteredNetworks);
         var testResults = distributor.TestNetworksAsync().Result;
         var i = 0;
         foreach (var result in testResults)
@@ -95,9 +112,11 @@ public class DistributionCLI
         var json = File.ReadAllText(options.ConfigPath!);
         var config = JsonConvert.DeserializeObject<Config>(json);
         var networks = NetworkFactory.FromConfig(config!);
-        Console.WriteLine($"Identified {networks.Count()} networks.");
 
-        var distributor = new Distributor(networks);
+        var filteredNetworks = options.Filter == null ? networks : FilterNetworks(networks, options.Filter);
+        Console.WriteLine($"{filteredNetworks.Count()} of {networks.Count()} networks selected for posting.");
+        
+        var distributor = new Distributor(filteredNetworks);
 
         var text = options.Message;
         var link = options.Link;

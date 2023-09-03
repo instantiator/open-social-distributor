@@ -22,7 +22,9 @@ DistributionCLI <verb> <options...>
 
 ## Examples
 
-Here's a simple example you can use to explore the CLI.
+Here are some simple examples you can use to explore the CLI...
+
+### Post
 
 Now you can invoke it to `post` a simple message with a link, a few tags, and an image:
 
@@ -52,3 +54,14 @@ This example uses single character options:
 
 **Tip:** You can include more than 1 image, and more than 1 image description by separating values with a semi-colon: `;`
 
+### Filtering
+
+You can filter the selection of configured networks for a post or test with the `--filter` (`-f`) option. The filter parameter is a regular expression.
+
+In this example, `personal$`, it filters for networks that _end_ with the word `personal`:
+
+```bash
+./release/osx-x64/DistributionCLI test \
+  --config sample-config/private-all.json \
+  --filter "personal$"
+```

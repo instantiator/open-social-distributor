@@ -49,4 +49,4 @@ dotnet build src/DistributionCLI/DistributionCLI.csproj $HUSH_ASYNC_WARNING
 echo
 
 echo "Executing initialisation and self-test..."
-dotnet run --project src/DistributionCLI/DistributionCLI.csproj test --config $CONFIG_PATH
+dotnet run --project src/DistributionCLI/DistributionCLI.csproj test --all --config $CONFIG_PATH
