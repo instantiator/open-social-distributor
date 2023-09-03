@@ -20,7 +20,7 @@
     - [x] More complex posting options
     - [x] Support for image upload
     - [x] Script publication of CLI binaries
-    - [ ] Allow filtering of networks to post to
+    - [x] Allow filtering of networks
     
 - [ ] Scheduled posting for service and function
     - [ ] Define message store formats
