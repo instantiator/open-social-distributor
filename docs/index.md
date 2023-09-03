@@ -2,9 +2,13 @@
 
 **UNDER DEVELOPMENT**
 
-This is a tool for managing social posts across multiple platforms. Simple to configure.
+This is a tool for managing social posts across multiple platforms. Simple to configure, and able to run as a command line client, or as a service in a Docker container or an AWS CloudFormation stack.
 
-## Social networks supported
+## Current state of development
+
+See: [Outstanding TODOs](todos.md)
+
+### Social networks supported
 
 This project is in development. Additional capabilities are coming soon.
 
@@ -17,7 +21,21 @@ This project is in development. Additional capabilities are coming soon.
 | Twitter | | | | | |
 | LinkedIn | | | | | |
 
-See: [Outstanding TODOs](todos.md)
+### Features
+
+| Component | Feature | Completion |
+|-|-|-|
+| CLI | Compose and post simple messages | ✅ |
+| CLI | Json configuration file | ✅ |
+| CLI | Binary release script | ✅ |
+| Service | Launch in Docker | ✅ |
+| Service | Support for multiple environments | ✅ |
+| Service | Configuration mechanism | |
+| Service | Schedule and post messages | |
+| AWS Stack | Sync stack (for development) | ✅ |
+| AWS Stack | Deploy stack (for releases) | |
+| Service | Configuration mechanism | |
+| AWS Stack | Schedule and post messages | |
 
 ## Making posts
 
