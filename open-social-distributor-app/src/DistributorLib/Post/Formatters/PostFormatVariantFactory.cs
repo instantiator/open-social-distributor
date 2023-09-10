@@ -19,5 +19,12 @@ namespace DistributorLib.Post.Formatters
             linkBehaviour: LengthLimitedPostFormatter.DecorationBehaviour.None,
             breakBehaviour: LengthLimitedPostFormatter.BreakBehaviour.NewParagraph, 
             tagBehaviour: LengthLimitedPostFormatter.DecorationBehaviour.FirstPost);
+
+        public static IPostFormatter LinkedIn => new LengthLimitedPostFormatter(
+            network: Network.NetworkType.LinkedIn, 
+            limit: 3000, subsequentLimits: 1250, indices: false,
+            linkBehaviour: LengthLimitedPostFormatter.DecorationBehaviour.FirstPost,
+            breakBehaviour: LengthLimitedPostFormatter.BreakBehaviour.NewParagraph, 
+            tagBehaviour: LengthLimitedPostFormatter.DecorationBehaviour.FirstPost);
     }
 }

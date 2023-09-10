@@ -33,7 +33,7 @@ public class DistributionCLI
         [Option('d', "image-descriptions", Required = false, Separator = ';', HelpText = "Image descriptions, semi-colon separated (;)")]
         public IEnumerable<string>? ImageDescriptions { get; set; }
 
-        [Option('t', "tags", Required = true, Separator = ';', HelpText = "A list of tags (without # prefix), semi-colon separated (;)")]
+        [Option('t', "tags", Required = false, Separator = ';', HelpText = "A list of tags (without # prefix), semi-colon separated (;)")]
         public IEnumerable<string>? Tags { get; set; }
     }
 

@@ -76,7 +76,7 @@ curl -i -X GET "https://graph.facebook.com/PAGE-ID?
 * If you provided a short-lived user access token, your page access token will be short-lived (1 hour).
 * If you provided a long-lived user access token, you page access token will be long-lived (indefinite).
 
-## Get all access tokens for your page
+## Get all access tokens for your pages
 
 ```bash
 curl -i -X GET "https://graph.facebook.com/USER-ID/accounts?

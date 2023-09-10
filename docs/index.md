@@ -16,10 +16,12 @@ This project is in development. Additional capabilities are coming soon.
 |-|-|-|-|-|-|
 | Console | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Mastodon | ✅ | ✅ | ✅ | ✅ | |
-| Facebook | ✅ | ✅ | ✅ | ✅ | |
+| Facebook (page) | ✅ | ✅ | ✅ | ✅ | |
+| Facebook (user) | | | | | |
+| LinkedIn (org) | ✅ | ❌ | ✅ | ✅ | |
+| LinedIn (user) | | | | | |
 | Discord | | | | | |
 | Twitter | | | | | |
-| LinkedIn | | | | | |
 
 ### Features
 
