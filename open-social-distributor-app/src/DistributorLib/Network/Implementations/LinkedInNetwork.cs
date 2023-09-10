@@ -69,7 +69,8 @@ public class LinkedInNetwork : AbstractNetwork
                 request.AddJsonBody(content); // JsonConvert.SerializeObject(content);
                 var response = await client!.ExecuteAsync(request);
                 var aok = response.IsSuccessful;
-                return new PostResult(this, message, aok, response.Content);
+                var id = response.Headers!.SingleOrDefault(h => h.Name=="x-linkedin-id")?.Value?.ToString();
+                return new PostResult(this, message, aok, id == null ? null : new List<string>() { id }, response.Content);
 
             default:
                 throw new NotImplementedException($"LinkedInNetwork mode {mode} not implemented");

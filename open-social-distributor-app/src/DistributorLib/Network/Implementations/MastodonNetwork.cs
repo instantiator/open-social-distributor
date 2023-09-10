@@ -59,6 +59,7 @@ public class MastodonNetwork : AbstractNetwork
             statuses.Add(status);
         }
         var aok = statuses.All(s => s != null && !string.IsNullOrWhiteSpace(s.Id));
-        return new PostResult(this, message, aok, aok ? null : "Unable to post all statuses");
+        var ids = statuses.Where(s => s != null && !string.IsNullOrWhiteSpace(s.Id)).Select(s => s!.Id!);
+        return new PostResult(this, message, aok, ids, aok ? null : "Unable to post all statuses");
     }
 }

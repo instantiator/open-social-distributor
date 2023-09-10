@@ -42,6 +42,8 @@ public class ConsoleNetwork : AbstractNetwork
                 Console.WriteLine($"Image size: {len} bytes");
             }
         }
-        return new PostResult(this, message, true);
+        var counter = 0;
+        var ids = Enumerable.Repeat($"console-post-{counter++}", text.Count()).ToList();
+        return new PostResult(this, message, true, ids);
     }
 }

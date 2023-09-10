@@ -97,8 +97,9 @@ public class FacebookNetwork : AbstractNetwork
             }
         }
         var aok = responses.All(r => r.Item1.IsSuccessful && !string.IsNullOrWhiteSpace(r.Item2.id));
+        var ids = responses.Where(r => r.Item1.IsSuccessful).Select(r => r.Item2.id).Cast<string>();
         var errors = responses.Where(r => !r.Item1.IsSuccessful).Select(r => r.Item1.ErrorMessage);
-        return new PostResult(this, message, aok, string.Join('\n', errors));
+        return new PostResult(this, message, aok, ids, string.Join('\n', errors));
     }
 
     protected override async Task<ConnectionTestResult> TestConnectionImplementationAsync()

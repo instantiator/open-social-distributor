@@ -59,7 +59,7 @@ public abstract class AbstractNetwork : ISocialNetwork
         catch (Exception e)
         {
             Console.Error.WriteLine(e.ToString());
-            return new PostResult(this, message, false, e.Message, e);
+            return new PostResult(this, message, false, null, e.Message, e);
         }
     }
 

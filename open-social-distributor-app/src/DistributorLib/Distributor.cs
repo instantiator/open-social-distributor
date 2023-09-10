@@ -71,7 +71,7 @@ public class Distributor : IAsyncDisposable
             catch (Exception e)
             {
                 Console.WriteLine($"Error posting to {network.NetworkName}, {e.GetType().Name}: {e.Message}");
-                var result = new PostResult(network, message, false, e.Message, exception: e);
+                var result = new PostResult(network, message, false, null, e.Message, exception: e);
                 results.Add(result);
             }
         }
