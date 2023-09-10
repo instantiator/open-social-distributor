@@ -128,6 +128,18 @@ public class DistributionCLI
         {
             Console.WriteLine($"{(result.Success ? "✅" : "❌")} {result.Network.ShortCode} ({result.Network.NetworkType})");
         }
+        Console.WriteLine();
+        var errors = results.Where(r => !r.Success);
+        if (errors.Count() > 0)
+        {
+            Console.WriteLine($"{errors.Count()} errors:");
+            var i = 1;
+            foreach (var error in errors)
+            {
+                Console.WriteLine($"{i++}. {error.Network.ShortCode} ({error.Network.NetworkType}): {error.Error} {(error.Exception != null ? error.Exception.ToString() : string.Empty)}");
+            }
+        }
+
         return 0;
     }
 }

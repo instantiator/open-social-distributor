@@ -36,7 +36,9 @@ The client id and secret for your LinkedIn application are listed in the **Auth*
 * Click: **Get Started**
 * Click: **Init for LinkedIn**
 * For **Client id** provide: the client id, obtained earlier
-* For **Scope** provide: `w_organization_social`
+* For **Scope** provide: `w_organization_social,w_member_social`
+
+**NB.** `w_organization_social` is the scope for writing social posts on behalf of an organisation, and `w_member_social` is for individuals. New tokens issued for a LinkedIn application will automatically revoke old tokens, so request the full set of scopes you'll need together.
 
 _You should be sent to a LinkedIn sign in page. Sign in, authorize the app, and you'll be redirected to the request access token page..._
 
