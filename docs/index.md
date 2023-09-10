@@ -14,14 +14,17 @@ This project is in development. Additional capabilities are coming soon.
 
 | Network | Test | Post | Thread | Link | Tags | Images |
 |-|-|-|-|-|-|-|
-| Console | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Mastodon | ✅ | ✅ | ✅ | ✅ | ✅ | |
-| Facebook (page) | ✅ | ✅ | ✅ | ✅ | ✅ | |
+| Console | ✅ | ✅ | ⌛️ | ✅ | ✅ | ✅ |
+| Mastodon | ✅ | ✅ | ⌛️ | ✅ | ✅ | |
+| Facebook (page) | ✅ | ✅ | ⌛️ | ✅ | ✅ | |
 | Facebook (user) | | | | | | |
-| LinkedIn (org) | ✅ | ✅ | ✅ | ✅ | ✅ | |
-| LinkedIn (user) | | | | | | |
+| LinkedIn (org) | ✅ | ✅ | ⌛️ | ✅ | ✅ | |
+| LinkedIn (user) | ✅ | ⌛️ | ⌛️ | ⌛️ | ⌛️ | |
 | Discord | | | | | | |
 | Twitter | | | | | | |
+
+✅ = implemented, working
+⌛️ = implemented, not fully tested yet
 
 ### Features
 
