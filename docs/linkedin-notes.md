@@ -15,6 +15,10 @@ See also:
 
 * [Associate an App with a LinkedIn Page](https://www.linkedin.com/help/linkedin/answer/a548360)
 
+## Tools
+
+* [LinkedIn Token Inspector](https://www.linkedin.com/developers/tools/oauth/token-inspector)
+
 ## Obtain client id and secret
 
 The client id and secret for your LinkedIn application are listed in the **Auth** tab of your Application's settings in the [Developers Portal](https://developer.linkedin.com/).

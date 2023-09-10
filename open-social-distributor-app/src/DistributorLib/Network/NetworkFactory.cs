@@ -46,9 +46,11 @@ public class NetworkFactory
                 var li_mode = Enum.Parse<LinkedInNetwork.Mode>(parameters["mode"], true);
                 switch (li_mode) {
                     case LinkedInNetwork.Mode.Org:
+                    var li_client_id = parameters["client_id"];
+                    var li_client_secret = parameters["client_secret"];
                     var li_token = parameters["token"];
                     var li_org_id = parameters["org_id"];
-                    return new LinkedInNetwork(li_code, li_mode, li_token, li_org_id);
+                    return new LinkedInNetwork(li_code, li_mode, li_client_id, li_client_secret, li_token, li_org_id);
                 default:
                     throw new NotImplementedException($"LinkedInNetwork mode {li_mode} not implemented");
                 }

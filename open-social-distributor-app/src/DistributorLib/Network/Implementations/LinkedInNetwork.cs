@@ -6,27 +6,32 @@ using RestSharp;
 
 public class LinkedInNetwork : AbstractNetwork
 {
-    private readonly string LINKEDIN_URL = "https://api.linkedin.com/v2";
+    private readonly string LINKEDIN_API_BASE = "https://api.linkedin.com/v2";
+    private readonly string LINKEDIN_INTROSPECTION_BASE = "https://www.linkedin.com/oauth/v2";
 
     public enum Mode { Org, User }
 
     private Mode mode;
+    private string clientId;
+    private string clientSecret;
     private string token;
     private string orgId;
 
     private RestClient? client;
 
-    public LinkedInNetwork(string shortcode, Mode mode, string token, string orgId) 
+    public LinkedInNetwork(string shortcode, Mode mode, string clientId, string clientSecret, string token, string orgId) 
         : base(NetworkType.LinkedIn, shortcode, "linkedin", PostFormatVariantFactory.LinkedIn)
     {
         this.mode = mode;
         this.token = token;
         this.orgId = orgId;
+        this.clientId = clientId;
+        this.clientSecret = clientSecret;
     }
 
     protected override async Task InitClientAsync()
     {
-        client = new RestClient(LINKEDIN_URL);
+        client = new RestClient(LINKEDIN_API_BASE);
     }
 
     protected override async Task DisposeClientAsync()
@@ -75,18 +80,43 @@ public class LinkedInNetwork : AbstractNetwork
 
     protected override async Task<ConnectionTestResult> TestConnectionImplementationAsync()
     {
-        switch (mode)
+        using (var testClient = new RestClient(LINKEDIN_INTROSPECTION_BASE))
         {
-            case Mode.Org:
-                var request = new RestRequest($"/me", Method.Get);
-                request.AddHeader("Authorization", $"Bearer {token}");
-                var response = await client!.ExecuteAsync(request);
-                var aok = response.IsSuccessful;
-                return new ConnectionTestResult(this, aok, response.Content);
+            switch (mode)
+            {
+                case Mode.Org:
+                    var request = new RestRequest($"/introspectToken", Method.Post);
+                    request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
 
-            default:
-                throw new NotImplementedException($"LinkedInNetwork mode {mode} not implemented");
+                    request.AddParameter("token", token);
+                    request.AddParameter("client_id", clientId);
+                    request.AddParameter("client_secret", clientSecret);
+
+                    // request.AddParameter(
+                    //     "application/x-www-form-urlencoded", 
+                    //     $"token={token}&client_id={clientId}&client_secret={clientSecret}", 
+                    //     ParameterType.RequestBody);
+
+                    var response = await testClient!.ExecuteAsync(request);
+                    var introspection = JsonConvert.DeserializeObject<LinkedInIntrospectionResponse>(response.Content!);
+                    var aok = response.IsSuccessful && introspection!.active == true && introspection!.status == "active";
+                    return new ConnectionTestResult(this, aok, response.Content);
+
+                default:
+                    throw new NotImplementedException($"LinkedInNetwork mode {mode} not implemented");
+            }
         }
+    }
 
+    public  class LinkedInIntrospectionResponse
+    {
+        public bool? active { get; set; }
+        public string? client_id { get; set; }
+        public long? authorized_at { get; set; }
+        public long? created_at { get; set; }
+        public string? status { get; set; }
+        public long expires_at { get; set; }
+        public string? scope { get; set; }
+        public string? auth_type { get; set; }
     }
 }

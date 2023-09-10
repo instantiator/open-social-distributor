@@ -66,17 +66,19 @@ type=facebook;code=<SHORTCODE>;mode=user;user_token=<USER_TOKEN>
 ### LinkedIn connection strings
 
 ```text
-type=linkedin;code=<SHORTCODE>;mode=org;org_id=<ORG_ID>;token=<TOKEN>
-type=linkedin;code=<SHORTCODE>;mode=user;user_id=<USER_ID>;token=<TOKEN>
+type=linkedin;code=<SHORTCODE>;client_id=<CLIENT_ID>;client_secret=<CLIENT_SECRET>;mode=org;org_id=<ORG_ID>;token=<TOKEN>
+type=linkedin;code=<SHORTCODE>;client_id=<CLIENT_ID>;client_secret=<CLIENT_SECRET>;mode=user;user_id=<USER_ID>;token=<TOKEN>
 ```
 
 * `SHORTCODE` - a unique code to refer to the social network instance, this will appear in logs
 * `MODE` - One of `Org|User` (case insensitive)
+* `CLIENT_ID` - Id of the LinkedIn application that the access token was created for (used to introspect/test the token)
+* `CLIENT_SECRET` - Secret of the LinkedIn application that the access token was created for (used to introspect/test the token)
+* `TOKEN` - An access token, obtained through the process outlined in [LinkedIn notes](linkedin-notes.md).
 
 #### `Org` mode
 
 * `ORG_ID` - Id of the LinkedIn org
-* `TOKEN` - An access token, obtained through the process outlined in [LinkedIn notes](linkedin-notes.md).
 
 #### `User` mode (not yet implemented)
 

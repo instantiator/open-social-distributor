@@ -50,6 +50,30 @@ See:
 * [Connection strings](connection-strings.md)
 * [Authorisation tokens](auth-tokens.md)
 
+## Threading
+
+| Network | First message limit | Subsequent message limit |
+|-|-|-|
+| Console | Unlimited | Unlimited |
+| Mastodon | `500` | `500` |
+| Facebook | `63206` | `8000` |
+| LinkedIn | `3000` | `1250` |
+| Discord | TBC | TBC |
+| Twitter | TBC | TBC |
+
+Some social networks (Mastodon, Twitter) lend themselves conceptually to threading more easily than others.
+
+If you manage to post a thread longer than the post limit for other networks (eg. a Facebook post longer than 63206 characters, somehow!), subsequent parts of the message will be posted as comments on the main post.
+
+Comments have a different length limit to main posts - as shown in the table above.
+
+## Configuring social networks
+
+To add networks to your configuration, you'll need to obtain authorisation tokens with permission to post. See:
+
+* [Connection strings](connection-strings.md)
+* [Authorisation tokens](auth-tokens.md)
+
 ## Scheduled posting
 
 This tool will also offer 2 ways to set up a scheduled posting service:
@@ -58,21 +82,6 @@ This tool will also offer 2 ways to set up a scheduled posting service:
 2. As a CloudFormation stack, running on AWS (in development)
 
 You could also automate invocations of the CLI any other way you please from your machine, or build your own tool that uses `DistributorLib`.
-
-## Using the CLI
-
-You can use the command-line interface (CLI) to make an ad-hoc post to any number of social networks, or launch a service to regularly post from a dataset of posts you provide. See:
-
-* [CLI options](cli-options.md)
-* [Configuration](configuration.md)
-* [Post composition](post-composition.md)
-
-## Social networks
-
-To add networks to your configuration, you'll need to obtain authorisation tokens with permission to post. See:
-
-* [Connection strings](connection-strings.md)
-* [Authorisation tokens](auth-tokens.md)
 
 ## Developer notes
 
