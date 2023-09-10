@@ -43,11 +43,9 @@ public class LinkedInNetwork : AbstractNetwork
     protected override async Task<PostResult> PostImplementationAsync(ISocialMessage message)
     {
         var texts = Formatter.FormatText(message);
-        var link = message.Link;
         if (texts.Count() > 1) { throw new Exception($"Text was longer than the LinkedIn network limit of: 3000"); }
 
         var text = texts.Single();
-
         switch (mode)
         {
             case Mode.Org:
@@ -87,20 +85,16 @@ public class LinkedInNetwork : AbstractNetwork
                 case Mode.Org:
                     var request = new RestRequest($"/introspectToken", Method.Post);
                     request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
-
                     request.AddParameter("token", token);
                     request.AddParameter("client_id", clientId);
                     request.AddParameter("client_secret", clientSecret);
-
-                    // request.AddParameter(
-                    //     "application/x-www-form-urlencoded", 
-                    //     $"token={token}&client_id={clientId}&client_secret={clientSecret}", 
-                    //     ParameterType.RequestBody);
-
                     var response = await testClient!.ExecuteAsync(request);
                     var introspection = JsonConvert.DeserializeObject<LinkedInIntrospectionResponse>(response.Content!);
                     var aok = response.IsSuccessful && introspection!.active == true && introspection!.status == "active";
-                    return new ConnectionTestResult(this, aok, response.Content);
+                    var scopeOk = 
+                        (mode == Mode.Org && (introspection!.scope?.Contains("w_organization_social") ?? false)) ||
+                        (mode == Mode.User && (introspection!.scope?.Contains("w_member_social") ?? false));
+                    return new ConnectionTestResult(this, aok && scopeOk, response.Content);
 
                 default:
                     throw new NotImplementedException($"LinkedInNetwork mode {mode} not implemented");
