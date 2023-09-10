@@ -18,7 +18,7 @@ This project is in development. Additional capabilities are coming soon.
 | Mastodon | ✅ | ✅ | ✅ | ✅ | ✅ | |
 | Facebook (page) | ✅ | ✅ | ✅ | ✅ | ✅ | |
 | Facebook (user) | | | | | | |
-| LinkedIn (org) | ✅ | ✅ | ❌ | ✅ | ✅ | |
+| LinkedIn (org) | ✅ | ✅ | ✅ | ✅ | ✅ | |
 | LinkedIn (user) | | | | | | |
 | Discord | | | | | | |
 | Twitter | | | | | | |

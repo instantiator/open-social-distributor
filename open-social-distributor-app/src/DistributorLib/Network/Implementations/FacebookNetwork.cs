@@ -61,12 +61,13 @@ public class FacebookNetwork : AbstractNetwork
         var responses = new List<Tuple<RestResponse, FacebookPostResponse>>();
         foreach (var text in texts)
         {
+            var first = responses.Count() == 0;
             // TODO: ensure that each post is a response to the previous
             // link is not in the text
             switch (mode)
             {
                 case Mode.Page:
-                    if (responses.Count() == 0)
+                    if (first)
                     {
                         // first post is a real post
                         var request = new RestRequest($"/{pageId}/feed", Method.Post);
@@ -90,14 +91,13 @@ public class FacebookNetwork : AbstractNetwork
                         responses.Add(new Tuple<RestResponse, FacebookPostResponse>(response, fb_response!));
                     }
                     break;
-                case Mode.User:
-                    throw new NotImplementedException("TODO: user posts not implemented");
+
                 default:
                     throw new NotImplementedException($"{mode} not supported");
             }
         }
         var aok = responses.All(r => r.Item1.IsSuccessful && !string.IsNullOrWhiteSpace(r.Item2.id));
-        var ids = responses.Where(r => r.Item1.IsSuccessful).Select(r => r.Item2.id).Cast<string>();
+        var ids = responses.Select(r => r.Item2.id);
         var errors = responses.Where(r => !r.Item1.IsSuccessful).Select(r => r.Item1.ErrorMessage);
         return new PostResult(this, message, aok, ids, string.Join('\n', errors));
     }

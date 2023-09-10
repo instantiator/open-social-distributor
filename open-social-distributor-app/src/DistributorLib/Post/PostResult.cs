@@ -4,7 +4,7 @@ using DistributorLib.Network;
 namespace DistributorLib.Post;
 public class PostResult
 {
-    public PostResult(ISocialNetwork network, ISocialMessage message, bool success, IEnumerable<string>? postIds, string? error = null, Exception? exception = null)
+    public PostResult(ISocialNetwork network, ISocialMessage message, bool success, IEnumerable<string?>? postIds, string? error = null, Exception? exception = null)
     {
         Network = network;
         Message = message;
