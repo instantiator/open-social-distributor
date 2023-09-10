@@ -12,16 +12,16 @@ See: [Outstanding TODOs](todos.md)
 
 This project is in development. Additional capabilities are coming soon.
 
-| Network | Posting | Threading | Link | Tags | Images |
-|-|-|-|-|-|-|
-| Console | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Mastodon | ✅ | ✅ | ✅ | ✅ | |
-| Facebook (page) | ✅ | ✅ | ✅ | ✅ | |
-| Facebook (user) | | | | | |
-| LinkedIn (org) | ✅ | ❌ | ✅ | ✅ | |
-| LinedIn (user) | | | | | |
-| Discord | | | | | |
-| Twitter | | | | | |
+| Network | Test | Post | Thread | Link | Tags | Images |
+|-|-|-|-|-|-|-|
+| Console | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Mastodon | ✅ | ✅ | ✅ | ✅ | ✅ | |
+| Facebook (page) | ✅ | ✅ | ✅ | ✅ | ✅ | |
+| Facebook (user) | | | | | | |
+| LinkedIn (org) | ✅ | ✅ | ❌ | ✅ | ✅ | |
+| LinkedIn (user) | | | | | | |
+| Discord | | | | | | |
+| Twitter | | | | | | |
 
 ### Features
 
