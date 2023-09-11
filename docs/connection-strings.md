@@ -6,15 +6,18 @@ The configuration file contains a list of network connection strings, ie.
 
 ```jsonc
 {
-    "networks": [
-        "type=console;code=<SHORTCODE>",
-        "type=mastodon;code=<SHORTCODE>;instance=<INSTANCE>;token=<TOKEN>",
-        // etc.
-    ]
+    "networks": {
+        "enabled": [
+            "type=console;code=<SHORTCODE>",
+            "type=mastodon;code=<SHORTCODE>;instance=<INSTANCE>;token=<TOKEN>",
+            // etc.
+        ],
+        "disabled": []
+    }
 }
 ```
 
-Each entry in the `networks` list is a connection string describing how to connect to a single social network account.
+Each entry in the `$.networks.enabled` list is a connection string describing how to connect to a single social network account.
 
 Many connection strings require an authorisation token from the social network they connect to. See:
 

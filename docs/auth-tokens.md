@@ -5,8 +5,8 @@ Each social network has its own miserable process for obtaining access tokens th
 | Network | Notes | Documentation |
 |-|-|-|
 | Console | Not really a network. No tokens required. | |
-| Mastodon | Define an app, get an access token. Remarkably simple. | [mastodon-notes.md](docs/mastodon-notes.md) |
-| Facebook | Define an app, get a user access token, exchange it for a page access token. | [facebook-notes.md](docs/facebook-notes.md) |
-| LinkedIn | TBC | |
+| Mastodon | Define an app, get an access token. Remarkably simple. | [Mastodon notes](mastodon-notes.md) |
+| Facebook | Define an app, get a user access token, exchange it for a page access token. | [Facebook notes](facebook-notes.md) |
+| LinkedIn | Define an app, get an access token with the right scopes | [LinkedIn notes](linkedin-notes.md) |
 | Twitter | TBC | |
 | Discord | TBC | |
