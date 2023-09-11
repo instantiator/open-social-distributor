@@ -4,17 +4,21 @@ Provide config as a json file, with details of various connections and settings.
 
 ```jsonc
 {
-    "networks": [
-        "type=console;code=<SHORTCODE>",
-        "type=mastodon;code=<SHORTCODE>;instance=<INSTANCE>;token=<TOKEN>",
-        // etc.
-    ]
+    "networks": {
+        "enabled": [
+            "type=console;code=<SHORTCODE>",
+            "type=mastodon;code=<SHORTCODE>;instance=<INSTANCE>;token=<TOKEN>",
+            // etc.
+        ],
+        "disabled": []
+    }
 }
 ```
 
 | Path | Notes | Documentation |
 |-|-|-|
-| `$.networks` | Each entry in the `networks` list is a connection string describing how to connect to a single social network account. | [connection strings](connection-strings.md) |
+| `$.networks.enabled` | Each entry in the list is a connection string describing how to connect to a single social network account. | [connection strings](connection-strings.md) |
+| `$.networks.disabled` | Connection strings to ignore |
 
 ## Testing config
 

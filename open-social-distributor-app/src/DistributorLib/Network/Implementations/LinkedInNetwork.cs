@@ -54,6 +54,8 @@ public class LinkedInNetwork : AbstractNetwork
                 var request = new RestRequest($"/posts", Method.Post);
                 request.AddHeader("Authorization", $"Bearer {token}");
                 request.AddHeader("Content-Type", "application/json");
+                request.AddHeader("X-Restli-Protocol-Version", "2.0.0");
+                request.AddHeader("Linkedin-Version","202309");
                 var content = new 
                 { 
                     author = author, 
@@ -68,6 +70,8 @@ public class LinkedInNetwork : AbstractNetwork
                     lifecycleState = "PUBLISHED",
                     isReshareDisabledByAuthor = false
                 };
+                Console.WriteLine(JsonConvert.SerializeObject(content));
+                //throw new Exception("Not gonna work anyway: {\"serviceErrorCode\":100,\"message\":\"Field Value validation failed in REQUEST_BODY: Data Processing Exception while processing fields [/author]\",\"status\":403}");
                 request.AddJsonBody(content); // JsonConvert.SerializeObject(content);
                 var response = await client!.ExecuteAsync(request);
                 var idUrn = response.Headers!.SingleOrDefault(h => h.Name=="x-linkedin-id")?.Value?.ToString();
@@ -86,6 +90,8 @@ public class LinkedInNetwork : AbstractNetwork
                         var request = new RestRequest($"/{firstId}/comments", Method.Post);
                         request.AddHeader("Authorization", $"Bearer {token}");
                         request.AddHeader("Content-Type", "application/json");
+                        request.AddHeader("X-Restli-Protocol-Version", "2.0.0");
+                        request.AddHeader("Linkedin-Version","202309");
                         var content = new 
                         { 
                             actor = author, 
@@ -124,21 +130,46 @@ public class LinkedInNetwork : AbstractNetwork
 
     protected override async Task<ConnectionTestResult> TestConnectionImplementationAsync()
     {
-        using (var testClient = new RestClient(LINKEDIN_INTROSPECTION_BASE))
+        using (var introspectionClient = new RestClient(LINKEDIN_INTROSPECTION_BASE))
         {
-            var request = new RestRequest($"/introspectToken", Method.Post);
-            request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
-            request.AddParameter("token", token);
-            request.AddParameter("client_id", clientId);
-            request.AddParameter("client_secret", clientSecret);
-            var response = await testClient!.ExecuteAsync(request);
-            var introspection = JsonConvert.DeserializeObject<LinkedInIntrospectionResponse>(response.Content!);
-            var aok = response.IsSuccessful && introspection!.active == true && introspection!.status == "active";
-            var scopeOk = 
-                (mode == Mode.Org && (introspection!.scope?.Contains("w_organization_social") ?? false)) ||
-                (mode == Mode.User && (introspection!.scope?.Contains("w_member_social") ?? false));
-            return new ConnectionTestResult(this, aok && scopeOk, response.Content);
+            // introspect the token
+            var tokenIntrospectionRequest = new RestRequest($"/introspectToken", Method.Post);
+            tokenIntrospectionRequest.AddHeader("Content-Type", "application/x-www-form-urlencoded");
+            tokenIntrospectionRequest.AddParameter("token", token);
+            tokenIntrospectionRequest.AddParameter("client_id", clientId);
+            tokenIntrospectionRequest.AddParameter("client_secret", clientSecret);
+            var tokenIntrospectionResponse = await introspectionClient!.ExecuteAsync(tokenIntrospectionRequest);
+            var introspection = JsonConvert.DeserializeObject<LinkedInIntrospectionResponse>(tokenIntrospectionResponse.Content!);
+            var tokenIntrospectionOk = 
+                (tokenIntrospectionResponse.IsSuccessful && introspection!.active == true && introspection!.status == "active") &&
+                ((mode == Mode.Org && (introspection!.scope?.Contains("w_organization_social") ?? false)) ||
+                (mode == Mode.User && (introspection!.scope?.Contains("w_member_social") ?? false)));
+
+            if (!tokenIntrospectionOk)
+            {
+                return new ConnectionTestResult(this, false, tokenIntrospectionResponse.Content);
+            }
+
+            // fetch the user or organisation profile
+            var meRequest = new RestRequest("/me", Method.Get);
+            meRequest.AddHeader("Authorization", $"Bearer {token}");
+            var meResponse = await client!.ExecuteAsync(meRequest);
+            var me = JsonConvert.DeserializeObject<LinkedInMeResponse>(meResponse.Content!);
+            var meOk = meResponse.IsSuccessful && !string.IsNullOrWhiteSpace(me.id);
+
+            if (!meOk)
+            {
+                return new ConnectionTestResult(this, false, meResponse.Content);
+            }
+
+            return new ConnectionTestResult(this, true, 
+                $"Token for user id: {me.id} has scope: {introspection!.scope}, expires at: {introspection!.expires_at}");
         }
+    }
+
+    public class LinkedInMeResponse
+    {
+        public string id { get; set; }
     }
 
     public  class LinkedInIntrospectionResponse

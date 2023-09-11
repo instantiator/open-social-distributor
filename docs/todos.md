@@ -4,11 +4,11 @@
 - [x] Social network configuration (connection strings)
 
 - [ ] Social media features
-    - [ ] Image support for Mastodon
-    - [ ] Image support for Facebook
-    - [ ] Posting, formatting, images, links for Discord
-    - [ ] Posting, formatting, images, links for Twitter
-    - [ ] Posting, formatting, images, links for LinkedIn
+    - [ ] Posting, formatting, threading, images, links for Mastodon
+    - [ ] Posting, formatting, threading, images, links for Facebook
+    - [ ] Posting, formatting, threading, images, links for LinkedIn
+    - [ ] Posting, formatting, threading, images, links for Discord
+    - [ ] Posting, formatting, threading, images, links for Twitter
 
 - [x] Message formatting
     - [x] Support for word wrapping into threads

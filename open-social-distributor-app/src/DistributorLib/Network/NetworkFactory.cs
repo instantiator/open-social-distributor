@@ -12,7 +12,7 @@ public class NetworkFactory
         {
             throw new ArgumentException($"Duplicate network shortcodes found in config: {string.Join(", ", duplicates.Select(d => d.ShortCode).Distinct())}");
         }
-        return config.networks.Select(FromConnectionString);
+        return config.networks.enabled.Select(FromConnectionString);
     }
 
     public static ISocialNetwork FromConnectionString(NetworkConnectionString connection)

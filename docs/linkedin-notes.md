@@ -17,13 +17,27 @@ See also:
 
 ## Tools
 
-* [LinkedIn Token Inspector](https://www.linkedin.com/developers/tools/oauth/token-inspector)
+* [LinkedIn OAuth Tools](https://www.linkedin.com/developers/tools/oauth)
+  * [Token Generator](https://www.linkedin.com/developers/tools/oauth/token-generator)
+  * [Token Inspector](https://www.linkedin.com/developers/tools/oauth/token-inspector)
 
 ## Obtain client id and secret
 
 The client id and secret for your LinkedIn application are listed in the **Auth** tab of your Application's settings in the [Developers Portal](https://developer.linkedin.com/).
 
-## Obtain an access token
+## Obtain an access token (the easy, opaque way)
+
+Once you have access to the Community Management API, you can obtain a token:
+
+* Visit the token generator
+* Select your app
+* Select the following permissions:
+  * `w_organization_social`
+  * `w_member_social`
+  * `r_basicprofile`
+* Generate your token
+
+## Obtain an access token (the less easy, transparent way)
 
 ### Step 0 - authorise the OAuth Token Explorer redirect URL
 
@@ -36,7 +50,7 @@ The client id and secret for your LinkedIn application are listed in the **Auth*
 * Click: **Get Started**
 * Click: **Init for LinkedIn**
 * For **Client id** provide: the client id, obtained earlier
-* For **Scope** provide: `w_organization_social,w_member_social`
+* For **Scope** provide: `w_organization_social,w_member_social,r_basicprofile`
 
 **NB.** `w_organization_social` is the scope for writing social posts on behalf of an organisation, and `w_member_social` is for individuals. New tokens issued for a LinkedIn application will automatically revoke old tokens, so request the full set of scopes you'll need together.
 
