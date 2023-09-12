@@ -55,22 +55,18 @@ type=facebook;code=<SHORTCODE>;mode=user;user_token=<USER_TOKEN>
 ```
 
 * `SHORTCODE` - a unique code to refer to the social network instance, this will appear in logs
-* `MODE` - One of `Page|User` (case insensitive)
+* `MODE` - set this to: `Page` (case insensitive)
 
 #### `Page` mode
 
 * `PAGE_ID` - Id of the page to post to
 * `PAGE_TOKEN` - A [page access token](https://developers.facebook.com/docs/pages/access-tokens) obtained through the process outlined in [Facebook notes](facebook-notes.md)
 
-#### `User` mode (not yet implemented)
-
-* `USER_TOKEN` - A user access token obtained through the process outlined in [Facebook notes](facebook-notes.md)
-
 ### LinkedIn connection strings
 
 ```text
-type=linkedin;code=<SHORTCODE>;client_id=<CLIENT_ID>;client_secret=<CLIENT_SECRET>;mode=org;author_id=<ORG_ID>;token=<TOKEN>
-type=linkedin;code=<SHORTCODE>;client_id=<CLIENT_ID>;client_secret=<CLIENT_SECRET>;mode=user;author_id=<USER_ID>;token=<TOKEN>
+type=linkedin;code=<SHORTCODE>;client_id=<CLIENT_ID>;client_secret=<CLIENT_SECRET>;mode=org;author_id=<ORG_URN>;token=<TOKEN>
+type=linkedin;code=<SHORTCODE>;client_id=<CLIENT_ID>;client_secret=<CLIENT_SECRET>;mode=user;author_id=<PERSON_URN>;token=<TOKEN>
 ```
 
 * `SHORTCODE` - a unique code to refer to the social network instance, this will appear in logs
@@ -82,11 +78,13 @@ type=linkedin;code=<SHORTCODE>;client_id=<CLIENT_ID>;client_secret=<CLIENT_SECRE
 
 #### `Org` mode
 
-* `ORG_ID` - Id of the LinkedIn org (not the full urn)
+* `ORG_ID` - The id portion of the LinkedIn URN for the organization to post as
 
 #### `User` mode (not yet implemented)
 
-* `USER_ID` - Id of the user (not the full urn)
+* `PERSON_ID` - The id portion of the LinkedIn URN for the person to post as
+
+To obtain the `PERSON_ID`, you'll need to issue a call to 
 
 ## Twitter connection strings
 

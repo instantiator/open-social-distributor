@@ -53,8 +53,15 @@ public class Distributor : IAsyncDisposable
 
     public async Task<ConnectionTestResult> TestNetworkAsync(ISocialNetwork network)
     {
-        if (!network.Initialised) await network.InitAsync();
-        return await network.TestConnectionAsync();
+        try
+        {
+            if (!network.Initialised) await network.InitAsync();
+            return await network.TestConnectionAsync();
+        }
+        catch (Exception e)
+        {
+            return new ConnectionTestResult(network, false, null, e.Message, e);
+        }
     }
 
     public async Task<IEnumerable<PostResult>> PostAsync(ISocialMessage message)

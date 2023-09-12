@@ -32,11 +32,8 @@ public class NetworkFactory
                 {
                     case FacebookNetwork.Mode.Page:
                         var fb_pageId = parameters["page_id"];
-                        var fb_pageToken = parameters["page_token"];
-                        return new FacebookNetwork(fb_code, fb_mode, userToken: null, pageId: fb_pageId, pageToken: fb_pageToken);
-                    case FacebookNetwork.Mode.User:
-                        var fb_userToken = parameters["user_token"];
-                        return new FacebookNetwork(fb_code, fb_mode, userToken: fb_userToken, pageId: null, pageToken: null);
+                        var fb_pageToken = parameters["token"];
+                        return new FacebookNetwork(fb_code, fb_mode, token: fb_pageToken, actorId: fb_pageId);
                     default:
                         throw new NotImplementedException($"FacebookNetwork mode {fb_mode} not implemented");
                 }

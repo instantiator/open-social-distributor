@@ -17,9 +17,10 @@ See also:
 
 ## Tools
 
-* [LinkedIn OAuth Tools](https://www.linkedin.com/developers/tools/oauth)
-  * [Token Generator](https://www.linkedin.com/developers/tools/oauth/token-generator)
-  * [Token Inspector](https://www.linkedin.com/developers/tools/oauth/token-inspector)
+For more information, see: [LinkedIn OAuth Tools](https://www.linkedin.com/developers/tools/oauth)
+
+* [LinkedIn Token Generator](https://www.linkedin.com/developers/tools/oauth/token-generator)
+* [LinkedIn Token Inspector](https://www.linkedin.com/developers/tools/oauth/token-inspector)
 
 ## Obtain client id and secret
 
@@ -27,7 +28,9 @@ The client id and secret for your LinkedIn application are listed in the **Auth*
 
 ## Obtain an access token (the easy, opaque way)
 
-Once you have access to the Community Management API, you can obtain a token:
+A token grants an app permission to take the actions defined by the scopes on behalf of the user that granted that permission.
+
+Once you have been granted access to the Community Management API, you can obtain a token:
 
 * Visit the token generator
 * Select your app

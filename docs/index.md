@@ -17,14 +17,15 @@ This project is in development. Additional capabilities are coming soon.
 | Console | ✅ | ✅ | ⌛️ | ✅ | ✅ | ✅ |
 | Mastodon | ✅ | ✅ | ⌛️ | ✅ | ✅ | |
 | Facebook (page) | ✅ | ✅ | ⌛️ | ✅ | ✅ | |
-| Facebook (user) | | | | | | |
 | LinkedIn (org) | ✅ | ✅ | ⌛️ | ✅ | ✅ | |
-| LinkedIn (user) | ✅ | ⌛️ | ⌛️ | ⌛️ | ⌛️ | |
+| LinkedIn (user) | ✅ | ✅ | ⌛️ | ✅ | ✅ | |
 | Discord | | | | | | |
 | Twitter | | | | | | |
 
 ✅ = implemented, working
 ⌛️ = implemented, not fully tested yet
+
+NB. Facebook do not support posting to a user feed.
 
 ### Features
 

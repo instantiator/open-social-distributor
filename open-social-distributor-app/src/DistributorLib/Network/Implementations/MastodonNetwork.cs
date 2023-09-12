@@ -31,16 +31,16 @@ public class MastodonNetwork : AbstractNetwork
             var account = await client!.GetCurrentUser();
             if (account != null)
             {
-                return new ConnectionTestResult(this, true);
+                return new ConnectionTestResult(this, true, account.Id, $"Username: {account.UserName}, Display name: {account.DisplayName}");
             }
             else
             {
-                return new ConnectionTestResult(this, false, "Could not read current user account");
+                return new ConnectionTestResult(this, false, null, "Could not read current user account");
             }
         }
         catch (Exception e)
         {
-            return new ConnectionTestResult(this, false, e.Message, e);
+            return new ConnectionTestResult(this, false, null, e.Message, e);
         }
     }
 

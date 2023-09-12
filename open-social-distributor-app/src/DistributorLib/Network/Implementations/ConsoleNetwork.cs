@@ -22,7 +22,7 @@ public class ConsoleNetwork : AbstractNetwork
 
     protected override async Task<ConnectionTestResult> TestConnectionImplementationAsync()
     {
-        return new ConnectionTestResult(this, true);
+        return new ConnectionTestResult(this, true, $"{Environment.MachineName}", "Console network is always connected.");
     }
 
     protected override async Task<PostResult> PostImplementationAsync(ISocialMessage message)

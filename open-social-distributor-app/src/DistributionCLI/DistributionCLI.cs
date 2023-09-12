@@ -75,34 +75,14 @@ public class DistributionCLI
 
         var distributor = new Distributor(filteredNetworks);
         var testResults = distributor.TestNetworksAsync().Result;
-        var i = 0;
         foreach (var result in testResults)
         {
-            Console.WriteLine($"{++i} - {result.Key.ShortCode} ({result.Key.NetworkType}): {(result.Value.Success ? "OK" : "fail")}");
-        }
-
-        var fails = testResults.Where(r => !r.Value.Success);
-        if (fails.Count() > 0)
-        {
-            Console.WriteLine($"{fails.Count()} issues found:");
-            foreach (var result in fails)
-            {
-                var message = result.Value.Message;
-                var exceptionType = result.Value.Exception?.GetType().Name;
-                var report = "";
-                if (!string.IsNullOrWhiteSpace(message)) {
-                    report += message;
-                }
-                if (!string.IsNullOrWhiteSpace(exceptionType)) {
-                    if (!string.IsNullOrWhiteSpace(report)) report += " ";
-                    report += $"({exceptionType})";
-                }
-                Console.WriteLine($"❌ - {result.Key.ShortCode} ({result.Key.NetworkType}): {report}");
-                if (result.Value.Network is FacebookNetwork)
-                {
-                    Console.WriteLine($"Facebook token: {(result.Value.Network as FacebookNetwork)!.pageToken}");
-                }
-            }
+            var message = result.Value.Message ?? result.Value.Exception?.Message;
+            var exceptionType = result.Value.Exception != null ? result.Value.Exception?.GetType().Name + ": " : "";
+            var report = $"{exceptionType}{message}";
+            var id = result.Value.ActorId != null ? $"id = {result.Value.ActorId}, " : "";
+            var icon = result.Value.Success ? "✅" : "❌";
+            Console.WriteLine($"{icon} - {result.Key.ShortCode} ({result.Key.NetworkType}) - {id}{report}");
         }
         return testResults.All(r => r.Value.Success) ? 0 : 1;
     }

@@ -2,7 +2,9 @@
 
 To post to pages you control, it's sufficient to create an app and request the appropriate scopes (see below) when generating your access tokens.
 
-If you want to post to pages you do not own (ie. on behalf of other businesses or people), you'll need advanced API permissions and you'll need to pass additional approvals by Facebook. _This capability is out of scope for this project._
+If you want to post to pages you do not own (ie. on behalf of other businesses or people), you'll need to pass additional approvals by Facebook to be granted advanced API permissions. _This capability is out of scope for this project._
+
+**NB. Facebook removed support for posting to a user's personal feed in 2018.**
 
 ## Tools
 
@@ -11,6 +13,8 @@ If you want to post to pages you do not own (ie. on behalf of other businesses o
 * [Access Token Debugger](https://developers.facebook.com/tools/debug/accesstoken/)
 
 ## Scripts
+
+Some of the activities described below are implemented as scripts, found in this repository:
 
 | Script | Purpose |
 |-|-|
@@ -35,6 +39,8 @@ NB. Although some tokens may last a long time, they can be [invalidated](https:/
 * Click **Generate Access Token** if the explorer hasn't provided one for you.
 
 A popup dialog will prompt you to grant the public profile permission to the app.
+
+See also: https://developers.facebook.com/docs/pages/access-tokens#get-a-page-access-token
 
 ## Get a long-lived user access token (CLI)
 

@@ -45,7 +45,8 @@ public class LinkedInNetwork : AbstractNetwork
     {
         var texts = Formatter.FormatText(message);
         var responses = new List<Tuple<RestResponse, LinkedInResponse>>();
-        var author = mode == Mode.Org ? $"urn:li:organization:{authorId}" : $"urn:li:member:{authorId}";
+        // var author = mode == Mode.Org ? $"urn:li:organization:{authorId}" : $"urn:li:member:{authorId}";
+        var author = mode == Mode.Org ? $"urn:li:organization:{authorId}" : $"urn:li:person:{authorId}";
         foreach (var text in texts)
         {
             var first = responses.Count() == 0;
@@ -74,8 +75,9 @@ public class LinkedInNetwork : AbstractNetwork
                 //throw new Exception("Not gonna work anyway: {\"serviceErrorCode\":100,\"message\":\"Field Value validation failed in REQUEST_BODY: Data Processing Exception while processing fields [/author]\",\"status\":403}");
                 request.AddJsonBody(content); // JsonConvert.SerializeObject(content);
                 var response = await client!.ExecuteAsync(request);
-                var idUrn = response.Headers!.SingleOrDefault(h => h.Name=="x-linkedin-id")?.Value?.ToString();
-                var aok = response.IsSuccessful && !string.IsNullOrWhiteSpace(idUrn);
+                var idUrn = response.Headers!.SingleOrDefault(h => h.Name=="x-linkedin-id" || h.Name=="x-restli-id")?.Value?.ToString();
+                var isError = response.Headers!.SingleOrDefault(h => h.Name=="x-restli-error-response")?.Value?.ToString() == "true";
+                var aok = response.IsSuccessful && !isError && !string.IsNullOrWhiteSpace(idUrn);
                 var headers = response.Headers!.Select(h => new Tuple<string,string?>(h.Name!, h.Value?.ToString()));
                 var liResponse = new LinkedInResponse() { Success = aok, Id = idUrn, Content = response.Content, Headers = headers };
                 responses.Add(new Tuple<RestResponse, LinkedInResponse>(response, liResponse));
@@ -101,8 +103,9 @@ public class LinkedInNetwork : AbstractNetwork
                         };
                         request.AddJsonBody(content);
                         var response = await commentClient!.ExecuteAsync(request);
-                        var idUrn = response.Headers!.SingleOrDefault(h => h.Name=="x-linkedin-id")?.Value?.ToString();
-                        var aok = response.IsSuccessful && !string.IsNullOrWhiteSpace(idUrn);
+                        var idUrn = response.Headers!.SingleOrDefault(h => h.Name=="x-linkedin-id" || h.Name=="x-restli-id")?.Value?.ToString();
+                        var isError = response.Headers!.SingleOrDefault(h => h.Name=="x-restli-error-response")?.Value?.ToString() == "true";
+                        var aok = response.IsSuccessful && !isError && !string.IsNullOrWhiteSpace(idUrn);
                         var headers = response.Headers!.Select(h => new Tuple<string,string?>(h.Name!, h.Value?.ToString()));
                         var liResponse = new LinkedInResponse() { Success = aok, Id = idUrn, Content = response.Content, Headers = headers };
                         responses.Add(new Tuple<RestResponse, LinkedInResponse>(response, liResponse));
@@ -114,10 +117,26 @@ public class LinkedInNetwork : AbstractNetwork
                 }
             }
         }
-        var all_ok = responses.All(r => r.Item1.IsSuccessful && r.Item2.Success);
-        var errorStr = string.Join('\n', responses.Where(r => !r.Item2.Success).Select(r => r.Item2.Content));
+
+        var all_ok = responses.All(r => r.Item2.Success);
         var ids = responses.Select(r => r.Item2.Id);
-        return new PostResult(this, message, all_ok, ids, errorStr);
+        var i = 0;
+        var errorData = string.Join('\n', responses
+            .Where(r => !r.Item2.Success)
+            .Select(r => DescribeErrors(r.Item1, ++i))
+        );
+        return new PostResult(this, message, all_ok, ids, error: errorData);
+    }
+
+    private string DescribeErrors(RestResponse response, int? index = null)
+    {
+        var prefix = index.HasValue ? $"{index} - " : "";
+        return string.Join('\n', new[] {
+            $"{prefix}{response.ResponseStatus}, response: {response.StatusCode}",
+            response.Request.Resource,
+            response.Content,
+            string.Join('\n', response.Headers?.Select(h => $"{h.Name}: {h.Value}") ?? new string[0])
+        });
     }
 
     public class LinkedInResponse
@@ -141,13 +160,14 @@ public class LinkedInNetwork : AbstractNetwork
             var tokenIntrospectionResponse = await introspectionClient!.ExecuteAsync(tokenIntrospectionRequest);
             var introspection = JsonConvert.DeserializeObject<LinkedInIntrospectionResponse>(tokenIntrospectionResponse.Content!);
             var tokenIntrospectionOk = 
-                (tokenIntrospectionResponse.IsSuccessful && introspection!.active == true && introspection!.status == "active") &&
+                tokenIntrospectionResponse.IsSuccessful && 
+                introspection!.active == true && 
+                introspection!.status == "active" &&
                 ((mode == Mode.Org && (introspection!.scope?.Contains("w_organization_social") ?? false)) ||
                 (mode == Mode.User && (introspection!.scope?.Contains("w_member_social") ?? false)));
-
             if (!tokenIntrospectionOk)
             {
-                return new ConnectionTestResult(this, false, tokenIntrospectionResponse.Content);
+                return new ConnectionTestResult(this, false, null, DescribeErrors(tokenIntrospectionResponse));
             }
 
             // fetch the user or organisation profile
@@ -155,15 +175,15 @@ public class LinkedInNetwork : AbstractNetwork
             meRequest.AddHeader("Authorization", $"Bearer {token}");
             var meResponse = await client!.ExecuteAsync(meRequest);
             var me = JsonConvert.DeserializeObject<LinkedInMeResponse>(meResponse.Content!);
-            var meOk = meResponse.IsSuccessful && !string.IsNullOrWhiteSpace(me.id);
+            var meOk = meResponse.IsSuccessful && !string.IsNullOrWhiteSpace(me?.id);
 
             if (!meOk)
             {
-                return new ConnectionTestResult(this, false, meResponse.Content);
+                return new ConnectionTestResult(this, false, me?.id, DescribeErrors(meResponse));
             }
 
-            return new ConnectionTestResult(this, true, 
-                $"Token for user id: {me.id} has scope: {introspection!.scope}, expires at: {introspection!.expires_at}");
+            return new ConnectionTestResult(this, true, me!.id, 
+                $"Token scope: {introspection!.scope}, expires at: {introspection!.expires_at}");
         }
     }
 
