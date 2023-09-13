@@ -1,4 +1,6 @@
 using Discord;
+using Discord.Net.Rest;
+using Discord.Rest;
 using Discord.WebSocket;
 using DistributorLib.Extensions;
 using DistributorLib.Post;
@@ -46,51 +48,80 @@ public class DiscordNetwork : AbstractNetwork
 
     protected override async Task<PostResult> PostImplementationAsync(ISocialMessage message)
     {
-        throw new NotImplementedException();
+        log.Clear();
+        await client!.LoginAsync(TokenType.Bot, token);
+        await client!.StartAsync();
+        await TaskEx.WaitUntil(() => 
+            client!.LoginState == LoginState.LoggedIn &&
+            client!.Status == UserStatus.Online && 
+            client!.ConnectionState == ConnectionState.Connected, 100, 10000);
+        var channel = await GetTextChannelAsync();
+        if (channel == null)
+        {
+            return new PostResult(this, message, false, null, string.Join('\n', log));
+        } 
+        else
+        {
+            var responses = new List<RestUserMessage>();
+            var texts = Formatter.FormatText(message);
+            foreach (var text in texts)
+            {
+                var response = await channel.SendMessageAsync(text);
+                responses.Add(response);
+            }
+
+            try 
+            { 
+                await client!.StopAsync(); 
+                await client!.LogoutAsync(); 
+            } 
+            catch (Exception e) 
+            { 
+                log.Add($"Ignored exception during sign off: {e.GetType().Name}: {e.Message}"); 
+            }
+
+            var aok = responses.All(r => r != null);
+            var ids = responses.Select(r => r?.Id.ToString());
+            return new PostResult(this, message, aok, ids, string.Join('\n', log));
+        }
+    }
+
+    private async Task<SocketTextChannel> GetTextChannelAsync()
+    {
+        var guild = client!.GetGuild(guildId);
+        SocketTextChannel? channel = null;
+
+        await TaskEx.WaitUntil(() =>
+        {
+            channel = guild.GetTextChannel(channelId);
+            return channel != null;
+        }, 100, 10000);
+        
+        return channel;
     }
 
     protected override async Task<ConnectionTestResult> TestConnectionImplementationAsync()
     {
         log.Clear();
         await client!.LoginAsync(TokenType.Bot, token);
-
-        
         await client!.StartAsync();
-        await TaskEx.WaitUntil(() => client!.Status == UserStatus.Online, 100, 10000);
-        var onlineOk = client!.Status == UserStatus.Online;
+        await TaskEx.WaitUntil(() => 
+            client!.LoginState == LoginState.LoggedIn &&
+            client!.Status == UserStatus.Online && 
+            client!.ConnectionState == ConnectionState.Connected, 100, 10000);
 
-        await TaskEx.WaitUntil(() => client!.ConnectionState == ConnectionState.Connected, 100, 10000);
-        var connectedOk = client!.ConnectionState == ConnectionState.Connected;
-
-        var guild = client!.GetGuild(guildId);
-        var foundGuildOk = guild != null;
-
-        var channel = await client!.GetChannelAsync(channelId);
-        var foundChannelOk = channel != null;
-
+        var channel = await GetTextChannelAsync();
         var info = await client!.GetApplicationInfoAsync();
-        var owner = info.Owner.Username + "#" + info.Owner.Discriminator;
         var id = $"{info.Id}";
         var name = $"{info.Name}";
 
         var summary = new
         {
-            connected = connectedOk,
-            online = onlineOk,
-            guildOk = foundGuildOk,
-            channelOk = foundChannelOk,
-            id,
             name,
-            owner,
             guild = guildId,
             channel = channelId
         };
 
-        var aok = 
-            connectedOk && 
-            onlineOk && 
-            foundChannelOk;
-
-        return new ConnectionTestResult(this, aok, id, JsonConvert.SerializeObject(summary) + '\n' + string.Join("\n", log));
+        return new ConnectionTestResult(this, true, id, JsonConvert.SerializeObject(summary));
     }
 }
