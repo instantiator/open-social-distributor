@@ -125,3 +125,12 @@ public class DiscordNetwork : AbstractNetwork
         return new ConnectionTestResult(this, true, id, JsonConvert.SerializeObject(summary));
     }
 }
+
+
+// var filename = Path.GetFileName(path);
+
+// var emb = new EmbedBuilder()
+//     .WithImageUrl($"attachment://{filename}")
+//     .Build();
+
+// await Context.Channel.SendFileAsync(path, null, false, emb);
