@@ -189,7 +189,7 @@ public class LinkedInNetwork : AbstractNetwork
 
     public class LinkedInMeResponse
     {
-        public string id { get; set; }
+        public string? id { get; set; }
     }
 
     public  class LinkedInIntrospectionResponse

@@ -6,6 +6,8 @@ namespace DistributorLib.Network
         Console,
         Mastodon,
         Facebook,
-        LinkedIn
+        LinkedIn,
+        Discord,
+        Twitter
     }
 }

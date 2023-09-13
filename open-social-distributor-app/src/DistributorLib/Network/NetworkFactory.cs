@@ -53,6 +53,13 @@ public class NetworkFactory
                 var ma_token = parameters["token"];
                 return new MastodonNetwork(ma_code, ma_instance, ma_token);
             
+            case NetworkType.Discord:
+                var di_code = parameters["code"];
+                var di_token = parameters["token"];
+                var di_guildId = ulong.Parse(parameters["guild_id"]);
+                var di_channelId = ulong.Parse(parameters["channel_id"]);
+                return new DiscordNetwork(di_code, di_token, di_guildId, di_channelId);
+
             case NetworkType.Any:
                 throw new ArgumentException("\"Any\" is not a network type.");
             default:

@@ -19,7 +19,7 @@ This project is in development. Additional capabilities are coming soon.
 | Facebook (page) | ✅ | ✅ | ⌛️ | ✅ | ✅ | |
 | LinkedIn (org) | ✅ | ✅ | ⌛️ | ✅ | ✅ | |
 | LinkedIn (member) | ✅ | ✅ | ⌛️ | ✅ | ✅ | |
-| Discord | | | | | | |
+| Discord | ✅ | | | | | |
 | Twitter | | | | | | |
 
 ✅ = implemented, working

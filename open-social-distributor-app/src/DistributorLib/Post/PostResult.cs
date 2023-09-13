@@ -19,7 +19,7 @@ public class PostResult
     public ISocialNetwork Network { get; private set; }
     public ISocialMessage Message { get; private set; }
     public bool Success { get; private set; }
-    public IEnumerable<string>? PostIds { get; private set; }
+    public IEnumerable<string?>? PostIds { get; private set; }
     public string? Error {get; private set; }
     public Exception? Exception { get; private set; }
 }

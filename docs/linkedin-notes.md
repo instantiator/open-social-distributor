@@ -1,6 +1,6 @@
 # LinkedIn
 
-To post to organisation pages, you'll need create an app in the [Developers Portal](https://developer.linkedin.com/) and then request access to the [Community Management API]().
+To post to organisation pages, you'll need create an app in the [Developers Portal](https://developer.linkedin.com/) and then request access to the Community Management API.
 
 To be granted access, you'll need to link your app to a LinkedIn organisation, and then get that organisation verified.
 

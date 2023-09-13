@@ -26,5 +26,12 @@ namespace DistributorLib.Post.Formatters
             linkBehaviour: LengthLimitedPostFormatter.DecorationBehaviour.FirstPost,
             breakBehaviour: LengthLimitedPostFormatter.BreakBehaviour.NewParagraph, 
             tagBehaviour: LengthLimitedPostFormatter.DecorationBehaviour.FirstPost);
+
+        public static IPostFormatter Discord => new LengthLimitedPostFormatter(
+            network: Network.NetworkType.Discord, 
+            limit: 2000, subsequentLimits: 2000, indices: true,
+            linkBehaviour: LengthLimitedPostFormatter.DecorationBehaviour.FirstPost,
+            breakBehaviour: LengthLimitedPostFormatter.BreakBehaviour.NewPost, 
+            tagBehaviour: LengthLimitedPostFormatter.DecorationBehaviour.FirstPost);
     }
 }
