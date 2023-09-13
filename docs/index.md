@@ -14,18 +14,21 @@ This project is in development. Additional capabilities are coming soon.
 
 | Network | Test | Post | Thread | Link | Tags | Images |
 |-|-|-|-|-|-|-|
-| Console | ✅ | ✅ | ⌛️ | ✅ | ✅ | ✅ |
+| Console | ✅ | ✅ | ⌛️ | ✅ | ✅ | 🆗 |
 | Mastodon | ✅ | ✅ | ⌛️ | ✅ | ✅ | |
 | Facebook (page) | ✅ | ✅ | ⌛️ | ✅ | ✅ | |
 | LinkedIn (org) | ✅ | ✅ | ⌛️ | ✅ | ✅ | |
-| LinkedIn (user) | ✅ | ✅ | ⌛️ | ✅ | ✅ | |
+| LinkedIn (member) | ✅ | ✅ | ⌛️ | ✅ | ✅ | |
 | Discord | | | | | | |
 | Twitter | | | | | | |
 
 ✅ = implemented, working
 ⌛️ = implemented, not fully tested yet
 
-NB. Facebook do not support posting to a user feed.
+**NB...**
+
+* Console image support is purely to confirm that the image exists.
+* The Facebook API does not support posting to a _user_ feed.
 
 ### Features
 
