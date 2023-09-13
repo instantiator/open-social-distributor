@@ -86,11 +86,17 @@ type=linkedin;code=<SHORTCODE>;client_id=<CLIENT_ID>;client_secret=<CLIENT_SECRE
 
 To obtain the `PERSON_ID`, you'll need to issue a call to 
 
+## Discord connection strings
+
+```text
+type=discord;code=<SHORTCODE>;guild_id=<GUILD_ID>;channel_id=<CHANNEL_ID>;token=<ACCESS_TOKEN>
+```
+
+* `SHORTCODE` - a unique code to refer to the social network instance, this will appear in logs
+* `GUILD_ID` - id of the Discord server to post to
+* `CHANNEL_ID` - channel of the Discord server to post to
+* `TOKEN` - Access token for the Discord bot belonging to the Discord app (see: [Discord notes](discord-notes.md))
+
 ## Twitter connection strings
 
 *Under development...*
-
-## Discord connection strings
-
-*Under development...*
-
