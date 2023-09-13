@@ -2,7 +2,13 @@
 
 ## Simple message composition
 
-The CLI permits the specification of simple messages:
+The CLI permits the specification of simple messages, using the `post` verb,
+
+```bash
+DistributionCLI post <options>
+```
+
+The following options are defined for `post`:
 
 ```text
   -c, --config                Required. Path to the config file.
@@ -16,7 +22,7 @@ The CLI permits the specification of simple messages:
   --version                   Display version information.
 ```
 
-* Using the `-m` option, provide the post message content.
+* Use the `-m` option to provide the post message content.
 * Provide a link to accompany the message content with the `-l` option.
 * Provide a list of paths to images for the post with the `-i` option.
 * Provide descriptions of the images with the `-d` option.
@@ -24,7 +30,13 @@ The CLI permits the specification of simple messages:
 
 Note that lists should be semi-colon (`;`) separated.
 
-## Rich message composition
+A simple example:
+
+```bash
+DistributionCLI post -c path/to/config.json -m "this is a test"
+```
+
+## Message composition
 
 Posts are made up of a number of parts, each of which could be rendered different for a specific social network (although by default, the content you provide will apply to any).
 
@@ -37,7 +49,9 @@ Each part can be one of several types:
 | `Tag` | An individual tag, without the `#` prefix, eg. `Caturday` |
 | `Link` | A link that this post points to |
 
-The parts are combined and formatted during posting to ensure that the text will all fit and flow correctly according to the conventions of the social network that the post is being targeted at. If necessary, multiple posts are created, and linked together as a thread.
+The parts are combined and formatted during posting to ensure that the text will all fit and flow correctly according to the conventions of the social network that the post is being targeted at.
+
+If necessary, multiple posts are created, and linked together as a thread.
 
 ## Thread formatting
 
