@@ -1,5 +1,31 @@
 # Post composition
 
+## Simple message composition
+
+The CLI permits the specification of simple messages:
+
+```text
+  -c, --config                Required. Path to the config file.
+  -f, --filter                Regular expression filter for network short codes.
+  -m, --message               Required. Simple message text.
+  -l, --link                  Link for this message.
+  -i, --images                URIs to images, semi-colon separated (;)
+  -d, --image-descriptions    Image descriptions, semi-colon separated (;)
+  -t, --tags                  A list of tags (without # prefix), semi-colon separated (;)
+  --help                      Display this help screen.
+  --version                   Display version information.
+```
+
+* Using the `-m` option, provide the post message content.
+* Provide a link to accompany the message content with the `-l` option.
+* Provide a list of paths to images for the post with the `-i` option.
+* Provide descriptions of the images with the `-d` option.
+* Provide a list of tags to accompany the message with the `-t` option.
+
+Note that lists should be semi-colon (`;`) separated.
+
+## Rich message composition
+
 Posts are made up of a number of parts, each of which could be rendered different for a specific social network (although by default, the content you provide will apply to any).
 
 Each part can be one of several types:
@@ -15,16 +41,22 @@ The parts are combined and formatted during posting to ensure that the text will
 
 ## Thread formatting
 
-Each social network has a different set of character limits:
+Some social networks (Mastodon, Twitter) lend themselves conceptually to threading more easily than others.
+
+Each social network has a different set of character limits.
+
+If you manage to post a thread longer than the post limit for other networks (eg. a Facebook post longer than `63206` characters, somehow!), subsequent parts of the message will be posted as comments on the main post.
+
+Some items (ie. tags, links) will either be moved to the first post, duplicated across all posts, or may be handled differently depending on the social network.
 
 | Network | First post | Subsequent posts | Tags | Link |
 |-|-|-|-|-|
 | Console | ∞ | ∞ | N/A | N/A |
 | Mastodon | `500` | `500` | All posts | First post |
 | Facebook | `63206` | `8000` | First post | Special |
+| LinkedIn | `3000` | `1250` | First post | First post |
+| Discord | `2000` | `2000` | First post | First post | 
 | Twitter | | | | |
-| Discord | | | | | 
-| LinkedIn | | | | |
 
 The formatter will wrap words on each post. If a post would exceed the limit available to it, it wraps the next word into the next post.
 
@@ -34,12 +66,19 @@ The limit allows space for:
 1. An index indicator (if there's more than 1 post)
 1. Any tags that will fit, if the tags should appear on the post
 
-Tags are selected in a random order, to help in situations where they might not fit.
+By default, tags will not exceed 50% of the allowed character space. If not all tags will fit on a post, a random selection of the available tags is used.
 
-You can force the formatted to break to a new post by including the speak break word: `$$`
+### Breaks
+
+You can force the formatter to break to a new post by including the special break word: `$$`
 
 ### Facebook notes
 
 * The formatter for Facebook posts does not include the link in the text of the post, as it is included separately as a special property of the post.
 * Facebook does not have the concept of threads. If the content for the first post exceeds the limit, subsequent posts are made as comments.
+* Instead of forcing a new post, the break word `$$` creates a paragraph break with 2 newline characters.
+
+### LinkedIn notes
+
+* LinedIn does not have the concept of threads. If the content for the first post exceeds the limit, subsequent posts are made as comments.
 * Instead of forcing a new post, the break word `$$` creates a paragraph break with 2 newline characters.

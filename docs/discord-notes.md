@@ -3,7 +3,6 @@
 To build a bot that can post into a server, you'll need to:
 
 * Create an app in the [developers portal](https://discord.com/developers/applications)
-* ~~Capture the **client id** and **client secret** (you may need to regenerate the secret)~~
 * Add a bot (needn't be public) to the app (on the Bot page)
 * Capture the bot's **access token** (you may need to regenerate the token)
 * Use the URL Generator to create a url with the following permissions:

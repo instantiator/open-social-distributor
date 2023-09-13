@@ -4,6 +4,14 @@
 
 This is a tool for managing social posts across multiple platforms. Simple to configure, and able to run as a command line client, or as a service in a Docker container or an AWS CloudFormation stack.
 
+**At current time,** you can build, configure, and use the CLI to post a simple message to a variety of social networks.
+
+**Coming soon:**
+
+* Image upload support
+* A containerised service to make regular posts
+* An AWS stack (to do the same)
+
 ## Current state of development
 
 See: [Outstanding TODOs](todos.md)
@@ -25,7 +33,7 @@ This project is in development. Additional capabilities are coming soon.
 ✅ = implemented, working
 ⌛️ = implemented, not fully tested yet
 
-**NB...**
+#### NB
 
 * Console image support is purely to confirm that the image exists.
 * The Facebook API does not support posting to a _user_ feed.
@@ -46,49 +54,20 @@ This project is in development. Additional capabilities are coming soon.
 | Service | Configuration mechanism | |
 | AWS Stack | Schedule and post messages | |
 
-## Making posts
-
-You can use the command-line interface (CLI) to make an ad-hoc post to any number of social networks, or launch a service to regularly post from a dataset of posts you provide.
-
-See:
-
-* [CLI options](cli-options.md)
-* [Configuration](configuration.md)
-* [Connection strings](connection-strings.md)
-* [Authorisation tokens](auth-tokens.md)
-
-## Threading
-
-| Network | First message limit | Subsequent message limit |
-|-|-|-|
-| Console | Unlimited | Unlimited |
-| Mastodon | `500` | `500` |
-| Facebook | `63206` | `8000` |
-| LinkedIn | `3000` | `1250` |
-| Discord | TBC | TBC |
-| Twitter | TBC | TBC |
-
-Some social networks (Mastodon, Twitter) lend themselves conceptually to threading more easily than others.
-
-If you manage to post a thread longer than the post limit for other networks (eg. a Facebook post longer than 63206 characters, somehow!), subsequent parts of the message will be posted as comments on the main post.
-
-Comments have a different length limit to main posts - as shown in the table above.
-
-## Configuring social networks
+## Configuration
 
 To add networks to your configuration, you'll need to obtain authorisation tokens with permission to post. See:
 
-* [Connection strings](connection-strings.md)
 * [Authorisation tokens](auth-tokens.md)
+* [Configuration](configuration.md)
+* [Connection strings](connection-strings.md)
 
-## Scheduled posting
+## Making posts
 
-This tool will also offer 2 ways to set up a scheduled posting service:
+You can use the command-line interface (CLI) to make an ad-hoc post to any number of social networks.
 
-1. As a service, running in Docker (in development)
-2. As a CloudFormation stack, running on AWS (in development)
-
-You could also automate invocations of the CLI any other way you please from your machine, or build your own tool that uses `DistributorLib`.
+* [CLI options](cli-options.md)
+* [Post composition](post-composition.md)
 
 ## Developer notes
 
