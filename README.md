@@ -6,7 +6,9 @@ This is a tool for managing social posts across multiple platforms. Simple to co
 
 ## Documentation
 
-* [Open Social Distributor documentation](https://front-line-tech.com/open-social-distributor/) ([source](docs/index.md))
+* [Open Social Distributor documentation](https://instantiator.dev/open-social-distributor/) ([source](docs/index.md))
+* [Contributing](CONTRIBUTING.md)
+* [Code of Conduct](CODE_OF_CONDUCT.md)
 
 ## Roadmap
 
