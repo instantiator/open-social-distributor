@@ -15,6 +15,37 @@ See also:
 
 * [Associate an App with a LinkedIn Page](https://www.linkedin.com/help/linkedin/answer/a548360)
 
+## LinkedIn connection strings
+
+```text
+type=linkedin;code=<SHORTCODE>;client_id=<CLIENT_ID>;client_secret=<CLIENT_SECRET>;mode=org;author_id=<ORG_ID>;token=<TOKEN>
+type=linkedin;code=<SHORTCODE>;client_id=<CLIENT_ID>;client_secret=<CLIENT_SECRET>;mode=user;author_id=<PERSON_ID>;token=<TOKEN>
+```
+
+* `SHORTCODE` - a unique code to refer to the social network instance, this will appear in logs
+* `MODE` - One of `Org|User` (case insensitive)
+* `CLIENT_ID` - Id of the LinkedIn application that the access token was created for (used to introspect/test the token)
+* `CLIENT_SECRET` - Secret of the LinkedIn application that the access token was created for (used to introspect/test the token)
+* `TOKEN` - An access token, obtained through the process outlined in [LinkedIn notes](linkedin-notes.md).
+
+#### `Org` mode
+
+* `ORG_ID` - The id portion of the LinkedIn URN for _the organization to post as_
+
+#### `User` mode (not yet implemented)
+
+* `PERSON_ID` - The id portion of the LinkedIn URN for _the person to post as_
+
+Person ids look like a 10-character string of letters and numbers, eg. `vl4hy9pJ3S`
+
+To obtain the `PERSON_ID`, put any value for`author_id` in the connection string, and run a test of your connection using the CLI.
+
+```bash
+DistributionCLI test -c your/config/file.json
+```
+
+Provided your token, client id and client secret are correct, the output from the test contains the person id you'll need for `User` mode.
+
 ## Tools
 
 For more information, see: [LinkedIn OAuth Tools](https://www.linkedin.com/developers/tools/oauth)

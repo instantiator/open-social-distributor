@@ -6,6 +6,22 @@ If you want to post to pages you do not own (ie. on behalf of other businesses o
 
 **NB. Facebook removed support for posting to a user's personal feed in 2018.**
 
+## Facebook connection strings
+
+```text
+type=facebook;code=<SHORTCODE>;mode=page;page_id=<PAGE_ID>;page_token=<PAGE_TOKEN>
+type=facebook;code=<SHORTCODE>;mode=user;user_token=<USER_TOKEN>
+```
+
+* `SHORTCODE` - a unique code to refer to the social network instance, this will appear in logs
+* `MODE` - set this to: `Page` (case insensitive)
+
+#### `Page` mode
+
+* `PAGE_ID` - Id of the page to post to
+* `PAGE_TOKEN` - A [page access token](https://developers.facebook.com/docs/pages/access-tokens) obtained through the process outlined in [Facebook notes](facebook-notes.md)
+
+
 ## Tools
 
 * [Meta for Developers](https://developers.facebook.com/) (Facebook developer console)

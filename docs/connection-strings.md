@@ -23,6 +23,16 @@ Many connection strings require an authorisation token from the social network t
 
 * [Authorisation tokens](auth-tokens.md)
 
+## Social network connection strings
+
+Each social network has its own connection string parameters:
+
+* [Mastodon notes](mastodon-notes.md)
+* [Facebook notes](facebook-notes.md)
+* [LinkedIn notes](linkedin-notes.md)
+* [Discord notes](discord-notes.md)
+* Twitter notes
+
 ### Console connection strings
 
 ```text
@@ -31,72 +41,4 @@ type=console
 
 Console is the simplest of the 'social networks' - instead of connecting to a network, it simply prints any messages it has been asked to post to the console or log.
 
-Console is the only "network" that does not require you to specify a shortcode. You should not create more than one instance of console.
-
-### Mastodon connection strings
-
-```text
-type=mastodon;code=<SHORTCODE>;instance=<INSTANCE>;token=<TOKEN>
-```
-
-A mastodon connection string describes a connection to an account on a specific mastodon server.
-
-* `SHORTCODE` - a unique code to refer to the social network instance, this will appear in logs
-* `INSTANCE` - the mastodon server's domain name (eg. `mastodon.social`)
-* `TOKEN` - access token, obtained through the process outlined in [Mastodon notes](mastodon-notes.md)
-
-Ensure that the _write_ permissions are granted for your access token.
-
-### Facebook connection strings
-
-```text
-type=facebook;code=<SHORTCODE>;mode=page;page_id=<PAGE_ID>;page_token=<PAGE_TOKEN>
-type=facebook;code=<SHORTCODE>;mode=user;user_token=<USER_TOKEN>
-```
-
-* `SHORTCODE` - a unique code to refer to the social network instance, this will appear in logs
-* `MODE` - set this to: `Page` (case insensitive)
-
-#### `Page` mode
-
-* `PAGE_ID` - Id of the page to post to
-* `PAGE_TOKEN` - A [page access token](https://developers.facebook.com/docs/pages/access-tokens) obtained through the process outlined in [Facebook notes](facebook-notes.md)
-
-### LinkedIn connection strings
-
-```text
-type=linkedin;code=<SHORTCODE>;client_id=<CLIENT_ID>;client_secret=<CLIENT_SECRET>;mode=org;author_id=<ORG_URN>;token=<TOKEN>
-type=linkedin;code=<SHORTCODE>;client_id=<CLIENT_ID>;client_secret=<CLIENT_SECRET>;mode=user;author_id=<PERSON_URN>;token=<TOKEN>
-```
-
-* `SHORTCODE` - a unique code to refer to the social network instance, this will appear in logs
-* `MODE` - One of `Org|User` (case insensitive)
-* `CLIENT_ID` - Id of the LinkedIn application that the access token was created for (used to introspect/test the token)
-* `CLIENT_SECRET` - Secret of the LinkedIn application that the access token was created for (used to introspect/test the token)
-* `TOKEN` - An access token, obtained through the process outlined in [LinkedIn notes](linkedin-notes.md).
-* 
-
-#### `Org` mode
-
-* `ORG_ID` - The id portion of the LinkedIn URN for the organization to post as
-
-#### `User` mode (not yet implemented)
-
-* `PERSON_ID` - The id portion of the LinkedIn URN for the person to post as
-
-To obtain the `PERSON_ID`, you'll need to issue a call to 
-
-## Discord connection strings
-
-```text
-type=discord;code=<SHORTCODE>;guild_id=<GUILD_ID>;channel_id=<CHANNEL_ID>;token=<ACCESS_TOKEN>
-```
-
-* `SHORTCODE` - a unique code to refer to the social network instance, this will appear in logs
-* `GUILD_ID` - id of the Discord server to post to
-* `CHANNEL_ID` - channel of the Discord server to post to
-* `TOKEN` - Access token for the Discord bot belonging to the Discord app (see: [Discord notes](discord-notes.md))
-
-## Twitter connection strings
-
-*Under development...*
+Console is the only "network" that does not require you to specify a shortcode. You shouldn't need to create more than one instance of console.

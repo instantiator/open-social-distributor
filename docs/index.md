@@ -12,11 +12,28 @@ This is a tool for managing social posts across multiple platforms. Simple to co
 * A containerised service to make regular posts
 * An AWS stack (to do the same)
 
-## Current state of development
+## Configuration
+
+To add networks to your configuration, you'll need to obtain authorisation tokens with permission to post. See:
+
+* [Configuration](configuration.md)
+* [Connection strings](connection-strings.md)
+* [Authorisation tokens](auth-tokens.md)
+
+## Making posts
+
+You can use the command-line interface (CLI) to make an ad-hoc post to any number of social networks.
+
+* [CLI options](cli-options.md)
+* [Post composition](post-composition.md)
+
+## Developer notes
+
+### Current state of development
 
 See: [Outstanding TODOs](todos.md)
 
-### Social networks supported
+#### Social networks supported
 
 This project is in development. Additional capabilities are coming soon.
 
@@ -38,7 +55,7 @@ This project is in development. Additional capabilities are coming soon.
 * Console image support is purely to confirm that the image exists.
 * The Facebook API does not support posting to a _user_ feed.
 
-### Features
+#### Features
 
 | Component | Feature | Completion |
 |-|-|-|
@@ -53,23 +70,6 @@ This project is in development. Additional capabilities are coming soon.
 | AWS Stack | Deploy stack (for releases) | |
 | Service | Configuration mechanism | |
 | AWS Stack | Schedule and post messages | |
-
-## Configuration
-
-To add networks to your configuration, you'll need to obtain authorisation tokens with permission to post. See:
-
-* [Authorisation tokens](auth-tokens.md)
-* [Configuration](configuration.md)
-* [Connection strings](connection-strings.md)
-
-## Making posts
-
-You can use the command-line interface (CLI) to make an ad-hoc post to any number of social networks.
-
-* [CLI options](cli-options.md)
-* [Post composition](post-composition.md)
-
-## Developer notes
 
 ### Config support
 
