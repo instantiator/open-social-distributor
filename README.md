@@ -6,9 +6,17 @@ This is a tool for managing social posts across multiple platforms. Simple to co
 
 ## Documentation
 
-* [Open Social Distributor documentation](https://instantiator.dev/open-social-distributor/) ([source](docs/index.md))
-* [Contributing](CONTRIBUTING.md)
-* [Code of Conduct](CODE_OF_CONDUCT.md)
+For information about how to configure and use this tool, please see the documentation site:
+
+* [Open Social Distributor](https://instantiator.dev/open-social-distributor/)
+
+Source for the documentation is in the [docs/](docs/index.md) directory.
+
+## Contributing
+
+If you'd like to join the project and contribute, please read the [contributors guide](CONTRIBUTING.md) and get stuck in! You're very welcome.
+
+We have a [code of conduct](CODE_OF_CONDUCT.md) to ensure that working on this project is a welcoming and safe experience.
 
 ## Roadmap
 
