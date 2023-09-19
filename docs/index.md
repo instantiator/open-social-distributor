@@ -115,6 +115,16 @@ Testing scripts are found at the root of the `open-social-distributor-app` direc
 |-|-|
 | `test-unit-all.sh` | builds and runs the unit tests for each project |
 | `test-unit-lib.sh` | builds and runs unit tests for `DistributorLib` |
-| `test-unit-cli.sh` | builds and runs the CLI unit tests |
-| `test-unit-function.sh` | builds and runs the lambda function unit tests |
-| `test-unit-service.sh` | builds and runs the service unit tests |
+| `test-unit-cli.sh` | builds and runs the CLI unit tests (under development) |
+| `test-unit-function.sh` | builds and runs the lambda function unit tests (under development) |
+| `test-unit-service.sh` | builds and runs the service unit tests (under development) |
+
+### Integration tests
+
+Integration tests check that the distributor can connect to and post to the various social media networks.
+
+Support for all social networks is limited - some have fewer constraints than others to create test accounts for.
+
+| Script | Purpose |
+|-|-|
+| `test-integration.sh` | builds and runs the social network integration tests (under development) |
