@@ -23,8 +23,8 @@
 
 - [ ] Integration testing (setup)
     - [x] Simple integration test suite
-    - [ ] Mastodon test account
-    - [ ] Mastodon integration test
+    - [x] Mastodon test account
+    - [x] Simple Mastodon integration test
 
 - [x] CLI features
     - [x] More complex posting options
