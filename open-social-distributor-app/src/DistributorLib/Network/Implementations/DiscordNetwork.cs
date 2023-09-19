@@ -5,6 +5,7 @@ using Discord.WebSocket;
 using DistributorLib.Extensions;
 using DistributorLib.Post;
 using DistributorLib.Post.Formatters;
+using DistributorLib.Post.Images;
 using Newtonsoft.Json;
 
 namespace DistributorLib.Network.Implementations;
@@ -46,7 +47,7 @@ public class DiscordNetwork : AbstractNetwork
         };
     }
 
-    protected override async Task<PostResult> PostImplementationAsync(ISocialMessage message)
+    protected override async Task<PostResult> PostImplementationAsync(ISocialMessage message, IEnumerable<string> texts, IEnumerable<IEnumerable<ISocialImage>> images)
     {
         log.Clear();
         await client!.LoginAsync(TokenType.Bot, token);
@@ -63,11 +64,13 @@ public class DiscordNetwork : AbstractNetwork
         else
         {
             var responses = new List<RestUserMessage>();
-            var texts = Formatter.FormatText(message);
             foreach (var text in texts)
             {
-                var response = await channel.SendMessageAsync(text);
-                responses.Add(response);
+                if (!DryRunPosting)
+                {
+                    var response = await channel.SendMessageAsync(text);
+                    responses.Add(response);
+                }
             }
 
             try 
@@ -86,7 +89,7 @@ public class DiscordNetwork : AbstractNetwork
         }
     }
 
-    private async Task<SocketTextChannel> GetTextChannelAsync()
+    private async Task<SocketTextChannel?> GetTextChannelAsync()
     {
         var guild = client!.GetGuild(guildId);
         SocketTextChannel? channel = null;
@@ -124,6 +127,12 @@ public class DiscordNetwork : AbstractNetwork
 
         return new ConnectionTestResult(this, true, id, JsonConvert.SerializeObject(summary));
     }
+
+    protected override IEnumerable<IEnumerable<ISocialImage>> AssignImages(ISocialMessage message, int posts)
+    {
+        return AssignImagesToFirstPost(message, posts);
+    }
+
 }
 
 

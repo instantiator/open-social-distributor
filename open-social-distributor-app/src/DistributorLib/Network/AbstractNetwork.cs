@@ -1,5 +1,6 @@
 using DistributorLib.Post;
 using DistributorLib.Post.Formatters;
+using DistributorLib.Post.Images;
 
 namespace DistributorLib.Network;
 public abstract class AbstractNetwork : ISocialNetwork
@@ -14,6 +15,8 @@ public abstract class AbstractNetwork : ISocialNetwork
 
     public NetworkType NetworkType { get; private set; }
     
+    public bool DryRunPosting { get; set; } = false;
+
     public string ShortCode { get; private set; }
 
     public string NetworkName { get; private set; }
@@ -54,7 +57,9 @@ public abstract class AbstractNetwork : ISocialNetwork
         try
         {
             Console.WriteLine($"Posting to {ShortCode} ({NetworkType})...");
-            return await PostImplementationAsync(message);
+            var texts = Formatter.FormatText(message);
+            var images = AssignImages(message, texts.Count());
+            return await PostImplementationAsync(message, texts, images);
         }
         catch (Exception e)
         {
@@ -63,6 +68,16 @@ public abstract class AbstractNetwork : ISocialNetwork
         }
     }
 
-    protected abstract Task<PostResult> PostImplementationAsync(ISocialMessage message);
+    protected abstract Task<PostResult> PostImplementationAsync(ISocialMessage message, IEnumerable<string> texts, IEnumerable<IEnumerable<ISocialImage>> images);
+
+    protected abstract IEnumerable<IEnumerable<ISocialImage>> AssignImages(ISocialMessage message, int posts);
+
+    protected IEnumerable<IEnumerable<ISocialImage>> AssignImagesToFirstPost(ISocialMessage message, int posts)
+    {
+        return new List<IEnumerable<ISocialImage>>()
+        {
+            message.Images ?? new List<ISocialImage>() // all images in the first post
+        };
+    }
 
 }

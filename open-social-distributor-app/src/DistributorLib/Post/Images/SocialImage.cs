@@ -6,29 +6,27 @@ public class SocialImage : ISocialImage
 {
     public SocialImage(string uri, string? description)
     {
-        SourceUri = uri;
+        Source = uri;
         Description = description;
     }
 
-    public string SourceUri { get; private set; }
+    public string Source { get; private set; }
+
+    public Uri SourceUri => new Uri(Source);
+
+    public string? AbsoluteLocalPath => SourceUri.IsFile ? Path.GetFullPath(Source.Substring("file://".Length)) : null;
 
     public string? Description { get; private set; }
 
     public async Task<Stream> GetStreamAsync()
     {
-        var uri = new Uri(SourceUri);
-        return await GetStreamAsync(uri);
-    }
-
-    public static async Task<Stream> GetStreamAsync(Uri uri) {
-        if (uri.IsFile)
+        if (SourceUri.IsFile)
         {
-            return File.OpenRead(uri.LocalPath);
+            return File.OpenRead(AbsoluteLocalPath!);
         }
         else 
         {
-            return await new HttpClient().GetStreamAsync(uri);
+            return await new HttpClient().GetStreamAsync(SourceUri);
         }
     }
-
 }

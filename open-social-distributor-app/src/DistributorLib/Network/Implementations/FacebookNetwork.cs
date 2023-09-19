@@ -1,5 +1,6 @@
 using DistributorLib.Post;
 using DistributorLib.Post.Formatters;
+using DistributorLib.Post.Images;
 using Newtonsoft.Json;
 using RestSharp;
 
@@ -44,38 +45,40 @@ public class FacebookNetwork : AbstractNetwork
         graphClient = null;
     }
 
-    protected override async Task<PostResult> PostImplementationAsync(ISocialMessage message)
+    protected override async Task<PostResult> PostImplementationAsync(ISocialMessage message, IEnumerable<string> texts, IEnumerable<IEnumerable<ISocialImage>> images)
     {
-        var texts = Formatter.FormatText(message);
         var link = message.Link;
         var responses = new List<Tuple<RestResponse, FacebookPostResponse>>();
         foreach (var text in texts)
         {
-            var first = responses.Count() == 0;
-            if (first)
+            if (!DryRunPosting)
             {
-                // first post is a real post
-                var request = new RestRequest($"/{actorId}/feed", Method.Post);
-                request.AddParameter("message", text);
-                request.AddParameter("access_token", token);
-                if (link != null) { request.AddParameter("link", link.ToStringFor(NetworkType)); }
+                var first = responses.Count() == 0;
+                if (first)
+                {
+                    // first post is a real post
+                    var request = new RestRequest($"/{actorId}/feed", Method.Post);
+                    request.AddParameter("message", text);
+                    request.AddParameter("access_token", token);
+                    if (link != null) { request.AddParameter("link", link.ToStringFor(NetworkType)); }
 
-                var response = await graphClient!.ExecuteAsync(request);
+                    var response = await graphClient!.ExecuteAsync(request);
 
-                var fb_response = JsonConvert.DeserializeObject<FacebookPostResponse>(response.Content!);
-                responses.Add(new Tuple<RestResponse, FacebookPostResponse>(response, fb_response!));
-            }
-            else
-            {
-                // all subsequent posts are comments
-                // seems unlikely you'd post something long enough to exceed the facebook character limit, I guess...
-                var postId = responses.First().Item2.id!;
-                var request = new RestRequest($"/{postId}/comments", Method.Post);
-                request.AddParameter("message", text);
-                request.AddParameter("access_token", token);
-                var response = await graphClient!.ExecuteAsync(request);
-                var fb_response = JsonConvert.DeserializeObject<FacebookPostResponse>(response.Content!);
-                responses.Add(new Tuple<RestResponse, FacebookPostResponse>(response, fb_response!));
+                    var fb_response = JsonConvert.DeserializeObject<FacebookPostResponse>(response.Content!);
+                    responses.Add(new Tuple<RestResponse, FacebookPostResponse>(response, fb_response!));
+                }
+                else
+                {
+                    // all subsequent posts are comments
+                    // seems unlikely you'd post something long enough to exceed the facebook character limit, I guess...
+                    var postId = responses.First().Item2.id!;
+                    var request = new RestRequest($"/{postId}/comments", Method.Post);
+                    request.AddParameter("message", text);
+                    request.AddParameter("access_token", token);
+                    var response = await graphClient!.ExecuteAsync(request);
+                    var fb_response = JsonConvert.DeserializeObject<FacebookPostResponse>(response.Content!);
+                    responses.Add(new Tuple<RestResponse, FacebookPostResponse>(response, fb_response!));
+                }
             }
         }
 
@@ -102,6 +105,12 @@ public class FacebookNetwork : AbstractNetwork
             return new ConnectionTestResult(this, false, null, response.ErrorMessage ?? fb_me_err?.error?.message ?? response.Content);
         }
     }
+
+    protected override IEnumerable<IEnumerable<ISocialImage>> AssignImages(ISocialMessage message, int posts)
+    {
+        return AssignImagesToFirstPost(message, posts);
+    }
+
 
     private class FacebookMeResponse
     {

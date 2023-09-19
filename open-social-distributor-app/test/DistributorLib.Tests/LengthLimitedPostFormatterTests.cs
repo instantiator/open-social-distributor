@@ -184,8 +184,8 @@ public class LengthLimitedPostFormatterTests
         Assert.StartsWith("an experiment with long text. https://instantiator.dev /3", result.ElementAt(2));
 
         // find the tags - but they'll be in a random order
-        Assert.True(result.ElementAt(0).Contains("#LongText"));
-        Assert.True(result.ElementAt(0).Contains("#Experiment"));
-        Assert.True(result.ElementAt(0).Contains("#Formatting"));
+        Assert.Contains("#LongText", result.ElementAt(0));
+        Assert.Contains("#Experiment", result.ElementAt(0));
+        Assert.Contains("#Formatting", result.ElementAt(0));
     }
 }

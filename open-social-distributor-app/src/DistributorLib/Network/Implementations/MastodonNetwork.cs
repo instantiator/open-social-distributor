@@ -1,6 +1,7 @@
 using DistributorLib;
 using DistributorLib.Post;
 using DistributorLib.Post.Formatters;
+using DistributorLib.Post.Images;
 using Mastonet;
 using Mastonet.Entities;
 
@@ -46,20 +47,28 @@ public class MastodonNetwork : AbstractNetwork
 
     private string NetworkUrl => $"https://{NetworkName}";
 
-    protected override async Task<PostResult> PostImplementationAsync(ISocialMessage message)
+    protected override async Task<PostResult> PostImplementationAsync(ISocialMessage message, IEnumerable<string> texts, IEnumerable<IEnumerable<ISocialImage>> images)
     {
-        var texts = Formatter.FormatText(message);
         var statuses = new List<Status>();
         foreach (var text in texts)
         {
-            // TODO: image uploads - add images to the first post, figure out something for subsequent posts if necessary
-            var mediaIds = new List<string>();
-            var previousStatus = statuses.LastOrDefault();
-            var status = await client!.PublishStatus(text, Visibility.Public, previousStatus?.Id, mediaIds, false, null, null, null, null);
-            statuses.Add(status);
+            if (!DryRunPosting)
+            {
+                // TODO: image uploads - add images to the first post, figure out something for subsequent posts if necessary
+                var mediaIds = new List<string>();
+                var previousStatus = statuses.LastOrDefault();
+                var status = await client!.PublishStatus(text, Visibility.Public, previousStatus?.Id, mediaIds, false, null, null, null, null);
+                statuses.Add(status);
+            }
         }
         var aok = statuses.All(s => s != null && !string.IsNullOrWhiteSpace(s.Id));
         var ids = statuses.Where(s => s != null && !string.IsNullOrWhiteSpace(s.Id)).Select(s => s!.Id!);
         return new PostResult(this, message, aok, ids, aok ? null : "Unable to post all statuses");
     }
+
+    protected override IEnumerable<IEnumerable<ISocialImage>> AssignImages(ISocialMessage message, int posts)
+    {
+        return AssignImagesToFirstPost(message, posts);
+    }
+
 }

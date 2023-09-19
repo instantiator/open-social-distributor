@@ -1,6 +1,7 @@
 using DistributorLib.Network;
 using DistributorLib.Post;
 using DistributorLib.Post.Formatters;
+using DistributorLib.Post.Images;
 using Newtonsoft.Json;
 using RestSharp;
 
@@ -41,79 +42,80 @@ public class LinkedInNetwork : AbstractNetwork
         client = null;
     }
 
-    protected override async Task<PostResult> PostImplementationAsync(ISocialMessage message)
+    protected override async Task<PostResult> PostImplementationAsync(ISocialMessage message, IEnumerable<string> texts, IEnumerable<IEnumerable<ISocialImage>> images)
     {
-        var texts = Formatter.FormatText(message);
         var responses = new List<Tuple<RestResponse, LinkedInResponse>>();
-        // var author = mode == Mode.Org ? $"urn:li:organization:{authorId}" : $"urn:li:member:{authorId}";
         var author = mode == Mode.Org ? $"urn:li:organization:{authorId}" : $"urn:li:person:{authorId}";
         foreach (var text in texts)
         {
-            var first = responses.Count() == 0;
-            if (first)
+            if (!DryRunPosting)
             {
-                var request = new RestRequest($"/posts", Method.Post);
-                request.AddHeader("Authorization", $"Bearer {token}");
-                request.AddHeader("Content-Type", "application/json");
-                request.AddHeader("X-Restli-Protocol-Version", "2.0.0");
-                request.AddHeader("Linkedin-Version","202309");
-                var content = new 
-                { 
-                    author = author, 
-                    commentary = text,
-                    visibility = "PUBLIC",
-                    distribution = new 
-                    {
-                        feedDistribution = "MAIN_FEED",
-                        targetEntities = new object[] { },
-                        thirdPartyDistributionChannels = new object[] { }
-                    },
-                    lifecycleState = "PUBLISHED",
-                    isReshareDisabledByAuthor = false
-                };
-                Console.WriteLine(JsonConvert.SerializeObject(content));
-                //throw new Exception("Not gonna work anyway: {\"serviceErrorCode\":100,\"message\":\"Field Value validation failed in REQUEST_BODY: Data Processing Exception while processing fields [/author]\",\"status\":403}");
-                request.AddJsonBody(content); // JsonConvert.SerializeObject(content);
-                var response = await client!.ExecuteAsync(request);
-                var idUrn = response.Headers!.SingleOrDefault(h => h.Name=="x-linkedin-id" || h.Name=="x-restli-id")?.Value?.ToString();
-                var isError = response.Headers!.SingleOrDefault(h => h.Name=="x-restli-error-response")?.Value?.ToString() == "true";
-                var aok = response.IsSuccessful && !isError && !string.IsNullOrWhiteSpace(idUrn);
-                var headers = response.Headers!.Select(h => new Tuple<string,string?>(h.Name!, h.Value?.ToString()));
-                var liResponse = new LinkedInResponse() { Success = aok, Id = idUrn, Content = response.Content, Headers = headers };
-                responses.Add(new Tuple<RestResponse, LinkedInResponse>(response, liResponse));
-            }
-            else
-            {
-                var firstId = responses.First().Item2.Id;
-                if (!string.IsNullOrWhiteSpace(firstId))
+                var first = responses.Count() == 0;
+                if (first)
                 {
-                    using (var commentClient = new RestClient(LINKEDIN_API_COMMENT_BASE))
-                    {
-                        var request = new RestRequest($"/{firstId}/comments", Method.Post);
-                        request.AddHeader("Authorization", $"Bearer {token}");
-                        request.AddHeader("Content-Type", "application/json");
-                        request.AddHeader("X-Restli-Protocol-Version", "2.0.0");
-                        request.AddHeader("Linkedin-Version","202309");
-                        var content = new 
-                        { 
-                            actor = author, 
-                            @object = firstId,
-                            message = new { text = text },
-                            content = new object[] { }
-                        };
-                        request.AddJsonBody(content);
-                        var response = await commentClient!.ExecuteAsync(request);
-                        var idUrn = response.Headers!.SingleOrDefault(h => h.Name=="x-linkedin-id" || h.Name=="x-restli-id")?.Value?.ToString();
-                        var isError = response.Headers!.SingleOrDefault(h => h.Name=="x-restli-error-response")?.Value?.ToString() == "true";
-                        var aok = response.IsSuccessful && !isError && !string.IsNullOrWhiteSpace(idUrn);
-                        var headers = response.Headers!.Select(h => new Tuple<string,string?>(h.Name!, h.Value?.ToString()));
-                        var liResponse = new LinkedInResponse() { Success = aok, Id = idUrn, Content = response.Content, Headers = headers };
-                        responses.Add(new Tuple<RestResponse, LinkedInResponse>(response, liResponse));
-                    }
+                    var request = new RestRequest($"/posts", Method.Post);
+                    request.AddHeader("Authorization", $"Bearer {token}");
+                    request.AddHeader("Content-Type", "application/json");
+                    request.AddHeader("X-Restli-Protocol-Version", "2.0.0");
+                    request.AddHeader("Linkedin-Version","202309");
+                    var content = new 
+                    { 
+                        author = author, 
+                        commentary = text,
+                        visibility = "PUBLIC",
+                        distribution = new 
+                        {
+                            feedDistribution = "MAIN_FEED",
+                            targetEntities = new object[] { },
+                            thirdPartyDistributionChannels = new object[] { }
+                        },
+                        lifecycleState = "PUBLISHED",
+                        isReshareDisabledByAuthor = false
+                    };
+                    Console.WriteLine(JsonConvert.SerializeObject(content));
+                    //throw new Exception("Not gonna work anyway: {\"serviceErrorCode\":100,\"message\":\"Field Value validation failed in REQUEST_BODY: Data Processing Exception while processing fields [/author]\",\"status\":403}");
+                    request.AddJsonBody(content); // JsonConvert.SerializeObject(content);
+                    var response = await client!.ExecuteAsync(request);
+                    var idUrn = response.Headers!.SingleOrDefault(h => h.Name=="x-linkedin-id" || h.Name=="x-restli-id")?.Value?.ToString();
+                    var isError = response.Headers!.SingleOrDefault(h => h.Name=="x-restli-error-response")?.Value?.ToString() == "true";
+                    var aok = response.IsSuccessful && !isError && !string.IsNullOrWhiteSpace(idUrn);
+                    var headers = response.Headers!.Select(h => new Tuple<string,string?>(h.Name!, h.Value?.ToString()));
+                    var liResponse = new LinkedInResponse() { Success = aok, Id = idUrn, Content = response.Content, Headers = headers };
+                    responses.Add(new Tuple<RestResponse, LinkedInResponse>(response, liResponse));
                 }
                 else
                 {
-                    throw new Exception("Cannot post comments - main post does not have an id.");
+                    var firstId = responses.First().Item2.Id;
+                    if (!string.IsNullOrWhiteSpace(firstId))
+                    {
+                        using (var commentClient = new RestClient(LINKEDIN_API_COMMENT_BASE))
+                        {
+                            var request = new RestRequest($"/{firstId}/comments", Method.Post);
+                            request.AddHeader("Authorization", $"Bearer {token}");
+                            request.AddHeader("Content-Type", "application/json");
+                            request.AddHeader("X-Restli-Protocol-Version", "2.0.0");
+                            request.AddHeader("Linkedin-Version","202309");
+                            var content = new 
+                            { 
+                                actor = author, 
+                                @object = firstId,
+                                message = new { text = text },
+                                content = new object[] { }
+                            };
+                            request.AddJsonBody(content);
+                            var response = await commentClient!.ExecuteAsync(request);
+                            var idUrn = response.Headers!.SingleOrDefault(h => h.Name=="x-linkedin-id" || h.Name=="x-restli-id")?.Value?.ToString();
+                            var isError = response.Headers!.SingleOrDefault(h => h.Name=="x-restli-error-response")?.Value?.ToString() == "true";
+                            var aok = response.IsSuccessful && !isError && !string.IsNullOrWhiteSpace(idUrn);
+                            var headers = response.Headers!.Select(h => new Tuple<string,string?>(h.Name!, h.Value?.ToString()));
+                            var liResponse = new LinkedInResponse() { Success = aok, Id = idUrn, Content = response.Content, Headers = headers };
+                            responses.Add(new Tuple<RestResponse, LinkedInResponse>(response, liResponse));
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("Cannot post comments - main post does not have an id.");
+                    }
                 }
             }
         }
@@ -126,6 +128,11 @@ public class LinkedInNetwork : AbstractNetwork
             .Select(r => DescribeErrors(r.Item1, ++i))
         );
         return new PostResult(this, message, all_ok, ids, error: errorData);
+    }
+
+    protected override IEnumerable<IEnumerable<ISocialImage>> AssignImages(ISocialMessage message, int posts)
+    {
+        return AssignImagesToFirstPost(message, posts);
     }
 
     private string DescribeErrors(RestResponse response, int? index = null)

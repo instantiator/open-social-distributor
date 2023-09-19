@@ -47,9 +47,9 @@ public class DistributionCLI
         public string? Filter { get; set; } = null;
     }
 
-    public static void Main(params string[] args)
+    public static int Main(params string[] args)
     {
-        Parser.Default
+        return Parser.Default
             .ParseArguments<PostOptions, TestOptions>(args)
             .MapResult(
                 (PostOptions opts) => ExecutePost(opts),
