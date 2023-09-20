@@ -24,7 +24,8 @@
 - [x] Integration testing (setup)
     - [x] Simple integration test suite
     - [x] Mastodon test account
-    - [x] Simple Mastodon integration test
+    - [x] Simple Mastodon integration tests
+    - [x] Simple Discord integration tests
 
 - [x] CLI features
     - [x] More complex posting options
