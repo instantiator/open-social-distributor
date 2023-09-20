@@ -17,4 +17,26 @@ public class MessageHelper
         };
         return new SimpleSocialMessage(parts, images);
     }
+
+    public static ISocialMessage CreateComplexMessage()
+    {
+        var text = File.ReadAllText("TestData/job-interview-with-a-cat.txt");
+        var url = "https://brianbilston.com/category/some-poems/";
+
+        var parts = new List<SocialMessageContent>
+        {
+            new SocialMessageContent(text),
+            new SocialMessageContent(url, part: SocialMessagePart.Link),
+        };
+
+        var images = new List<ISocialImage>()
+        {
+            SocialImageFactory.FromUri("file://TestData/TestImages/cat-1.jpg", "A big floofy cat lays by a laptop on a wooden table outdoors"),
+            SocialImageFactory.FromUri("file://TestData/TestImages/cat-2.jpg", "A big floofy cat curled up, overlaid with the golden spiral"),
+            SocialImageFactory.FromUri("file://TestData/TestImages/cat-3.jpg", "Blue and black mottled cat street art"),
+            SocialImageFactory.FromUri("file://TestData/TestImages/cat-4.jpg", "A big floofy white cat sits on a stairway looking upwards"),
+            SocialImageFactory.FromUri("file://TestData/TestImages/cat-5.jpg", "Two cats sit by a log burner"),
+        };
+        return new SimpleSocialMessage(parts, images);
+    }
 }

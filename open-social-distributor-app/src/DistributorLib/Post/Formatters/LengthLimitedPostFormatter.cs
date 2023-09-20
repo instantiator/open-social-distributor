@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.RegularExpressions;
 using DistributorLib.Network;
 
 namespace DistributorLib.Post.Formatters;
@@ -97,7 +98,10 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
             var included = message.GetMessageParts(linkBehaviour == DecorationBehaviour.Inline, tagBehaviour == DecorationBehaviour.Inline);
             var strings = included.Select(part => part.ToStringFor(network)).Where(x => x != null).ToList();
             
-            var words = string.Join(' ', strings).Split(' ');
+            var words = string.Join(' ', strings)
+                .Split(new[] { ' ' })
+                .SelectMany(s => Regex.Split(s, @"(\n|\r|\r\n)"));
+            
             var tagWords = message.Tags.Select(tag => tag.ToStringFor(network)).Where(x => x != null).Select(x => x!);
             var link = message.Link?.ToStringFor(network);
 
@@ -179,7 +183,8 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
             var gap = currentMessage.Length == 0 ? "" : " ";
             var fits = currentMessage.Length + gap.Length + word.Length <= currentLimit;
 
-            if (word == msgBreak && msgBreakBehaviour == BreakBehaviour.NewPost)
+            var wordNoWhitespace = word.Trim(new[] { ' ', '\n', '\r' });
+            if (wordNoWhitespace == msgBreak && msgBreakBehaviour == BreakBehaviour.NewPost)
             {
                 CompleteMessage();
                 return;
@@ -187,7 +192,7 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
 
             if (fits)
             {
-                if (word == msgBreak && msgBreakBehaviour == BreakBehaviour.NewParagraph) 
+                if (wordNoWhitespace == msgBreak && msgBreakBehaviour == BreakBehaviour.NewParagraph) 
                 { 
                     currentMessage.Append("\n\n"); 
                 }

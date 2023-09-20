@@ -35,7 +35,7 @@ public abstract class AbstractNetworkTests
     {
         var result = await network.PostAsync(message);
         Assert.NotNull(result);
-        Assert.True(result.Success, $"{result.Exception?.GetType().Name}: {result.Error}");
+        Assert.True(result.Success, $"{result.Error} {result.Exception?.ToString()}");
         Assert.True(result.Message == message);
         Assert.Equal(expectedPosts, result.PostIds!.Count());
         return result;

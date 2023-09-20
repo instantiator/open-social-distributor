@@ -13,4 +13,13 @@ public class MastodonIntegrationTests : AbstractNetworkTests
         var postResult = await TestNetworkPost(network, MessageHelper.CreateSimplestMessage(), 1);
     }
 
+    [Fact]
+    public async Task MastodonNetworkCanHandleLongTextAndMultipleImages()
+    {
+        var network = networks.Single(n => n.NetworkType == DistributorLib.Network.NetworkType.Mastodon);
+        
+        var testResult = await TestNetworkInit(network);
+        var postResult = await TestNetworkPost(network, MessageHelper.CreateComplexMessage(), 4);
+    }
+
 }

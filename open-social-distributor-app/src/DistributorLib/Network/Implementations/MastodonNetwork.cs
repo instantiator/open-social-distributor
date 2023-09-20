@@ -57,11 +57,14 @@ public class MastodonNetwork : AbstractNetwork
             {
                 // TODO: image uploads - add images to the first post, figure out something for subsequent posts if necessary
                 var mediaIds = new List<string>();
-                foreach (var image in images.ElementAt(p))
+                if (p < images.Count())
                 {
-                    var media = await client!.UploadMedia(await image.GetStreamAsync(), description: image.Description);
-                    if (media == null) throw new Exception($"Could not upload image for post {p}");
-                    mediaIds.Add(media.Id);
+                    foreach (var image in images.ElementAt(p))
+                    {
+                        var media = await client!.UploadMedia(await image.GetStreamAsync(), description: image.Description);
+                        if (media == null) throw new Exception($"Could not upload image for post {p}");
+                        mediaIds.Add(media.Id);
+                    }
                 }
                 var previousStatus = statuses.LastOrDefault();
                 var status = await client!.PublishStatus(text, Visibility.Public, previousStatus?.Id, mediaIds, false, null, null, null, null);

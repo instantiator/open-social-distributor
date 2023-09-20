@@ -43,7 +43,7 @@ fi
 HUSH_ASYNC_WARNING="/nowarn:CS1998"
 
 echo "Building integration tests..."
-dotnet build test/Integration.Tests/Integration.Tests.csproj $HUSH_ASYNC_WARNING --verbosity:minimal
+dotnet build test/Integration.Tests/Integration.Tests.csproj $HUSH_ASYNC_WARNING --verbosity:quiet
 
 ABSOLUTE_CONFIG_PATH="$(pwd)/$CONFIG_PATH"
 

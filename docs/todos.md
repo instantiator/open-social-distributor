@@ -5,9 +5,9 @@
 
 - [ ] Social media features
     - [x] Posting, formatting, threading, images, links for Mastodon
+    - [ ] Posting, formatting, threading, images, links for Discord
     - [ ] Posting, formatting, threading, images, links for Facebook
     - [ ] Posting, formatting, threading, images, links for LinkedIn
-    - [ ] Posting, formatting, threading, images, links for Discord
     - [ ] Posting, formatting, threading, images, links for Twitter
 
 - [x] Message formatting
