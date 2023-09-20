@@ -55,7 +55,6 @@ public class MastodonNetwork : AbstractNetwork
             var text = texts.ElementAt(p);
             if (!DryRunPosting)
             {
-                // TODO: image uploads - add images to the first post, figure out something for subsequent posts if necessary
                 var mediaIds = new List<string>();
                 if (p < images.Count())
                 {

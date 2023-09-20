@@ -10,6 +10,7 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
     public const decimal DEFAULT_TAG_COVERAGE = 0.5m;
     public enum BreakBehaviour { None, NewParagraph, NewPost }
     public enum DecorationBehaviour { FirstPost, AllPosts, Inline, None }
+    public enum IndexBehaviour { Slash, Parentheses, SquareBrackets, None }
 
     protected int messageLengthLimit;
     protected int subsequentLimits;
@@ -18,6 +19,7 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
     protected BreakBehaviour breakBehaviour;
     protected DecorationBehaviour tagBehaviour;
     protected DecorationBehaviour linkBehaviour;
+    protected IndexBehaviour indexBehaviour;
 
     public LengthLimitedPostFormatter(NetworkType network, 
         int limit, int subsequentLimits,
@@ -25,15 +27,17 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
         DecorationBehaviour linkBehaviour = DecorationBehaviour.FirstPost, 
         BreakBehaviour breakBehaviour = BreakBehaviour.NewPost,
         DecorationBehaviour tagBehaviour = DecorationBehaviour.FirstPost,
+        IndexBehaviour indexBehaviour = IndexBehaviour.Slash,
         decimal acceptableTagCoverage = DEFAULT_TAG_COVERAGE) : base(network)
     {
         this.messageLengthLimit = limit;
         this.subsequentLimits = subsequentLimits;
-        this.acceptableTagCoverage = acceptableTagCoverage;
         this.indices = indices;
         this.linkBehaviour = linkBehaviour;
         this.breakBehaviour = breakBehaviour;
         this.tagBehaviour = tagBehaviour;
+        this.indexBehaviour = indexBehaviour;
+        this.acceptableTagCoverage = acceptableTagCoverage;
     }
 
     public override IEnumerable<string> FormatText(ISocialMessage message)
@@ -45,6 +49,7 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
             .WithBreakBehaviour(breakBehaviour, BREAK_CODE)
             .WithTagBehaviour(tagBehaviour)
             .WithLinkBehaviour(linkBehaviour)
+            .WithIndexBehaviour(indexBehaviour)
             .WithAcceptableTagCoverage(acceptableTagCoverage)
             .WithIndices(indices)
             .Build(message);
@@ -66,6 +71,7 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
         private BreakBehaviour msgBreakBehaviour = BreakBehaviour.NewPost;
         private DecorationBehaviour tagBehaviour = DecorationBehaviour.AllPosts;
         private DecorationBehaviour linkBehaviour = DecorationBehaviour.FirstPost;
+        private IndexBehaviour indexBehaviour = IndexBehaviour.Slash;
 
         private IEnumerable<string> words = new List<string>();
         private IEnumerable<string> tagWords = new List<string>();
@@ -78,6 +84,7 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
         public WordWrapFormatter WithLinkBehaviour(DecorationBehaviour behaviour) { this.linkBehaviour = behaviour; return this; }
         public WordWrapFormatter WithBreakBehaviour(BreakBehaviour behaviour, string msgBreak) { this.msgBreak = msgBreak; this.msgBreakBehaviour = behaviour; return this; }
         public WordWrapFormatter WithTagBehaviour(DecorationBehaviour behaviour) { this.tagBehaviour = behaviour; return this; }
+        public WordWrapFormatter WithIndexBehaviour(IndexBehaviour behaviour) { this.indexBehaviour = behaviour; return this; }
         public WordWrapFormatter WithIndices(bool indices) { this.indices = indices; return this; }
 
         public void Reset(IEnumerable<string> words, string? link, IEnumerable<string> tagWords)
@@ -227,7 +234,26 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
             }
         }
 
-        private string IndexWord(int index) => $"/{index}";
+        private string IndexWord(int index)
+        {
+            switch (indexBehaviour)
+            {
+                case IndexBehaviour.Slash:
+                    return $"/{index}";
+            
+                case IndexBehaviour.Parentheses:
+                    return $"({index})";
+
+                case IndexBehaviour.SquareBrackets:
+                    return $"[{index}]";
+
+                case IndexBehaviour.None:
+                    return "";
+
+                default:
+                    throw new Exception($"Unknown index behaviour: {indexBehaviour}");
+            }
+        } 
 
         private void CompleteMessage()
         {

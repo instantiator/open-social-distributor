@@ -9,9 +9,13 @@ Runs all integration tests.
 
 Options:
     -c <path>      --config <path>         Path to the configuration JSON
+    -f <filter>    --filter <filter>       Filter to identify which tests to run
     -h             --help                  Prints this help message and exits
 EOF
 }
+
+# defaults
+FILTER=Integration.Tests
 
 # parameters
 while [ -n "$1" ]; do
@@ -19,6 +23,10 @@ while [ -n "$1" ]; do
   -c | --config)
     shift
     CONFIG_PATH=$1
+    ;;
+  -f | --filter)
+    shift
+    FILTER=$1
     ;;
   -h | --help)
     usage
@@ -50,4 +58,5 @@ ABSOLUTE_CONFIG_PATH="$(pwd)/$CONFIG_PATH"
 echo "Running integration tests..."
 dotnet test test/Integration.Tests/Integration.Tests.csproj \
     --environment CONFIG_PATH="$ABSOLUTE_CONFIG_PATH" \
+    --filter "$FILTER" \
     --no-build --verbosity:normal

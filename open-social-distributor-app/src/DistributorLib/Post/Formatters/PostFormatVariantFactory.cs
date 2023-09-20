@@ -11,27 +11,31 @@ namespace DistributorLib.Post.Formatters
             limit: 500, subsequentLimits: 500, indices: true,
             linkBehaviour: LengthLimitedPostFormatter.DecorationBehaviour.FirstPost,
             breakBehaviour: LengthLimitedPostFormatter.BreakBehaviour.NewPost,
-            tagBehaviour: LengthLimitedPostFormatter.DecorationBehaviour.AllPosts);
+            tagBehaviour: LengthLimitedPostFormatter.DecorationBehaviour.AllPosts,
+            indexBehaviour: LengthLimitedPostFormatter.IndexBehaviour.Slash);
 
         public static IPostFormatter Facebook => new LengthLimitedPostFormatter(
             network: Network.NetworkType.Facebook, 
             limit: 63206, subsequentLimits: 8000, indices: false,
             linkBehaviour: LengthLimitedPostFormatter.DecorationBehaviour.None,
             breakBehaviour: LengthLimitedPostFormatter.BreakBehaviour.NewParagraph, 
-            tagBehaviour: LengthLimitedPostFormatter.DecorationBehaviour.FirstPost);
+            tagBehaviour: LengthLimitedPostFormatter.DecorationBehaviour.FirstPost,
+            indexBehaviour: LengthLimitedPostFormatter.IndexBehaviour.None);
 
         public static IPostFormatter LinkedIn => new LengthLimitedPostFormatter(
             network: Network.NetworkType.LinkedIn, 
             limit: 3000, subsequentLimits: 1250, indices: false,
             linkBehaviour: LengthLimitedPostFormatter.DecorationBehaviour.FirstPost,
             breakBehaviour: LengthLimitedPostFormatter.BreakBehaviour.NewParagraph, 
-            tagBehaviour: LengthLimitedPostFormatter.DecorationBehaviour.FirstPost);
+            tagBehaviour: LengthLimitedPostFormatter.DecorationBehaviour.FirstPost,
+            indexBehaviour: LengthLimitedPostFormatter.IndexBehaviour.None);
 
         public static IPostFormatter Discord => new LengthLimitedPostFormatter(
             network: Network.NetworkType.Discord, 
             limit: 2000, subsequentLimits: 2000, indices: true,
             linkBehaviour: LengthLimitedPostFormatter.DecorationBehaviour.FirstPost,
             breakBehaviour: LengthLimitedPostFormatter.BreakBehaviour.NewPost, 
-            tagBehaviour: LengthLimitedPostFormatter.DecorationBehaviour.FirstPost);
+            tagBehaviour: LengthLimitedPostFormatter.DecorationBehaviour.FirstPost,
+            indexBehaviour: LengthLimitedPostFormatter.IndexBehaviour.None);
     }
 }

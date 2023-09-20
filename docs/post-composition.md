@@ -66,9 +66,9 @@ Some items (ie. tags, links) will either be moved to the first post, duplicated 
 | Network | First post | Subsequent posts | Tags | Link | Images | Images per post |
 |-|-|-|-|-|-|-|
 | Mastodon | `500` | `500` | All posts | First post | Front-loaded | 4 |
+| Discord | `2000` | `2000` | First post | First post |  First post | 10 |
 | Facebook | `63206` | `8000` | First post | Special | First post | Unlimited |
 | LinkedIn | `3000` | `1250` | First post | First post | First post | 9 |
-| Discord | `2000` | `2000` | First post | First post |  First post | 10 |
 | Twitter | | | | |
 
 The formatter will wrap words on each post. If a post would exceed the limit available to it, it wraps the next word into the next post.

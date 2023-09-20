@@ -39,12 +39,12 @@ This project is in development. Additional capabilities are coming soon.
 
 | Network | Test | Post | Thread | Link | Tags | Images |
 |-|-|-|-|-|-|-|
-| Console | ✅ | ✅ | ⌛️ | ✅ | ✅ | 🆗 |
-| Mastodon | ✅ | ✅ | ⌛️ | ✅ | ✅ | ✅ |
+| Console | ✅ | ✅ | ✅ | ✅ | ✅ | 🆗 |
+| Mastodon | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Discord | ✅ | ✅ | ⌛️ | ✅ | ✅ | |
 | Facebook (page) | ✅ | ✅ | ⌛️ | ✅ | ✅ | |
 | LinkedIn (org) | ✅ | ✅ | ⌛️ | ✅ | ✅ | |
 | LinkedIn (member) | ✅ | ✅ | ⌛️ | ✅ | ✅ | |
-| Discord | ✅ | ✅ | ⌛️ | ✅ | ✅ | |
 | Twitter | | | | | | |
 
 ✅ = implemented, working

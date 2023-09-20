@@ -59,17 +59,34 @@ public class DiscordNetwork : AbstractNetwork
         var channel = await GetTextChannelAsync();
         if (channel == null)
         {
+            log.Add("Channel not found");
             return new PostResult(this, message, false, null, string.Join('\n', log));
         } 
         else
         {
             var responses = new List<RestUserMessage>();
-            foreach (var text in texts)
+            for (var t = 0; t < texts.Count(); t++)
             {
+                var text = texts.ElementAt(t);
                 if (!DryRunPosting)
                 {
-                    var response = await channel.SendMessageAsync(text);
-                    responses.Add(response);
+                    if (images.Count() > t && images.ElementAt(t).Count() > 0)
+                    {
+                        var files = images.ElementAt(t)
+                            .Select(async i => new FileAttachment(
+                                stream: await i.GetStreamAsync(), 
+                                fileName: Path.GetFileName(i.AbsoluteLocalPath), 
+                                description: i.Description))
+                            .Select(f => f.Result);
+
+                        var response = await channel.SendFilesAsync(files, text);
+                        responses.Add(response);
+                    }
+                    else
+                    {
+                        var response = await channel.SendMessageAsync(text);
+                        responses.Add(response);
+                    }
                 }
             }
 
