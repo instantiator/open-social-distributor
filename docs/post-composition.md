@@ -63,13 +63,12 @@ If you manage to post a thread longer than the post limit for other networks (eg
 
 Some items (ie. tags, links) will either be moved to the first post, duplicated across all posts, or may be handled differently depending on the social network.
 
-| Network | First post | Subsequent posts | Tags | Link |
-|-|-|-|-|-|
-| Console | ∞ | ∞ | N/A | N/A |
-| Mastodon | `500` | `500` | All posts | First post |
-| Facebook | `63206` | `8000` | First post | Special |
-| LinkedIn | `3000` | `1250` | First post | First post |
-| Discord | `2000` | `2000` | First post | First post | 
+| Network | First post | Subsequent posts | Tags | Link | Images | Images per post |
+|-|-|-|-|-|-|-|
+| Mastodon | `500` | `500` | All posts | First post | Front-loaded | 4 |
+| Facebook | `63206` | `8000` | First post | Special | First post | Unlimited |
+| LinkedIn | `3000` | `1250` | First post | First post | First post | 9 |
+| Discord | `2000` | `2000` | First post | First post |  First post | 10 |
 | Twitter | | | | |
 
 The formatter will wrap words on each post. If a post would exceed the limit available to it, it wraps the next word into the next post.
@@ -81,6 +80,17 @@ The limit allows space for:
 1. Any tags that will fit, if the tags should appear on the post
 
 By default, tags will not exceed 50% of the allowed character space. If not all tags will fit on a post, a random selection of the available tags is used.
+
+### Images
+
+As described above, images are assigned to the various posts that make up a thread.
+
+* For Mastodon, images will be assigned starting from the first post, at 4 per post.
+* For Facebook, all images (unlimited) will be assigned to the first post.
+* For LinkedIn, all images will be assigned to the first post, up to 9.
+* For Discord, all images will be assigned to the first post, up to 10.
+
+**A message that is to be posted across all 4 of these networks should be constrained by the lowest common denominator, ie. a maximum of 9 images.**
 
 ### Breaks
 

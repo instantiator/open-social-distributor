@@ -108,7 +108,7 @@ public class FacebookNetwork : AbstractNetwork
 
     protected override IEnumerable<IEnumerable<ISocialImage>> AssignImages(ISocialMessage message, int posts)
     {
-        return AssignImagesToFirstPost(message, posts);
+        return AssignImagesToFirstPost(message, posts, null, false);
     }
 
 

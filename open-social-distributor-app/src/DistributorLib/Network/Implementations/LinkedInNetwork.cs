@@ -132,7 +132,7 @@ public class LinkedInNetwork : AbstractNetwork
 
     protected override IEnumerable<IEnumerable<ISocialImage>> AssignImages(ISocialMessage message, int posts)
     {
-        return AssignImagesToFirstPost(message, posts);
+        return AssignImagesToFirstPost(message, posts, 9, true);
     }
 
     private string DescribeErrors(RestResponse response, int? index = null)

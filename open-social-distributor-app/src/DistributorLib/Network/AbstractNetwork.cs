@@ -72,12 +72,44 @@ public abstract class AbstractNetwork : ISocialNetwork
 
     protected abstract IEnumerable<IEnumerable<ISocialImage>> AssignImages(ISocialMessage message, int posts);
 
-    protected IEnumerable<IEnumerable<ISocialImage>> AssignImagesToFirstPost(ISocialMessage message, int posts)
+    protected IEnumerable<IEnumerable<ISocialImage>> AssignImagesToFirstPost(ISocialMessage message, int posts, int? max, bool throwIfTooManyImages)
     {
+        if (throwIfTooManyImages && message.Images?.Count() > max)
+        {
+            throw new Exception($"Unable to assign {message.Images?.Count()} images across {posts} posts.");
+        }
+        var images = max != null ? message.Images?.Take(max.Value) : message.Images;
         return new List<IEnumerable<ISocialImage>>()
         {
-            message.Images ?? new List<ISocialImage>() // all images in the first post
+            images ?? new List<ISocialImage>() // all images in the first post
         };
+    }
+
+    protected IEnumerable<IEnumerable<ISocialImage>> FrontLoadImages(ISocialMessage message, int posts, int maxImagesPerPost, bool throwIfTooManyImages)
+    {
+        var images = message.Images ?? new List<ISocialImage>();
+        var result = new List<List<ISocialImage>>();
+
+        if (maxImagesPerPost < 1) return result;
+        var currentGroup = new List<ISocialImage>();
+        foreach (var image in images)
+        {
+            if (currentGroup.Count >= maxImagesPerPost)
+            {
+                result.Add(currentGroup);
+                currentGroup = new List<ISocialImage>();
+            }
+            currentGroup.Add(image);
+        }
+        if (currentGroup.Count > 0)
+        {
+            result.Add(currentGroup);
+        }
+        if (throwIfTooManyImages && result.Count() > posts)
+        {
+            throw new Exception($"Unable to assign {images.Count()} images across {posts} posts.");
+        }
+        return result.Take(posts); // cap at the number of available posts
     }
 
 }

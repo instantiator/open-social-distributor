@@ -40,7 +40,7 @@ This project is in development. Additional capabilities are coming soon.
 | Network | Test | Post | Thread | Link | Tags | Images |
 |-|-|-|-|-|-|-|
 | Console | ✅ | ✅ | ⌛️ | ✅ | ✅ | 🆗 |
-| Mastodon | ✅ | ✅ | ⌛️ | ✅ | ✅ | |
+| Mastodon | ✅ | ✅ | ⌛️ | ✅ | ✅ | ✅ |
 | Facebook (page) | ✅ | ✅ | ⌛️ | ✅ | ✅ | |
 | LinkedIn (org) | ✅ | ✅ | ⌛️ | ✅ | ✅ | |
 | LinkedIn (member) | ✅ | ✅ | ⌛️ | ✅ | ✅ | |
@@ -113,11 +113,7 @@ Testing scripts are found at the root of the `open-social-distributor-app` direc
 
 | Script | Purpose |
 |-|-|
-| `test-unit-all.sh` | builds and runs the unit tests for each project |
-| `test-unit-lib.sh` | builds and runs unit tests for `DistributorLib` |
-| `test-unit-cli.sh` | builds and runs the CLI unit tests (under development) |
-| `test-unit-function.sh` | builds and runs the lambda function unit tests (under development) |
-| `test-unit-service.sh` | builds and runs the service unit tests (under development) |
+| `run-unit-tests.sh` | builds and runs all or some of the unit tests |
 
 ### Integration tests
 
@@ -127,4 +123,4 @@ Support for all social networks is limited - some have fewer constraints than ot
 
 | Script | Purpose |
 |-|-|
-| `test-integration.sh` | builds and runs the social network integration tests (under development) |
+| `run-integration-tests.sh` | builds and runs the social network integration tests |

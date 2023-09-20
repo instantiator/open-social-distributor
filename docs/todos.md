@@ -4,7 +4,7 @@
 - [x] Social network configuration (connection strings)
 
 - [ ] Social media features
-    - [ ] Posting, formatting, threading, images, links for Mastodon
+    - [x] Posting, formatting, threading, images, links for Mastodon
     - [ ] Posting, formatting, threading, images, links for Facebook
     - [ ] Posting, formatting, threading, images, links for LinkedIn
     - [ ] Posting, formatting, threading, images, links for Discord
@@ -15,13 +15,13 @@
     - [x] Control where tags appear
     - [x] Control where the link appears
     - [x] Support for message breaks: `$$`
-    - [ ] Per-network image assignment choices
+    - [x] Per-network image assignment choices
 
 - [x] Unit testing (setup)
     - [x] Full suite of test projects
     - [x] Library tests of a good junk of functionality
 
-- [ ] Integration testing (setup)
+- [x] Integration testing (setup)
     - [x] Simple integration test suite
     - [x] Mastodon test account
     - [x] Simple Mastodon integration test

@@ -130,11 +130,9 @@ public class DiscordNetwork : AbstractNetwork
 
     protected override IEnumerable<IEnumerable<ISocialImage>> AssignImages(ISocialMessage message, int posts)
     {
-        return AssignImagesToFirstPost(message, posts);
+        return AssignImagesToFirstPost(message, posts, max: 10, throwIfTooManyImages: true);
     }
-
 }
-
 
 // var filename = Path.GetFileName(path);
 

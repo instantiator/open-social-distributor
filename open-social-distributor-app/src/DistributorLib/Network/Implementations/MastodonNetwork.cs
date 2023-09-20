@@ -50,14 +50,22 @@ public class MastodonNetwork : AbstractNetwork
     protected override async Task<PostResult> PostImplementationAsync(ISocialMessage message, IEnumerable<string> texts, IEnumerable<IEnumerable<ISocialImage>> images)
     {
         var statuses = new List<Status>();
-        foreach (var text in texts)
+        for (int p = 0; p < texts.Count(); p++)
         {
+            var text = texts.ElementAt(p);
             if (!DryRunPosting)
             {
                 // TODO: image uploads - add images to the first post, figure out something for subsequent posts if necessary
                 var mediaIds = new List<string>();
+                foreach (var image in images.ElementAt(p))
+                {
+                    var media = await client!.UploadMedia(await image.GetStreamAsync(), description: image.Description);
+                    if (media == null) throw new Exception($"Could not upload image for post {p}");
+                    mediaIds.Add(media.Id);
+                }
                 var previousStatus = statuses.LastOrDefault();
                 var status = await client!.PublishStatus(text, Visibility.Public, previousStatus?.Id, mediaIds, false, null, null, null, null);
+                if (status == null) throw new Exception($"Could not post status {p}");
                 statuses.Add(status);
             }
         }
@@ -68,7 +76,8 @@ public class MastodonNetwork : AbstractNetwork
 
     protected override IEnumerable<IEnumerable<ISocialImage>> AssignImages(ISocialMessage message, int posts)
     {
-        return AssignImagesToFirstPost(message, posts);
+        // TODO: make throwIfTooManyImages configurable
+        return FrontLoadImages(message, posts, maxImagesPerPost: 4, throwIfTooManyImages: true);
     }
 
 }

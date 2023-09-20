@@ -20,7 +20,7 @@ public abstract class AbstractNetworkTests
     {
         var result = await network.PostAsync(message);
         Assert.NotNull(result);
-        Assert.True(result.Success);
+        Assert.True(result.Success, $"{result.Exception?.GetType().Name}: {result.Error}");
         Assert.True(result.Message == message);
         Assert.Equal(expectedPosts, result.PostIds!.Count());
         return result;

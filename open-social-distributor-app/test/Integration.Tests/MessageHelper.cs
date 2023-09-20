@@ -9,7 +9,7 @@ public class MessageHelper
     {
         var parts = new List<SocialMessageContent>
         {
-            new SocialMessageContent("Hello this is a test")
+            new SocialMessageContent("Integration test message")
         };
         var images = new List<ISocialImage>()
         {
