@@ -41,7 +41,7 @@ This project is in development. Additional capabilities are coming soon.
 |-|-|-|-|-|-|-|
 | Console | ✅ | ✅ | ✅ | ✅ | ✅ | 🆗 |
 | Mastodon | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Discord | ✅ | ✅ | ⌛️ | ✅ | ✅ | |
+| Discord | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Facebook (page) | ✅ | ✅ | ⌛️ | ✅ | ✅ | |
 | LinkedIn (org) | ✅ | ✅ | ⌛️ | ✅ | ✅ | |
 | LinkedIn (member) | ✅ | ✅ | ⌛️ | ✅ | ✅ | |
