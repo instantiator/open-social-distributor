@@ -14,12 +14,20 @@ public class MastodonIntegrationTests : AbstractNetworkTests
     }
 
     [Fact]
-    public async Task MastodonNetworkCanHandleLongTextAndMultipleImages()
+    public async Task MastodonNetworkCanHandleLongText()
     {
         var network = networks.Single(n => n.NetworkType == DistributorLib.Network.NetworkType.Mastodon);
         
         var testResult = await TestNetworkInit(network);
-        var postResult = await TestNetworkPost(network, MessageHelper.CreateComplexMessage(), 4);
+        var postResult = await TestNetworkPost(network, MessageHelper.CreateLongTextMessage(), 12);
     }
 
+    [Fact]
+    public async Task MastodonNetworkCanHandleBreakWordsAndMultipleImages()
+    {
+        var network = networks.Single(n => n.NetworkType == DistributorLib.Network.NetworkType.Mastodon);
+        
+        var testResult = await TestNetworkInit(network);
+        var postResult = await TestNetworkPost(network, MessageHelper.CreateComplexMessageWithBreakWords(), 4);
+    }
 }

@@ -13,12 +13,18 @@ public class MessageHelper
         };
         var images = new List<ISocialImage>()
         {
-            SocialImageFactory.FromUri("file://TestData/TestImages/mastodon-logo.png", "the Mastodon logo")
+            SocialImageFactory.FromUri("file://TestData/TestImages/social-distributor-icon.png", "the Social Distributor icon")
         };
         return new SimpleSocialMessage(parts, images);
     }
 
-    public static ISocialMessage CreateComplexMessage()
+    public static ISocialMessage CreateLongTextMessage()
+    {
+        var text = File.ReadAllText("TestData/the-500-mile-email.txt");
+        return new SimpleSocialMessage(text);
+    }
+
+    public static ISocialMessage CreateComplexMessageWithBreakWords()
     {
         var text = File.ReadAllText("TestData/job-interview-with-a-cat.txt");
         var url = "https://brianbilston.com/category/some-poems/";

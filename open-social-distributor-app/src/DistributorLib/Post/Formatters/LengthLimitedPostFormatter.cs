@@ -180,16 +180,20 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
 
         private void PerformAction(string word)
         {
-            var gap = currentMessage.Length == 0 ? "" : " ";
-            var fits = currentMessage.Length + gap.Length + word.Length <= currentLimit;
+            var blankChars = new List<char>{'\n','\r',' '};
+            var isBlank = word.All(c => blankChars.Contains(c));
+            var isFirstWord = currentMessage.Length == 0;
+            var lastCharIsNewline = currentMessage.Length > 0 && currentMessage[currentMessage.Length - 1] == '\n';
+            var gap = isBlank || isFirstWord || lastCharIsNewline ? "" : " ";
 
-            var wordNoWhitespace = word.Trim(new[] { ' ', '\n', '\r' });
+            var wordNoWhitespace = word.Trim(blankChars.ToArray());
             if (wordNoWhitespace == msgBreak && msgBreakBehaviour == BreakBehaviour.NewPost)
             {
                 CompleteMessage();
                 return;
             }
 
+            var fits = currentMessage.Length + gap.Length + word.Trim(' ').Length <= currentLimit;
             if (fits)
             {
                 if (wordNoWhitespace == msgBreak && msgBreakBehaviour == BreakBehaviour.NewParagraph) 
@@ -198,7 +202,7 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
                 }
                 else
                 {
-                    currentMessage.Append($"{gap}{word}");
+                    currentMessage.Append($"{gap}{word.Trim(' ')}");
                 }
             }
             else

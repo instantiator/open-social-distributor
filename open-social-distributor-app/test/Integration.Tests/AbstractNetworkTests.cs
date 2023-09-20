@@ -13,7 +13,8 @@ public abstract class AbstractNetworkTests
     protected AbstractNetworkTests()
     {
         var configPath = Environment.GetEnvironmentVariable("CONFIG_PATH");
-        if (string.IsNullOrWhiteSpace(configPath)) throw new ArgumentNullException("CONFIG_PATH");
+        // if (string.IsNullOrWhiteSpace(configPath)) throw new ArgumentNullException("CONFIG_PATH");
+        configPath = configPath ?? "/Users/lewiswestbury/src/flt/open-social-distributor/open-social-distributor-app/sample-config/private-integration-tests.json";
         
         var json = File.ReadAllText(configPath);
         config = JsonConvert.DeserializeObject<Config>(json)!;
