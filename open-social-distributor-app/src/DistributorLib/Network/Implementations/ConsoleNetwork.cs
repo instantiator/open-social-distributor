@@ -1,4 +1,5 @@
 using DistributorLib.Post;
+using DistributorLib.Post.Assigners;
 using DistributorLib.Post.Formatters;
 using DistributorLib.Post.Images;
 
@@ -6,7 +7,7 @@ namespace DistributorLib.Network.Implementations;
 
 public class ConsoleNetwork : AbstractNetwork
 {
-    public ConsoleNetwork() : base(NetworkType.Console, "Console", "Console.Network", PostFormatVariantFactory.Console)
+    public ConsoleNetwork() : base(NetworkType.Console, "Console", "Console.Network", PostFormatVariantFactory.Console, ImageAssignerVariantFactory.Console)
     {
     }
 
@@ -50,9 +51,5 @@ public class ConsoleNetwork : AbstractNetwork
         var counter = 0; var ids = Enumerable.Repeat($"console-post-{counter++}", texts.Count()).ToList();
         return new PostResult(this, message, true, ids);
     }
-
-    protected override IEnumerable<IEnumerable<ISocialImage>> AssignImages(ISocialMessage message, int posts)
-    {
-        return AssignImagesToFirstPost(message, posts, null, false);
-    }
 }
+ 

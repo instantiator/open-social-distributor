@@ -4,6 +4,7 @@ using Discord.Rest;
 using Discord.WebSocket;
 using DistributorLib.Extensions;
 using DistributorLib.Post;
+using DistributorLib.Post.Assigners;
 using DistributorLib.Post.Formatters;
 using DistributorLib.Post.Images;
 using Newtonsoft.Json;
@@ -21,7 +22,7 @@ public class DiscordNetwork : AbstractNetwork
     private ulong channelId;
 
     public DiscordNetwork(string shortcode, string token, ulong guildId, ulong channelId) 
-        : base(NetworkType.Discord, shortcode, "Discord", PostFormatVariantFactory.Discord)
+        : base(NetworkType.Discord, shortcode, "Discord", PostFormatVariantFactory.Discord, ImageAssignerVariantFactory.Discord)
     {
         this.token = token;
         this.guildId = guildId;
@@ -143,11 +144,6 @@ public class DiscordNetwork : AbstractNetwork
         };
 
         return new ConnectionTestResult(this, true, id, JsonConvert.SerializeObject(summary));
-    }
-
-    protected override IEnumerable<IEnumerable<ISocialImage>> AssignImages(ISocialMessage message, int posts)
-    {
-        return AssignImagesToFirstPost(message, posts, max: 10, throwIfTooManyImages: true);
     }
 }
 

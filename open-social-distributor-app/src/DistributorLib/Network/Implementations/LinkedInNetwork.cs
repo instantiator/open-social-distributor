@@ -1,5 +1,6 @@
 using DistributorLib.Network;
 using DistributorLib.Post;
+using DistributorLib.Post.Assigners;
 using DistributorLib.Post.Formatters;
 using DistributorLib.Post.Images;
 using Newtonsoft.Json;
@@ -22,7 +23,7 @@ public class LinkedInNetwork : AbstractNetwork
     private RestClient? client;
 
     public LinkedInNetwork(string shortcode, Mode mode, string clientId, string clientSecret, string token, string authorId) 
-        : base(NetworkType.LinkedIn, shortcode, "linkedin", PostFormatVariantFactory.LinkedIn)
+        : base(NetworkType.LinkedIn, shortcode, "linkedin", PostFormatVariantFactory.LinkedIn, ImageAssignerVariantFactory.LinkedIn)
     {
         this.mode = mode;
         this.token = token;
@@ -128,11 +129,6 @@ public class LinkedInNetwork : AbstractNetwork
             .Select(r => DescribeErrors(r.Item1, ++i))
         );
         return new PostResult(this, message, all_ok, ids, error: errorData);
-    }
-
-    protected override IEnumerable<IEnumerable<ISocialImage>> AssignImages(ISocialMessage message, int posts)
-    {
-        return AssignImagesToFirstPost(message, posts, 9, true);
     }
 
     private string DescribeErrors(RestResponse response, int? index = null)

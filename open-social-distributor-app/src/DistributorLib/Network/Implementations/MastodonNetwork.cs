@@ -1,5 +1,6 @@
 using DistributorLib;
 using DistributorLib.Post;
+using DistributorLib.Post.Assigners;
 using DistributorLib.Post.Formatters;
 using DistributorLib.Post.Images;
 using Mastonet;
@@ -11,7 +12,8 @@ public class MastodonNetwork : AbstractNetwork
     private string token;
     private MastodonClient? client;
 
-    public MastodonNetwork(string code, string instance, string token) : base(NetworkType.Mastodon, code, instance, PostFormatVariantFactory.Mastodon)
+    public MastodonNetwork(string code, string instance, string token) 
+        : base(NetworkType.Mastodon, code, instance, PostFormatVariantFactory.Mastodon, ImageAssignerVariantFactory.Mastodon)
     {
         this.token = token;
     }
@@ -74,12 +76,6 @@ public class MastodonNetwork : AbstractNetwork
         var aok = statuses.All(s => s != null && !string.IsNullOrWhiteSpace(s.Id));
         var ids = statuses.Where(s => s != null && !string.IsNullOrWhiteSpace(s.Id)).Select(s => s!.Id!);
         return new PostResult(this, message, aok, ids, aok ? null : "Unable to post all statuses");
-    }
-
-    protected override IEnumerable<IEnumerable<ISocialImage>> AssignImages(ISocialMessage message, int posts)
-    {
-        // TODO: make throwIfTooManyImages configurable
-        return FrontLoadImages(message, posts, maxImagesPerPost: 4, throwIfTooManyImages: true);
     }
 
 }

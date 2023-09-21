@@ -1,4 +1,5 @@
 using DistributorLib.Post;
+using DistributorLib.Post.Assigners;
 using DistributorLib.Post.Formatters;
 using DistributorLib.Post.Images;
 using Newtonsoft.Json;
@@ -23,7 +24,7 @@ public class FacebookNetwork : AbstractNetwork
     public FacebookNetwork(string code, Mode mode, 
         string? token = null, 
         string? actorId = null) 
-            : base(NetworkType.Facebook, code, "facebook", PostFormatVariantFactory.Facebook)
+            : base(NetworkType.Facebook, code, "facebook", PostFormatVariantFactory.Facebook, ImageAssignerVariantFactory.Facebook)
     {
         this.mode = mode;
         this.token = token;
@@ -105,12 +106,6 @@ public class FacebookNetwork : AbstractNetwork
             return new ConnectionTestResult(this, false, null, response.ErrorMessage ?? fb_me_err?.error?.message ?? response.Content);
         }
     }
-
-    protected override IEnumerable<IEnumerable<ISocialImage>> AssignImages(ISocialMessage message, int posts)
-    {
-        return AssignImagesToFirstPost(message, posts, null, false);
-    }
-
 
     private class FacebookMeResponse
     {
