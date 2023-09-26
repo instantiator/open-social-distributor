@@ -15,6 +15,13 @@ See also:
 
 * [Associate an App with a LinkedIn Page](https://www.linkedin.com/help/linkedin/answer/a548360)
 
+## Quotas
+
+By default, your app will be allowed:
+
+* 10 posts per user per day
+* A cap of 100 posts per day
+
 ## LinkedIn connection strings
 
 ```text

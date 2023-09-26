@@ -28,7 +28,4 @@ public class DiscordIntegrationTests : AbstractNetworkTests
         var testResult = await TestNetworkInit(network);
         var postResult = await TestNetworkPost(network, MessageHelper.CreateComplexMessageWithBreakWords(), 4);
     }
-
-
-
 }

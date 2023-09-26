@@ -50,37 +50,85 @@ public class FacebookNetwork : AbstractNetwork
     {
         var link = message.Link;
         var responses = new List<Tuple<RestResponse, FacebookPostResponse>>();
-        foreach (var text in texts)
+        var imageResponses = new List<FacebookPostResponse>();
+
+        try
         {
-            if (!DryRunPosting)
+            for (int t = 0; t < texts.Count(); t++)
             {
-                var first = responses.Count() == 0;
-                if (first)
+                var text = texts.ElementAt(t);
+                if (!DryRunPosting)
                 {
-                    // first post is a real post
-                    var request = new RestRequest($"/{actorId}/feed", Method.Post);
-                    request.AddParameter("message", text);
-                    request.AddParameter("access_token", token);
-                    if (link != null) { request.AddParameter("link", link.ToStringFor(NetworkType)); }
+                    if (t < images.Count())
+                    {
+                        foreach (var image in images.ElementAt(t))
+                        {
+                            var imgRequest = new RestRequest($"/{actorId}/photos", Method.Post);
+                            imgRequest.AddParameter("access_token", token);
+                            imgRequest.AddParameter("published", false);
+                            imgRequest.AddParameter("temporary", true);
+                            if (image.SourceUri.IsFile)
+                            {
+                                imgRequest.AddFile("source", image.AbsoluteLocalPath!);
+                            }
+                            else
+                            {
+                                imgRequest.AddParameter("url", image.SourceUri.ToString());
+                            }
+                            var response = await graphClient!.ExecuteAsync(imgRequest);
+                            if (!response.IsSuccessful) throw new Exception($"Could not upload image for post {t}", new Exception(response.Content));
+                            var fb_response = JsonConvert.DeserializeObject<FacebookPostResponse>(response.Content!);
+                            imageResponses.Add(fb_response!);
+                        }
+                    }
 
-                    var response = await graphClient!.ExecuteAsync(request);
+                    var first = responses.Count() == 0;
+                    if (first)
+                    {
+                        // first post is a real post
+                        var request = new RestRequest($"/{actorId}/feed", Method.Post);
+                        request.AddJsonBody(new 
+                        {
+                            message = text,
+                            access_token = token,
+                            link = link?.ToStringFor(NetworkType),
+                            published = true,
+                            attached_media = imageResponses.Select(r => new { media_fbid = r.id })
+                        });
 
-                    var fb_response = JsonConvert.DeserializeObject<FacebookPostResponse>(response.Content!);
-                    responses.Add(new Tuple<RestResponse, FacebookPostResponse>(response, fb_response!));
-                }
-                else
-                {
-                    // all subsequent posts are comments
-                    // seems unlikely you'd post something long enough to exceed the facebook character limit, I guess...
-                    var postId = responses.First().Item2.id!;
-                    var request = new RestRequest($"/{postId}/comments", Method.Post);
-                    request.AddParameter("message", text);
-                    request.AddParameter("access_token", token);
-                    var response = await graphClient!.ExecuteAsync(request);
-                    var fb_response = JsonConvert.DeserializeObject<FacebookPostResponse>(response.Content!);
-                    responses.Add(new Tuple<RestResponse, FacebookPostResponse>(response, fb_response!));
+                        var response = await graphClient!.ExecuteAsync(request);
+                        if (!response.IsSuccessful) throw new Exception($"Could not post status {t}", new Exception(response.Content));
+                        var fb_response = JsonConvert.DeserializeObject<FacebookPostResponse>(response.Content!);
+                        responses.Add(new Tuple<RestResponse, FacebookPostResponse>(response, fb_response!));
+                    }
+                    else
+                    {
+                        // all subsequent posts are comments
+                        // seems unlikely you'd post something long enough to exceed the facebook character limit, I guess...
+                        var postId = responses.First().Item2.id!;
+                        var request = new RestRequest($"/{postId}/comments", Method.Post);
+                        request.AddJsonBody(new 
+                        {
+                            message = text,
+                            access_token = token,
+                            published = true,
+                            attached_media = imageResponses.Select(r => new { media_fbid = r.id })
+                        });
+                        var response = await graphClient!.ExecuteAsync(request);
+                        if (!response.IsSuccessful) throw new Exception($"Could not post comment {t}", new Exception(response.Content));
+                        var fb_response = JsonConvert.DeserializeObject<FacebookPostResponse>(response.Content!);
+                        responses.Add(new Tuple<RestResponse, FacebookPostResponse>(response, fb_response!));
+                    }
                 }
             }
+        }
+        catch (Exception e)
+        {
+            var eids = responses.Select(r => r.Item2.id);
+            var errs = responses.Where(r => !r.Item1.IsSuccessful).Select(r => r.Item2.error?.message);
+            var imgerrs = imageResponses.Where(r => r.error != null).Select(r => r.error!.message);
+            var allerrs = errs.Concat(imgerrs);
+            return new PostResult(this, message, false, eids, string.Join('\n', allerrs), e);
         }
 
         var aok = responses.All(r => r.Item1.IsSuccessful && !string.IsNullOrWhiteSpace(r.Item2.id));
