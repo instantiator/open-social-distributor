@@ -59,8 +59,6 @@ public class LinkedInNetwork : AbstractNetwork
                 var first = responses.Count() == 0;
                 if (first)
                 {
-                    // Console.WriteLine("Creating post...");
-
                     object? imagesContent = null;
                     var imagesData = new List<LinkedInImageData>();
                     if (t < images.Count())
@@ -97,22 +95,17 @@ public class LinkedInNetwork : AbstractNetwork
                         isReshareDisabledByAuthor = false
                     };
                     postRequest.AddJsonBody(postRequestContent);
-                    // Console.WriteLine(Summarise(postRequest, JsonConvert.SerializeObject(postRequestContent)));
                     var postResponse = await client!.ExecuteAsync(postRequest);
                     var postIdUrn = postResponse.Headers!.SingleOrDefault(h => h.Name=="x-linkedin-id" || h.Name=="x-restli-id")?.Value?.ToString();
                     var postIsError = postResponse.Headers!.SingleOrDefault(h => h.Name=="x-restli-error-response")?.Value?.ToString() == "true";
                     var postAok = postResponse.IsSuccessful && !postIsError && !string.IsNullOrWhiteSpace(postIdUrn);
                     var postHeaders = postResponse.Headers!.Select(h => new Tuple<string,string?>(h.Name!, h.Value?.ToString()));
                     var postLiResponse = new LinkedInResponse() { Success = postAok, Id = postIdUrn, Content = postResponse.Content, Headers = postHeaders };
-                    // Console.WriteLine(Summarise(postResponse));
                     if (!postAok) throw new Exception($"Cannot post message {t}", new Exception(NetworkDebugHelper.Summarise(postResponse)));
                     responses.Add(new Tuple<RestResponse, LinkedInResponse>(postResponse, postLiResponse));
-                    // TODO: this was apparently successful - but no post visible on LinkedIn
                 }
                 else
                 {
-                    // Console.WriteLine("Adding comment...");
-
                     var firstId = responses.First().Item2.Id;
                     if (!string.IsNullOrWhiteSpace(firstId))
                     {
@@ -179,26 +172,22 @@ public class LinkedInNetwork : AbstractNetwork
     private async Task PollUntilImageAvailableAsync(string imageId, TimeSpan? delay = null, int maxAttempts = 24)
     {
         delay = delay ?? TimeSpan.FromSeconds(5);
-
-        // Console.WriteLine("## Polling for the image status...\n");
         int attempts = 0;
         bool imageOk = false;
         do
         {
-            Thread.Sleep(5000); // 5s poll... (ugh!)
+            Thread.Sleep((int)delay.Value.TotalMilliseconds);
             var pollRequest = new RestRequest($"images/{imageId}", Method.Get);
             pollRequest.AddHeader("Authorization", $"Bearer {token}");
             pollRequest.AddHeader("LinkedIn-Version","202309");
             var pollResponse = await client!.ExecuteAsync(pollRequest);
             var pollIsError = !pollResponse.IsSuccessful || pollResponse.Headers!.Any(h => h.Name=="x-restli-error-response");
             var pollData = JsonConvert.DeserializeObject<LinkedInPollResponse>(pollResponse.Content!);
-            // Console.WriteLine($"* Attempt {attempts}: status = {pollData?.status}");
             imageOk = pollData?.status == "AVAILABLE";
             var imageFailed = pollData?.status == "PROCESSING_FAILED";
             if (imageFailed) { throw new Exception($"Image status for post: {pollData?.status}", new Exception(NetworkDebugHelper.Summarise(pollRequest, null) + NetworkDebugHelper.Summarise(pollResponse))); }
-            if (++attempts > 5) throw new Exception($"Cannot poll image status for post - too many attempts");
+            if (++attempts > maxAttempts) throw new Exception($"Cannot poll image status for post - too many attempts");
         } while (!imageOk);
-        // Console.WriteLine();
     }
 
     private async Task<LinkedInImageData> InitialiseUploadAsync(ISocialImage image, string author)
@@ -209,14 +198,10 @@ public class LinkedInNetwork : AbstractNetwork
         imgRequest.AddHeader("X-Restli-Protocol-Version", "2.0.0");
         imgRequest.AddHeader("LinkedIn-Version","202309");
         imgRequest.AddJsonBody(new { initializeUploadRequest = new { owner = author }});
-        // Console.WriteLine(Summarise(imgRequest, JsonConvert.SerializeObject(imgRequestBody)));
-
         var imgResponse = await client!.ExecuteAsync(imgRequest);
         var imgIsError = imgResponse.Headers!.SingleOrDefault(h => h.Name=="x-restli-error-response")?.Value?.ToString() == "true";
         var imgAok = imgResponse.IsSuccessful && !imgIsError;
         var imgHeaders = imgResponse.Headers!.Select(h => new Tuple<string,string?>(h.Name!, h.Value?.ToString()));
-        // Console.WriteLine(Summarise(imgResponse));
-
         if (!imgAok) throw new Exception($"Cannot init image upload for post", new Exception(NetworkDebugHelper.Summarise(imgResponse)));
         var imgResponseData = JsonConvert.DeserializeObject<LinkedInImageResponse>(imgResponse.Content!);
         return new LinkedInImageData(imgResponseData!.value.image, image.Description, imgResponseData!.value.uploadUrl);
