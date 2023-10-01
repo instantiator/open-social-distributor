@@ -8,7 +8,7 @@ public class ImageAssignerVariantFactory
 
     public static IImageAssigner Facebook => new FirstPostAssigner(null, false);
 
-    public static IImageAssigner LinkedIn => new FirstPostAssigner(9, true);
+    public static IImageAssigner LinkedIn => new FirstPostAssigner(20, true);
 
     public static IImageAssigner Mastodon => new FrontLoadAssigner(4, true);
 

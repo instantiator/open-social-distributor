@@ -28,7 +28,7 @@ public abstract class AbstractNetworkTests
 
         var testResult = await network.TestConnectionAsync();
         Assert.NotNull(testResult);
-        Assert.True(testResult.Success);
+        Assert.True(testResult.Success, testResult.Message);
         return testResult;
     }
 

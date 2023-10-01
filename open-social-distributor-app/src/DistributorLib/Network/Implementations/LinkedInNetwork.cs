@@ -1,3 +1,5 @@
+using System.Net.Http.Headers;
+using System.Web;
 using DistributorLib.Network;
 using DistributorLib.Post;
 using DistributorLib.Post.Assigners;
@@ -6,10 +8,12 @@ using DistributorLib.Post.Images;
 using Newtonsoft.Json;
 using RestSharp;
 
+namespace DistributorLib.Network.Implementations;
+
+// See: https://learn.microsoft.com/en-us/linkedin/marketing/integrations/community-management/shares/posts-api
 public class LinkedInNetwork : AbstractNetwork
 {
-    private readonly string LINKEDIN_API_POST_BASE = "https://api.linkedin.com/v2";
-    private readonly string LINKEDIN_API_COMMENT_BASE = "https://api.linkedin.com/rest/socialActions";
+    private readonly string LINKEDIN_API_REST_BASE = "https://api.linkedin.com/rest";
     private readonly string LINKEDIN_INTROSPECTION_BASE = "https://www.linkedin.com/oauth/v2";
 
     public enum Mode { Org, User }
@@ -34,7 +38,7 @@ public class LinkedInNetwork : AbstractNetwork
 
     protected override async Task InitClientAsync()
     {
-        client = new RestClient(LINKEDIN_API_POST_BASE);
+        client = new RestClient(LINKEDIN_API_REST_BASE);
     }
 
     protected override async Task DisposeClientAsync()
@@ -47,19 +51,36 @@ public class LinkedInNetwork : AbstractNetwork
     {
         var responses = new List<Tuple<RestResponse, LinkedInResponse>>();
         var author = mode == Mode.Org ? $"urn:li:organization:{authorId}" : $"urn:li:person:{authorId}";
-        foreach (var text in texts)
+        for (int t = 0; t < texts.Count(); t++)
         {
+            var text = texts.ElementAt(t);
             if (!DryRunPosting)
             {
                 var first = responses.Count() == 0;
                 if (first)
                 {
-                    var request = new RestRequest($"/posts", Method.Post);
-                    request.AddHeader("Authorization", $"Bearer {token}");
-                    request.AddHeader("Content-Type", "application/json");
-                    request.AddHeader("X-Restli-Protocol-Version", "2.0.0");
-                    request.AddHeader("Linkedin-Version","202309");
-                    var content = new 
+                    // Console.WriteLine("Creating post...");
+
+                    object? imagesContent = null;
+                    var imagesData = new List<LinkedInImageData>();
+                    if (t < images.Count())
+                    {
+                        foreach (var image in images.ElementAt(t))
+                        {
+                            var initData = await InitialiseUploadAsync(image, author);
+                            imagesData.Add(initData);
+                            await UploadImageAsync(image, initData.uploadUrl);
+                            await PollUntilImageAvailableAsync(initData.id);
+                        } // each image
+                    } 
+
+                    var postRequest = new RestRequest("/posts", Method.Post);
+                    postRequest.AddHeader("Authorization", $"Bearer {token}");
+                    postRequest.AddHeader("Content-Type", "application/json");
+                    postRequest.AddHeader("X-Restli-Protocol-Version", "2.0.0");
+                    postRequest.AddHeader("LinkedIn-Version","202309");
+                    imagesContent = PrepareContent(imagesData);
+                    var postRequestContent = new 
                     { 
                         author = author, 
                         commentary = text,
@@ -70,48 +91,51 @@ public class LinkedInNetwork : AbstractNetwork
                             targetEntities = new object[] { },
                             thirdPartyDistributionChannels = new object[] { }
                         },
+                        content = imagesContent,
+                        contentLandingPage = message.Link?.ToStringFor(NetworkType),
                         lifecycleState = "PUBLISHED",
                         isReshareDisabledByAuthor = false
                     };
-                    Console.WriteLine(JsonConvert.SerializeObject(content));
-                    //throw new Exception("Not gonna work anyway: {\"serviceErrorCode\":100,\"message\":\"Field Value validation failed in REQUEST_BODY: Data Processing Exception while processing fields [/author]\",\"status\":403}");
-                    request.AddJsonBody(content); // JsonConvert.SerializeObject(content);
-                    var response = await client!.ExecuteAsync(request);
-                    var idUrn = response.Headers!.SingleOrDefault(h => h.Name=="x-linkedin-id" || h.Name=="x-restli-id")?.Value?.ToString();
-                    var isError = response.Headers!.SingleOrDefault(h => h.Name=="x-restli-error-response")?.Value?.ToString() == "true";
-                    var aok = response.IsSuccessful && !isError && !string.IsNullOrWhiteSpace(idUrn);
-                    var headers = response.Headers!.Select(h => new Tuple<string,string?>(h.Name!, h.Value?.ToString()));
-                    var liResponse = new LinkedInResponse() { Success = aok, Id = idUrn, Content = response.Content, Headers = headers };
-                    responses.Add(new Tuple<RestResponse, LinkedInResponse>(response, liResponse));
+                    postRequest.AddJsonBody(postRequestContent);
+                    // Console.WriteLine(Summarise(postRequest, JsonConvert.SerializeObject(postRequestContent)));
+                    var postResponse = await client!.ExecuteAsync(postRequest);
+                    var postIdUrn = postResponse.Headers!.SingleOrDefault(h => h.Name=="x-linkedin-id" || h.Name=="x-restli-id")?.Value?.ToString();
+                    var postIsError = postResponse.Headers!.SingleOrDefault(h => h.Name=="x-restli-error-response")?.Value?.ToString() == "true";
+                    var postAok = postResponse.IsSuccessful && !postIsError && !string.IsNullOrWhiteSpace(postIdUrn);
+                    var postHeaders = postResponse.Headers!.Select(h => new Tuple<string,string?>(h.Name!, h.Value?.ToString()));
+                    var postLiResponse = new LinkedInResponse() { Success = postAok, Id = postIdUrn, Content = postResponse.Content, Headers = postHeaders };
+                    // Console.WriteLine(Summarise(postResponse));
+                    if (!postAok) throw new Exception($"Cannot post message {t}", new Exception(NetworkDebugHelper.Summarise(postResponse)));
+                    responses.Add(new Tuple<RestResponse, LinkedInResponse>(postResponse, postLiResponse));
+                    // TODO: this was apparently successful - but no post visible on LinkedIn
                 }
                 else
                 {
+                    // Console.WriteLine("Adding comment...");
+
                     var firstId = responses.First().Item2.Id;
                     if (!string.IsNullOrWhiteSpace(firstId))
                     {
-                        using (var commentClient = new RestClient(LINKEDIN_API_COMMENT_BASE))
-                        {
-                            var request = new RestRequest($"/{firstId}/comments", Method.Post);
-                            request.AddHeader("Authorization", $"Bearer {token}");
-                            request.AddHeader("Content-Type", "application/json");
-                            request.AddHeader("X-Restli-Protocol-Version", "2.0.0");
-                            request.AddHeader("Linkedin-Version","202309");
-                            var content = new 
-                            { 
-                                actor = author, 
-                                @object = firstId,
-                                message = new { text = text },
-                                content = new object[] { }
-                            };
-                            request.AddJsonBody(content);
-                            var response = await commentClient!.ExecuteAsync(request);
-                            var idUrn = response.Headers!.SingleOrDefault(h => h.Name=="x-linkedin-id" || h.Name=="x-restli-id")?.Value?.ToString();
-                            var isError = response.Headers!.SingleOrDefault(h => h.Name=="x-restli-error-response")?.Value?.ToString() == "true";
-                            var aok = response.IsSuccessful && !isError && !string.IsNullOrWhiteSpace(idUrn);
-                            var headers = response.Headers!.Select(h => new Tuple<string,string?>(h.Name!, h.Value?.ToString()));
-                            var liResponse = new LinkedInResponse() { Success = aok, Id = idUrn, Content = response.Content, Headers = headers };
-                            responses.Add(new Tuple<RestResponse, LinkedInResponse>(response, liResponse));
-                        }
+                        var request = new RestRequest($"/socialActions/{firstId}/comments", Method.Post);
+                        request.AddHeader("Authorization", $"Bearer {token}");
+                        request.AddHeader("Content-Type", "application/json");
+                        request.AddHeader("X-Restli-Protocol-Version", "2.0.0");
+                        request.AddHeader("LinkedIn-Version","202309");
+                        var content = new 
+                        { 
+                            actor = author, 
+                            @object = firstId,
+                            message = new { text = text },
+                            content = new object[] { }
+                        };
+                        request.AddJsonBody(content);
+                        var response = await client!.ExecuteAsync(request);
+                        var idUrn = response.Headers!.SingleOrDefault(h => h.Name=="x-linkedin-id" || h.Name=="x-restli-id")?.Value?.ToString();
+                        var isError = response.Headers!.SingleOrDefault(h => h.Name=="x-restli-error-response")?.Value?.ToString() == "true";
+                        var aok = response.IsSuccessful && !isError && !string.IsNullOrWhiteSpace(idUrn);
+                        var headers = response.Headers!.Select(h => new Tuple<string,string?>(h.Name!, h.Value?.ToString()));
+                        var liResponse = new LinkedInResponse() { Success = aok, Id = idUrn, Content = response.Content, Headers = headers };
+                        responses.Add(new Tuple<RestResponse, LinkedInResponse>(response, liResponse));
                     }
                     else
                     {
@@ -129,6 +153,85 @@ public class LinkedInNetwork : AbstractNetwork
             .Select(r => DescribeErrors(r.Item1, ++i))
         );
         return new PostResult(this, message, all_ok, ids, error: errorData);
+    }
+
+    private object? PrepareContent(IEnumerable<LinkedInImageData> imagesData)
+    {
+        if (imagesData.Count() == 1) return new 
+        {
+            media = new
+            {
+                image = new { id = imagesData.Single().id, altText = imagesData.Single().description }
+            }
+        };
+
+        if (imagesData.Count() > 1) return new 
+        {
+            multiImage = new
+            {
+                images = imagesData.Select(i => new { id = i.id, altText = i.description })
+            }
+        };
+
+        return null;
+    }
+
+    private async Task PollUntilImageAvailableAsync(string imageId, TimeSpan? delay = null, int maxAttempts = 24)
+    {
+        delay = delay ?? TimeSpan.FromSeconds(5);
+
+        // Console.WriteLine("## Polling for the image status...\n");
+        int attempts = 0;
+        bool imageOk = false;
+        do
+        {
+            Thread.Sleep(5000); // 5s poll... (ugh!)
+            var pollRequest = new RestRequest($"images/{imageId}", Method.Get);
+            pollRequest.AddHeader("Authorization", $"Bearer {token}");
+            pollRequest.AddHeader("LinkedIn-Version","202309");
+            var pollResponse = await client!.ExecuteAsync(pollRequest);
+            var pollIsError = !pollResponse.IsSuccessful || pollResponse.Headers!.Any(h => h.Name=="x-restli-error-response");
+            var pollData = JsonConvert.DeserializeObject<LinkedInPollResponse>(pollResponse.Content!);
+            // Console.WriteLine($"* Attempt {attempts}: status = {pollData?.status}");
+            imageOk = pollData?.status == "AVAILABLE";
+            var imageFailed = pollData?.status == "PROCESSING_FAILED";
+            if (imageFailed) { throw new Exception($"Image status for post: {pollData?.status}", new Exception(NetworkDebugHelper.Summarise(pollRequest, null) + NetworkDebugHelper.Summarise(pollResponse))); }
+            if (++attempts > 5) throw new Exception($"Cannot poll image status for post - too many attempts");
+        } while (!imageOk);
+        // Console.WriteLine();
+    }
+
+    private async Task<LinkedInImageData> InitialiseUploadAsync(ISocialImage image, string author)
+    {
+        var imgRequest = new RestRequest($"images?action=initializeUpload", Method.Post);
+        imgRequest.AddHeader("Authorization", $"Bearer {token}");
+        imgRequest.AddHeader("Content-Type", "application/json");
+        imgRequest.AddHeader("X-Restli-Protocol-Version", "2.0.0");
+        imgRequest.AddHeader("LinkedIn-Version","202309");
+        imgRequest.AddJsonBody(new { initializeUploadRequest = new { owner = author }});
+        // Console.WriteLine(Summarise(imgRequest, JsonConvert.SerializeObject(imgRequestBody)));
+
+        var imgResponse = await client!.ExecuteAsync(imgRequest);
+        var imgIsError = imgResponse.Headers!.SingleOrDefault(h => h.Name=="x-restli-error-response")?.Value?.ToString() == "true";
+        var imgAok = imgResponse.IsSuccessful && !imgIsError;
+        var imgHeaders = imgResponse.Headers!.Select(h => new Tuple<string,string?>(h.Name!, h.Value?.ToString()));
+        // Console.WriteLine(Summarise(imgResponse));
+
+        if (!imgAok) throw new Exception($"Cannot init image upload for post", new Exception(NetworkDebugHelper.Summarise(imgResponse)));
+        var imgResponseData = JsonConvert.DeserializeObject<LinkedInImageResponse>(imgResponse.Content!);
+        return new LinkedInImageData(imgResponseData!.value.image, image.Description, imgResponseData!.value.uploadUrl);
+    }
+
+    private async Task UploadImageAsync(ISocialImage image, string uploadUrl)
+    {
+        using (var uploadClient = new HttpClient())
+        {
+            uploadClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var imageDataStream = await image.GetStreamAsync();
+            var uploadContent = new StreamContent(imageDataStream);
+            var uploadResponse = await uploadClient.PutAsync(uploadUrl, uploadContent);
+            if (!uploadResponse.IsSuccessStatusCode) throw new Exception($"Cannot upload image", new Exception(NetworkDebugHelper.Summarise(uploadResponse)));
+        }
     }
 
     private string DescribeErrors(RestResponse response, int? index = null)
@@ -176,6 +279,7 @@ public class LinkedInNetwork : AbstractNetwork
             // fetch the user or organisation profile
             var meRequest = new RestRequest("/me", Method.Get);
             meRequest.AddHeader("Authorization", $"Bearer {token}");
+            meRequest.AddHeader("LinkedIn-Version", "202309");
             var meResponse = await client!.ExecuteAsync(meRequest);
             var me = JsonConvert.DeserializeObject<LinkedInMeResponse>(meResponse.Content!);
             var meOk = meResponse.IsSuccessful && !string.IsNullOrWhiteSpace(me?.id);
@@ -188,6 +292,18 @@ public class LinkedInNetwork : AbstractNetwork
             return new ConnectionTestResult(this, true, me!.id, 
                 $"Token scope: {introspection!.scope}, expires at: {introspection!.expires_at}");
         }
+    }
+
+    private class LinkedInImageData 
+    {
+        public LinkedInImageData(string id, string? description, string uploadUrl)
+        {
+            this.id = id;
+            this.description = description;
+        }
+        public string id { get; set; }
+        public string? description { get; set; }
+        public string uploadUrl { get; set; }
     }
 
     public class LinkedInMeResponse
@@ -206,4 +322,26 @@ public class LinkedInNetwork : AbstractNetwork
         public string? scope { get; set; }
         public string? auth_type { get; set; }
     }
+
+    public class LinkedInImageResponse
+    {
+        public LinkedInImageResponseValue value {get;set;}
+        
+        public class LinkedInImageResponseValue
+        {
+            public long uploadUrlExpiresAt {get;set;}
+            public string uploadUrl {get;set;}
+            public string image {get;set;}
+        }
+    }
+
+    public class LinkedInPollResponse
+    {
+        public string owner { get; set; }
+        public long downloadUrlExpiresAt { get; set; }
+        public string downloadUrl { get; set; }
+        public string id { get; set; }
+        public string status { get; set; }
+    }
+
 }

@@ -18,6 +18,12 @@ public class SocialImageTests
     }
 
     [Fact]
+    public void SocialImageCorrectlyIdentifiesFilename()
+    {
+        
+    }
+
+    [Fact]
     public async Task ResolvesFullPathFileUrls()
     {
         var runPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);

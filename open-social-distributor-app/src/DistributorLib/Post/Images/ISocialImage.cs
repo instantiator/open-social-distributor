@@ -5,5 +5,6 @@ public interface ISocialImage
     public Uri SourceUri { get; }
     public string? AbsoluteLocalPath { get; }
     public string? Description { get; }
+    public string Filename { get; }
     public Task<Stream> GetStreamAsync();
 }

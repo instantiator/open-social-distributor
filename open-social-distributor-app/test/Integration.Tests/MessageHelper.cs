@@ -5,16 +5,15 @@ namespace Integration.Tests;
 
 public class MessageHelper
 {
-    public static ISocialMessage CreateSimplestMessage()
+    public static ISocialMessage CreateSimplestMessage(int imageCount = 1)
     {
         var parts = new List<SocialMessageContent>
         {
             new SocialMessageContent("Integration test message")
         };
-        var images = new List<ISocialImage>()
-        {
-            SocialImageFactory.FromUri("file://TestData/TestImages/social-distributor-icon.png", "the Social Distributor icon")
-        };
+        var images = Enumerable.Range(0, imageCount)
+            .Select(i => SocialImageFactory.FromUri("file://TestData/TestImages/social-distributor-icon.png", "the Social Distributor icon"))
+            .ToList();
         return new SimpleSocialMessage(parts, images);
     }
 

@@ -16,6 +16,8 @@ public class SocialImage : ISocialImage
 
     public string? AbsoluteLocalPath => SourceUri.IsFile ? Path.GetFullPath(Source.Substring("file://".Length)) : null;
 
+    public string Filename => SourceUri.Segments.Last();
+
     public string? Description { get; private set; }
 
     public async Task<Stream> GetStreamAsync()
