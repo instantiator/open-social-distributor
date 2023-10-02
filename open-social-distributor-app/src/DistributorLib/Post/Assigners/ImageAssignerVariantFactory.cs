@@ -12,4 +12,7 @@ public class ImageAssignerVariantFactory
 
     public static IImageAssigner Mastodon => new FrontLoadAssigner(4, true);
 
+    [Obsolete("Twitter is not a safe platform")]
+    public static IImageAssigner Twitter => new FrontLoadAssigner(4, true);
+
 }

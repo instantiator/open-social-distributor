@@ -17,7 +17,7 @@ See also:
 
 ## Quotas
 
-By default, your app will be allowed:
+By default (in developer mode), your app will be allowed:
 
 * 10 posts per user per day
 * A cap of 100 posts per day

@@ -37,5 +37,14 @@ namespace DistributorLib.Post.Formatters
             breakBehaviour: LengthLimitedPostFormatter.BreakBehaviour.NewPost, 
             tagBehaviour: LengthLimitedPostFormatter.DecorationBehaviour.FirstPost,
             indexBehaviour: LengthLimitedPostFormatter.IndexBehaviour.None);
+
+        [Obsolete("Twitter is not a safe platform")]
+        public static IPostFormatter Twitter => new LengthLimitedPostFormatter(
+            network: Network.NetworkType.Twitter, 
+            limit: 280, subsequentLimits: 280, indices: true,
+            linkBehaviour: LengthLimitedPostFormatter.DecorationBehaviour.FirstPost,
+            breakBehaviour: LengthLimitedPostFormatter.BreakBehaviour.NewPost, 
+            tagBehaviour: LengthLimitedPostFormatter.DecorationBehaviour.AllPosts,
+            indexBehaviour: LengthLimitedPostFormatter.IndexBehaviour.Slash);
     }
 }

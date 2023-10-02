@@ -7,4 +7,5 @@ public interface ISocialImage
     public string? Description { get; }
     public string Filename { get; }
     public Task<Stream> GetStreamAsync();
+    public Task<byte[]> GetBinaryAsync();
 }

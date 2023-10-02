@@ -8,6 +8,6 @@ namespace DistributorLib.Network
         Facebook,
         LinkedIn,
         Discord,
-        Twitter
+        Twitter // not implemented
     }
 }

@@ -68,8 +68,8 @@ Some items (ie. tags, links) will either be moved to the first post, duplicated 
 | Mastodon | `500` | `500` | All posts | First post | Front-loaded | `4` | TBC |
 | Discord | `2000` | `2000` | First post | First post |  First post | `10` | TBC |
 | Facebook | `63206` | `8000` | First post | Special | First post | `∞` |`10Mb` |
-| LinkedIn | `3000` | `1250` | First post | First post | First post | `9` | TBC |
-| Twitter | | | | | |
+| LinkedIn | `3000` | `1250` | First post | First post | First post | `20` | TBC |
+| Twitter | `280` | `280` | All posts | First post | Front-loaded | `4` | TBC |
 
 The formatter will wrap words on each post. If a post would exceed the limit available to it, it wraps the next word into the next post.
 

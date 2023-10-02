@@ -31,4 +31,16 @@ public class SocialImage : ISocialImage
             return await new HttpClient().GetStreamAsync(SourceUri);
         }
     }
+
+    public async Task<byte[]> GetBinaryAsync()
+    {
+        if (SourceUri.IsFile)
+        {
+            return await File.ReadAllBytesAsync(AbsoluteLocalPath!);
+        }
+        else 
+        {
+            return await new HttpClient().GetByteArrayAsync(SourceUri);
+        }
+    }
 }
