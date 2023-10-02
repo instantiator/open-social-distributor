@@ -4,11 +4,17 @@
 
 This is a tool for managing social posts across multiple platforms. Simple to configure, and able to run as a command line client, or as a service in a Docker container or an AWS CloudFormation stack.
 
-**At current time,** you can build, configure, and use the CLI to post a simple message to a variety of social networks.
+> There's a basic CLI which you can use to post to all supported social networks.
+>
+> **UNDER DEVELOPMENT**
+>
+> * Dockerised service
+> * AWS stack
+
+**At current time,** you can build, configure, and use the CLI to post a messages, threads, and images to a variety of social networks.
 
 **Coming soon:**
 
-* Image upload support
 * A containerised service to make regular posts
 * An AWS stack (to do the same)
 
@@ -33,7 +39,7 @@ You can use the command-line interface (CLI) to make an ad-hoc post to any numbe
 
 See: [Outstanding TODOs](todos.md)
 
-#### Social networks supported
+### Social networks supported
 
 This project is in development. Additional capabilities are coming soon.
 
@@ -45,10 +51,11 @@ This project is in development. Additional capabilities are coming soon.
 | Facebook (page) | ✅ | ✅ | ⌛️ | ✅ | ✅ | ✅ |
 | LinkedIn (org) | ✅ | ✅ | ⌛️ | ✅ | ✅ | ⌛️ |
 | LinkedIn (member) | ✅ | ✅ | ⌛️ | ✅ | ✅ | ⌛️ |
-| Twitter | | | | | | |
 
 ✅ = implemented, working
 ⌛️ = implemented, not fully tested yet
+
+**NB.** Twitter has been removed from the supported list of networks. Twitter is not a safe place to build your brand or identity.
 
 #### NB
 
@@ -96,7 +103,7 @@ Build and deploy scripts are found at the root of the `open-social-distributor-a
 |-|-|
 | `export-aws-defaults.sh` | Exports some default AWS environment variables. |
 | `aws-sync-stack.sh` | Builds and synchronises the project code with an AWS CloudFormation stack |
-| `aws-deploy-stack.sh` | Under development |
+| `aws-deploy-stack.sh` | **UNDER DEVELOPMENT** |
 
 | Script | Purpose |
 |-|-|

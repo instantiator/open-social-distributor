@@ -3,12 +3,11 @@
 - [x] Self-test during startup
 - [x] Social network configuration (connection strings)
 
-- [ ] Social media features
+- [x] Social media features
     - [x] Posting, formatting, threading, images, links for Mastodon
     - [x] Posting, formatting, threading, images, links for Discord
     - [x] Posting, formatting, threading, images, links for Facebook
-    - [ ] Posting, formatting, threading, images, links for LinkedIn
-    - [ ] Posting, formatting, threading, images, links for Twitter
+    - [x] Posting, formatting, threading, images, links for LinkedIn
 
 - [x] Message formatting
     - [x] Support for word wrapping into threads
