@@ -1,0 +1,30 @@
+{
+    // follow any property capitalisation convention - the app is case insensitive
+    "posts": [
+        // for part types, see: enum SocialMessagePart (the app is case insensitive)
+        // for network types, see: enum NetworkType (the app is case insensitive)
+        // for account reference forms, see: TODO: add information to docs
+        { 
+            "parts": [
+                { "part": "Text", "content": { "any": "Hello"} },
+                { "part": "AccountReference", "content": { "mastodon": "@instantiator@mastodon.social", "any": "Lewis" } },
+                { "part": "Tag", "content": { "any": "Greeting" } },
+                { "part": "Tag", "content": { "any": "SocialDistributor" } },
+                { "part": "Tag", "content": { "any": "Demonstration" } },
+                { "part": "Link", "content": { "any": "https://instantiator.dev" } }
+            ], // list of parts
+            "images": [
+                {
+                    // uri can be file:// with a relative path, absolute path, or url
+                    // description is optional (but recommended to support accessibility)
+                    "uri": "file://sample-messages/social-distributor-icon.png",
+                    "description": "The icon for Open Social Distributor - clear arrows in the 4 ordinal directions overlay a cloud of colours."
+                },
+                {
+                    "uri": "file://sample-messages/sample-cat.jpg",
+                    "description": "A cat lays on a wooden table in a lovely green garden."
+                }
+            ] // list of images
+        } // individual message
+    ] // list of posts
+}
