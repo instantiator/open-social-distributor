@@ -76,7 +76,7 @@ public class DiscordNetwork : AbstractNetwork
                         var files = images.ElementAt(t)
                             .Select(async i => new FileAttachment(
                                 stream: await i.GetStreamAsync(), 
-                                fileName: Path.GetFileName(i.AbsoluteLocalPath), 
+                                fileName: Path.GetFileName(i.LocalPath), 
                                 description: i.Description))
                             .Select(f => f.Result);
 

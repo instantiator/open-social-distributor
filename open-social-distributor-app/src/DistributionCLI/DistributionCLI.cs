@@ -12,17 +12,23 @@ namespace DistributionCLI;
 
 public class DistributionCLI
 {
+    public static IEnumerable<PostResult>? LastPostResults;
+    public static IDictionary<ISocialNetwork, ConnectionTestResult>? LastTestResults;
+
     [Verb("post", HelpText = "Post a message to one or more social networks.")]
     public class PostOptions
     {
-        [Option('c', "config", Required = true, HelpText = "Path to the config file.")]
-        public string ConfigPath { get; set; } = string.Empty;
+        [Option('c', "config-file", Required = true, HelpText = "Path to the config file.")]
+        public string ConfigPath { get; set; } = null!;
+
+        [Option('s', "source-file", Required = false, HelpText = "Path or url to a source file containing posts.")]
+        public string? DataPath { get; set; }
 
         [Option('f', "filter", Required = false, HelpText = "Regular expression filter for network short codes.")]
         public string? Filter { get; set; } = null;
 
-        [Option('m', "message", Required = true, HelpText = "Simple message text.")]
-        public string Message { get; set; } = string.Empty;
+        [Option('m', "message", Required = false, HelpText = "Simple message text.")]
+        public string? Message { get; set; } = string.Empty;
 
         [Option('l', "link", Required = false, HelpText = "Link for this message.")]
         public string? Link { get; set; }
@@ -75,6 +81,7 @@ public class DistributionCLI
 
         var distributor = new Distributor(filteredNetworks);
         var testResults = distributor.TestNetworksAsync().Result;
+        LastTestResults = testResults;
         foreach (var result in testResults)
         {
             var message = result.Value.Message ?? result.Value.Exception?.Message;
@@ -99,16 +106,39 @@ public class DistributionCLI
         var distributor = new Distributor(filteredNetworks);
 
         var text = options.Message;
-        var link = options.Link;
-        var tags = options.Tags;
-        var images = options.Images != null ? SocialImageFactory.FromUrisAndDescriptions(options.Images, options.ImageDescriptions) : null;
-        var message = new SimpleSocialMessage(text, images, link, tags);
-        var results = distributor.PostAsync(message).Result;
+        var dataPath = options.DataPath;
+
+        if (!string.IsNullOrWhiteSpace(dataPath) && !string.IsNullOrWhiteSpace(text))
+        {
+            Console.WriteLine("Both data file and message were specified - these are mutually exclusive.");
+            return 1;
+        }
+
+        if (!string.IsNullOrWhiteSpace(text))
+        {
+            var link = options.Link;
+            var tags = options.Tags;
+            var images = options.Images != null ? SocialImageFactory.FromUrisAndDescriptions(options.Images, options.ImageDescriptions) : null;
+            var message = new SimpleSocialMessage(text!, images, link, tags);
+            var results = distributor.PostAsync(message).Result;
+            LastPostResults = results;
+            PrintResults(results);
+            Console.WriteLine();
+            PrintErrors(results);
+        }
+        return 0;
+    }
+
+    public static void PrintResults(IEnumerable<PostResult> results)
+    {
         foreach (var result in results)
         {
             Console.WriteLine($"{(result.Success ? "✅" : "❌")} {result.Network.ShortCode} ({result.Network.NetworkType})");
         }
-        Console.WriteLine();
+    }
+
+    public static void PrintErrors(IEnumerable<PostResult> results)
+    {
         var errors = results.Where(r => !r.Success);
         if (errors.Count() > 0)
         {
@@ -119,7 +149,5 @@ public class DistributionCLI
                 Console.WriteLine($"{i++}. {error.Network.ShortCode} ({error.Network.NetworkType}): {error.Error} {(error.Exception != null ? error.Exception.ToString() : string.Empty)}");
             }
         }
-
-        return 0;
     }
 }

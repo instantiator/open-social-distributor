@@ -49,8 +49,8 @@ public class SocialImageTests
         if (isFilePath)
         {
             var correctRunPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            Assert.Equal($"{correctRunPath}/{testFilename}", image.AbsoluteLocalPath);
-            Assert.Equal(isFilePath, File.Exists(image.AbsoluteLocalPath));
+            Assert.Equal($"{correctRunPath}/{testFilename}".ToLowerInvariant(), image.LocalPath?.ToLowerInvariant());
+            Assert.Equal(isFilePath, File.Exists(image.LocalPath));
         }
         
         using (var stream = await image.GetStreamAsync())

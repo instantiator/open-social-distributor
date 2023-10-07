@@ -69,7 +69,7 @@ public class FacebookNetwork : AbstractNetwork
                             imgRequest.AddParameter("temporary", true);
                             if (image.SourceUri.IsFile)
                             {
-                                imgRequest.AddFile("source", image.AbsoluteLocalPath!);
+                                imgRequest.AddFile("source", image.LocalPath!);
                             }
                             else
                             {
