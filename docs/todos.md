@@ -39,9 +39,9 @@
     - [x] Document message store formats
 
 - [ ] `DistributionService` (Background Service)
+    - [x] Docker build and run for the service
     - [ ] Periodically post from CSV or JSON source (drawn from a URL or file)
     - [ ] Periodically follow more complex post selection rules
-    - [x] Docker build and run for the service
 
 - [ ] `DistributionFunction` (Lambda function)
     - [x] AWS CloudWatch stack sync for development
