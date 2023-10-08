@@ -20,6 +20,10 @@ jobs:
         dotnet-version: 6.x
     - name: Enter lib directory
       run: cd ~/work/open-social-distributor/open-social-distributor/open-social-distributor-app
+    - name: Show path
+      run: pwd
+    - name: Show full directory
+      run: ls -laR
     - name: Build
       run: build-all.sh
       # run: dotnet build --no-restore
