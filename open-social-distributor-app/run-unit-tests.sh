@@ -45,32 +45,26 @@ dotnet build test/DistributionFunction.Tests/DistributionFunction.Tests.csproj $
 dotnet build test/DistributionService.Tests/DistributionService.Tests.csproj $HUSH_ASYNC_WARNING --verbosity:quiet
 echo
 
-ls -laR test/DistributorLib.Tests/bin/Debug/net6.0
-
 if [ "$PROJECT" = "all" ] || [ "$PROJECT" = "lib" ]; then
   echo "Running unit tests for lib..."
-  # dotnet build test/DistributorLib.Tests/DistributorLib.Tests.csproj $HUSH_ASYNC_WARNING --verbosity:quiet
   dotnet test test/DistributorLib.Tests/DistributorLib.Tests.csproj --no-build --verbosity:normal
   echo
 fi
 
 if [ "$PROJECT" = "all" ] || [ "$PROJECT" = "cli" ]; then
   echo "Running unit tests for cli..."
-  # dotnet build test/DistributionCLI.Tests/DistributionCLI.Tests.csproj $HUSH_ASYNC_WARNING --verbosity:quiet
   dotnet test test/DistributionCLI.Tests/DistributionCLI.Tests.csproj --no-build --verbosity:normal
   echo
 fi
 
 if [ "$PROJECT" = "all" ] || [ "$PROJECT" = "function" ]; then
   echo "Running unit tests for function..."
-  # dotnet build test/DistributionFunction.Tests/DistributionFunction.Tests.csproj $HUSH_ASYNC_WARNING --verbosity:quiet
   dotnet test test/DistributionFunction.Tests/DistributionFunction.Tests.csproj --no-build --verbosity:normal
   echo
 fi
 
 if [ "$PROJECT" = "all" ] || [ "$PROJECT" = "service" ]; then
   echo "Running unit tests for service..."
-  # dotnet build test/DistributionService.Tests/DistributionService.Tests.csproj $HUSH_ASYNC_WARNING --verbosity:quiet
   dotnet test test/DistributionService.Tests/DistributionService.Tests.csproj --no-build --verbosity:normal
   echo
 fi

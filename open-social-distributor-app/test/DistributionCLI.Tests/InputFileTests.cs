@@ -9,9 +9,9 @@ public class InputFileTests
     private static string CreateTempFile(string data)
     {
         var tempPath = Path.GetFullPath(Path.Combine(Path.GetTempPath(), Path.GetTempFileName()));
-        Console.WriteLine("Creating temporary file...");
-        Console.WriteLine($"Data: {data}");
-        Console.WriteLine($"Path: {tempPath}");
+        // Console.WriteLine("Creating temporary file...");
+        // Console.WriteLine($"Data: {data}");
+        // Console.WriteLine($"Path: {tempPath}");
         File.WriteAllText(tempPath, data);
         return tempPath;
     }
