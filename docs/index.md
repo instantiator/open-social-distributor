@@ -55,7 +55,7 @@ This project is in development. Additional capabilities are coming soon.
 ✅ = implemented, working
 ⌛️ = implemented, not fully tested yet
 
-**NB.** Twitter has been removed from the supported list of networks. Twitter is not a safe place to build your brand or identity.
+**NB.** Twitter is not a safe place to build your brand or identity, and has not been included in this list.
 
 #### NB
 
