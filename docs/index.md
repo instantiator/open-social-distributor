@@ -49,8 +49,8 @@ This project is in development. Additional capabilities are coming soon.
 | Mastodon | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Discord | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Facebook (page) | ✅ | ✅ | ⌛️ | ✅ | ✅ | ✅ |
-| LinkedIn (org) | ✅ | ✅ | ⌛️ | ✅ | ✅ | ⌛️ |
-| LinkedIn (member) | ✅ | ✅ | ⌛️ | ✅ | ✅ | ⌛️ |
+| LinkedIn (org) | ✅ | ✅ | ⌛️ | ✅ | ✅ | ✅ |
+| LinkedIn (member) | ✅ | ✅ | ⌛️ | ✅ | ✅ | ✅ |
 
 ✅ = implemented, working
 ⌛️ = implemented, not fully tested yet
