@@ -9,8 +9,8 @@ public class InputFileTests
     private static string CreateTempFile(string data)
     {
         var tempPath = Path.Combine(Path.GetTempPath(), Path.GetTempFileName());
-        File.WriteAllText(tempPath, data);
-        return tempPath;
+        File.WriteAllText(Path.GetFullPath(tempPath), data);
+        return Path.GetFullPath(tempPath);
     }
 
     private static string CreateSimpleConfigFile()
