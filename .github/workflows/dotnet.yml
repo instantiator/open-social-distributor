@@ -27,6 +27,8 @@ jobs:
     - name: Build
       run: cd open-social-distributor-app && ./build-all.sh
       # run: dotnet build --no-restore
+    # - name: Show full directory
+    #   run: ls -laR
     - name: Test
       run: cd open-social-distributor-app && ./run-unit-tests.sh
       # run: dotnet test --no-build --verbosity normal

@@ -30,6 +30,7 @@ public class SocialImageTests
         await TestSocialImageUri($"file://{runPath}/TestData/TestImages/mastodon-logo.png", true, "TestData/TestImages/mastodon-logo.png");
     }
 
+    // fails in GHA
     [Fact]
     public async Task ResolvesRelativePathFileUrls()
     {
@@ -49,8 +50,9 @@ public class SocialImageTests
         if (isFilePath)
         {
             var correctRunPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            Console.WriteLine($"Running at path: {correctRunPath}");
             Assert.Equal($"{correctRunPath}/{testFilename}".ToLowerInvariant(), image.LocalPath?.ToLowerInvariant());
-            Assert.Equal(isFilePath, File.Exists(image.LocalPath));
+            Assert.True(File.Exists(image.LocalPath), $"File not found at {image.LocalPath}");
         }
         
         using (var stream = await image.GetStreamAsync())
