@@ -9,11 +9,19 @@ DistributionCLI <verb> <options...>
 ### Verbs
 
 ```text
-  post       Post a message to one or more social networks.
+  post       Post one or more messages to one or more social networks.
   test       Test all connections in the configuration file.
   help       Display more information on a specific command.
   version    Display version information.
 ```
+
+### Files
+
+When referring to files, you may provide:
+
+* A file URI, starting with `file://`, or
+* A regular URL, starting with `https://`, or
+* A local file path
 
 ## Building the CLI
 
@@ -24,7 +32,7 @@ DistributionCLI <verb> <options...>
 
 Here are some simple examples you can use to explore the CLI...
 
-### Post
+### Simple post
 
 Now you can invoke it to `post` a simple message with a link, a few tags, and an image:
 
@@ -38,7 +46,7 @@ Now you can invoke it to `post` a simple message with a link, a few tags, and an
   --link "https://gravityfalls.fandom.com/wiki/Sev%27ral_Timez"
 ```
 
-Here's the same example, but for a local file. To test this, you'll need to provide the path to a file on your local filesystem as the `file:///` uri provided to the `-i` (`--images`) option. 
+Here's the same example, but for a local file. To test this, you'll need to provide the path to a file on your local filesystem as the `-i` (`--images`) option.
 
 This example uses single character options:
 
@@ -53,6 +61,18 @@ This example uses single character options:
 ```
 
 **Tip:** You can include more than 1 image, and more than 1 image description by separating values with a semi-colon: `;`
+
+### Post from a source file
+
+This example draws on a local file with a series of messages in it:
+
+```bash
+./release/osx-x64/DistributionCLI post \
+  -c "sample-config/console-only.json" \
+  -s "sample-messages/single-message.jsonc"
+```
+
+For details on the content of the messages source file format, see: [Post list format](post-list-format.md)
 
 ### Filtering
 

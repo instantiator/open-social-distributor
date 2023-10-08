@@ -31,6 +31,7 @@ To add networks to your configuration, you'll need to obtain authorisation token
 You can use the command-line interface (CLI) to make an ad-hoc post to any number of social networks.
 
 * [CLI options](cli-options.md)
+* [Post List format](post-list-format.md)
 * [Post composition](post-composition.md)
 
 ## Developer notes

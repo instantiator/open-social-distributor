@@ -11,18 +11,27 @@ DistributionCLI post <options>
 The following options are defined for `post`:
 
 ```text
-  -c, --config                Required. Path to the config file.
-  -f, --filter                Regular expression filter for network short codes.
-  -m, --message               Required. Simple message text.
-  -l, --link                  Link for this message.
-  -i, --images                URIs to images, semi-colon separated (;)
-  -d, --image-descriptions    Image descriptions, semi-colon separated (;)
-  -t, --tags                  A list of tags (without # prefix), semi-colon separated (;)
-  --help                      Display this help screen.
-  --version                   Display version information.
+-c, --config-file           Required. Path to the config file.
+-s, --source-file           Path or url to a source file containing posts.
+-f, --filter                Regular expression filter for network short codes.
+-m, --message               Simple message text.
+-l, --link                  Link for this message.
+-i, --images                URIs to images, semi-colon separated (;)
+-d, --image-descriptions    Image descriptions, semi-colon separated (;)
+-t, --tags                  A list of tags (without # prefix), semi-colon separated (;)
+--help                      Display this help screen.
+--version                   Display version information.
 ```
 
-* Use the `-m` option to provide the post message content.
+Use the `--message` or `--source-file` option to provide content to post.
+
+## Source file
+
+To provide a source file with posts, see: [Post list format](post-list-format.md)
+
+## Message options
+
+* Provide message text with the `-m` option
 * Provide a link to accompany the message content with the `-l` option.
 * Provide a list of paths to images for the post with the `-i` option.
 * Provide descriptions of the images with the `-d` option.
