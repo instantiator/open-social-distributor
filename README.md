@@ -14,10 +14,6 @@ _Source for the documentation is in the [docs](docs/index.md) directory._
 
 ## Releases
 
-| Version | Notes |
-|-|-|
-| `v0.1` | Initial CLI release, can post to the supported range of social networks. |
-
 See: [Releases](https://github.com/instantiator/open-social-distributor/releases)
 
 ## Contributing

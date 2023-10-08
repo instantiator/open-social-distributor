@@ -18,6 +18,10 @@ This is a tool for managing social posts across multiple platforms. Simple to co
 * A containerised service to make regular posts
 * An AWS stack (to do the same)
 
+## Download binaries
+
+See: [Releases](https://github.com/instantiator/open-social-distributor/releases)
+
 ## Configuration
 
 To add networks to your configuration, you'll need to obtain authorisation tokens with permission to post. See:
