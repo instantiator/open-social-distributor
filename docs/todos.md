@@ -32,6 +32,7 @@
     - [x] Script publication of CLI binaries
     - [x] Allow filtering of networks
     - [x] Allow creation of messages from JSON format (parameter or from a message store (optionally indexed))
+    - [ ] Allow directly specified json
     
 - [x] Scheduled posting for service and function
     - [x] Define message store formats
