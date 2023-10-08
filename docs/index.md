@@ -75,7 +75,7 @@ This project is in development. Additional capabilities are coming soon.
 | Service | Schedule and post messages | |
 | AWS Stack | Sync stack (for development) | ✅ |
 | AWS Stack | Deploy stack (for releases) | |
-| Service | Configuration mechanism | |
+| AWS Stack | Configuration mechanism | |
 | AWS Stack | Schedule and post messages | |
 
 ### Config support
