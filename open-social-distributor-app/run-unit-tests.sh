@@ -45,7 +45,7 @@ dotnet build test/DistributionFunction.Tests/DistributionFunction.Tests.csproj $
 dotnet build test/DistributionService.Tests/DistributionService.Tests.csproj $HUSH_ASYNC_WARNING --verbosity:quiet
 echo
 
-ls -laR
+ls -laR test/DistributorLib.Tests/bin/Debug/net6.0
 
 if [ "$PROJECT" = "all" ] || [ "$PROJECT" = "lib" ]; then
   echo "Running unit tests for lib..."
