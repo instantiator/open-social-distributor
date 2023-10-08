@@ -1,15 +1,10 @@
-# Open Social Distributor
+# Open Social Distributor documentation
 
 **UNDER DEVELOPMENT**
 
-This is a tool for managing social posts across multiple platforms. Simple to configure, and able to run as a command line client, or as a service in a Docker container or an AWS CloudFormation stack.
+[![CLI - build, test, release](https://github.com/instantiator/open-social-distributor/actions/workflows/CLI-build-test-release.yml/badge.svg)](https://github.com/instantiator/open-social-distributor/actions/workflows/CLI-build-test-release.yml)
 
-> There's a basic CLI which you can use to post to all supported social networks.
->
-> **UNDER DEVELOPMENT**
->
-> * Dockerised service
-> * AWS stack
+This is a tool for managing social posts across multiple platforms. Simple to configure, and able to run as a command line client, or as a service in a Docker container or an AWS CloudFormation stack.
 
 **At current time,** you can build, configure, and use the CLI to post a messages, threads, and images to a variety of social networks.
 

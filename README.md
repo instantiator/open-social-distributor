@@ -2,6 +2,8 @@
 
 **UNDER DEVELOPMENT**
 
+[![CLI - build, test, release](https://github.com/instantiator/open-social-distributor/actions/workflows/CLI-build-test-release.yml/badge.svg)](https://github.com/instantiator/open-social-distributor/actions/workflows/CLI-build-test-release.yml)
+
 This is a tool for managing social posts across multiple platforms. Simple to configure, and able to run as a command line client, or as a service in a Docker container or an AWS CloudFormation stack.
 
 ## Documentation

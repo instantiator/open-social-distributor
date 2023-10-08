@@ -23,3 +23,7 @@ do
     chmod +x release/${OS}-x64/*
     echo
 done
+
+# disambiguate the non-windows distributions
+mv release/linux-x64/DistributionCLI release/linux-x64/DistributionCLI-linux
+mv release/osx-x64/DistributionCLI release/osx-x64/DistributionCLI-osx
