@@ -59,8 +59,8 @@ jobs:
   #       body: |
   #         This is a release of the Open Social Distributor CLI.
   #       files: |
-  #         open-social-distributor-app/release/linux-x64/DistributionCLI
-  #         open-social-distributor-app/release/osx-x64/DistributionCLI
+  #         open-social-distributor-app/release/linux-x64/DistributionCLI-linux
+  #         open-social-distributor-app/release/osx-x64/DistributionCLI-osx
   #         open-social-distributor-app/release/win-x64/DistributionCLI.exe
   #         LICENSE
   #         README.md
