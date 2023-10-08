@@ -37,30 +37,30 @@ jobs:
     - name: Test
       run: cd open-social-distributor-app && ./run-unit-tests.sh
 
-  release-cli:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: Setup .NET 6
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 6.x
-    - name: Show path
-      run: pwd
-    - name: Build CLI
-      run: cd open-social-distributor-app && ./release-cli.sh
-    - name: Create release
-      if: startsWith(github.ref, 'refs/tags/')
-      uses: softprops/action-gh-release@v1
-      with:
-        draft: true
-        fail_on_unmatched_files: true
-        body: |
-          This is a release of the Open Social Distributor CLI.
-        files: |
-          open-social-distributor-app/release/linux-x64/DistributionCLI
-          open-social-distributor-app/release/osx-x64/DistributionCLI
-          open-social-distributor-app/release/win-x64/DistributionCLI.exe
-          LICENSE
-          README.md
+  # release-cli:
+  #   needs: test
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: Setup .NET 6
+  #     uses: actions/setup-dotnet@v3
+  #     with:
+  #       dotnet-version: 6.x
+  #   - name: Show path
+  #     run: pwd
+  #   - name: Build CLI
+  #     run: cd open-social-distributor-app && ./release-cli.sh
+  #   - name: Create release
+  #     if: startsWith(github.ref, 'refs/tags/')
+  #     uses: softprops/action-gh-release@v1
+  #     with:
+  #       draft: true
+  #       fail_on_unmatched_files: true
+  #       body: |
+  #         This is a release of the Open Social Distributor CLI.
+  #       files: |
+  #         open-social-distributor-app/release/linux-x64/DistributionCLI
+  #         open-social-distributor-app/release/osx-x64/DistributionCLI
+  #         open-social-distributor-app/release/win-x64/DistributionCLI.exe
+  #         LICENSE
+  #         README.md
