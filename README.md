@@ -8,9 +8,9 @@ This is a tool for managing social posts across multiple platforms. Simple to co
 
 For information about how to configure and use this tool, please see the documentation site:
 
-* [Open Social Distributor](https://instantiator.dev/open-social-distributor/)
+* [Open Social Distributor documentation](https://instantiator.dev/open-social-distributor/)
 
-Source for the documentation is in the [docs/](docs/index.md) directory.
+_Source for the documentation is in the [docs](docs/index.md) directory._
 
 ## Contributing
 

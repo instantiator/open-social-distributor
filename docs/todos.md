@@ -31,13 +31,11 @@
     - [x] Support for image upload
     - [x] Script publication of CLI binaries
     - [x] Allow filtering of networks
-    - [ ] Allow creation of messages from JSON format (parameter or from a message store (optionally indexed))
-    - [ ] Allow creation of messages from CSV format (parameter or from a message store (optionally indexed))
-    - [ ] Add a verb to generate a blank message store document (JSON or CSV) 
+    - [x] Allow creation of messages from JSON format (parameter or from a message store (optionally indexed))
     
-- [ ] Scheduled posting for service and function
-    - [ ] Define message store formats
-    - [ ] Document message store formats
+- [x] Scheduled posting for service and function
+    - [x] Define message store formats
+    - [x] Document message store formats
 
 - [ ] `DistributionService` (Background Service)
     - [ ] Periodically post from CSV or JSON source (drawn from a URL or file)
