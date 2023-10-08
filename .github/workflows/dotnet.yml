@@ -21,10 +21,10 @@ jobs:
     # - name: Enter lib directory
     #   run: cd open-social-distributor-app
     - name: Build
-      run: ~/open-social-distributor-app/build-all.sh
+      run: ~/work/open-social-distributor/open-social-distributor/open-social-distributor-app/build-all.sh
       # run: dotnet build --no-restore
     - name: Test
-      run: ~/open-social-distributor-app/run-unit-tests.sh
+      run: ~/work/open-social-distributor/open-social-distributor/open-social-distributor-app/run-unit-tests.sh
       # run: dotnet test --no-build --verbosity normal
     # - uses: actions/cache@v3
     #   with:
