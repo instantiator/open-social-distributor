@@ -25,6 +25,7 @@ public class InputFileTests
     [Fact]
     public void RejectsNoParameters()
     {
+        DistributionCLI.Reset();
         int status = DistributionCLI.Main();
         Assert.Equal(1, status);        
     }
@@ -32,22 +33,26 @@ public class InputFileTests
     [Fact]
     public void CanTestSimpleConfigFile()
     {
+        DistributionCLI.Reset();
         var configPath = CreateSimpleConfigFile();
         int status = DistributionCLI.Main("test", "-c", configPath);
-        Assert.Equal(0, status);        
+        Assert.Equal(0, status);
     }
 
     [Fact]
     public void CanPostSimpleMessage()
     {
+        DistributionCLI.Reset();
         var configPath = CreateSimpleConfigFile();
         int status = DistributionCLI.Main("post", "-c", configPath, "-m", "Hello, world!");
-        Assert.Equal(0, status);        
+        Assert.Equal(0, status);
+        Assert.Equal("Hello, world!", DistributionCLI.LastPostResults!.Single().Message.Parts.Single().Content[NetworkType.Any]);
     }
 
     [Fact]
     public void AcceptsEmptyPostList()
     {
+        DistributionCLI.Reset();
         var configPath = CreateSimpleConfigFile();
         var postsPath = CreateEmptyPostList();
 
@@ -62,6 +67,7 @@ public class InputFileTests
     [Fact]
     public void AcceptsSimplePostList()
     {
+        DistributionCLI.Reset();
         var configPath = CreateSimpleConfigFile();
         var postsPath = CreateSimplePostListFile();
 

@@ -1,6 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using CommandLine;
 using DistributorLib;
+using DistributorLib.Input;
 using DistributorLib.Network;
 using DistributorLib.Network.Implementations;
 using DistributorLib.Post;
@@ -96,8 +97,8 @@ public class DistributionCLI
 
     public static int ExecutePost(PostOptions options)
     {
-        var json = File.ReadAllText(options.ConfigPath!);
-        var config = JsonConvert.DeserializeObject<Config>(json);
+        var configJson = File.ReadAllText(options.ConfigPath!);
+        var config = JsonConvert.DeserializeObject<Config>(configJson);
         var networks = NetworkFactory.FromConfig(config!);
 
         var filteredNetworks = options.Filter == null ? networks : FilterNetworks(networks, options.Filter);
@@ -126,6 +127,24 @@ public class DistributionCLI
             Console.WriteLine();
             PrintErrors(results);
         }
+
+        if (!string.IsNullOrWhiteSpace(dataPath))
+        {
+            var postListJson = UriReader.ReadStringAsync(dataPath).Result;
+            var postList = new PostListReader().ReadJson(postListJson);
+            var messages = postList!.ToSocialMessages();
+            var resultSets = new List<IEnumerable<PostResult>>();
+            foreach (var message in messages)
+            {
+                var results = distributor.PostAsync(message).Result;
+                LastPostResults = results;
+                resultSets.Add(results);
+                PrintResults(results);
+                Console.WriteLine();
+                PrintErrors(results);
+                Console.WriteLine();
+            }
+        }
         return 0;
     }
 
@@ -149,5 +168,11 @@ public class DistributionCLI
                 Console.WriteLine($"{i++}. {error.Network.ShortCode} ({error.Network.NetworkType}): {error.Error} {(error.Exception != null ? error.Exception.ToString() : string.Empty)}");
             }
         }
+    }
+
+    public static void Reset()
+    {
+        LastPostResults = null;
+        LastTestResults = null;
     }
 }
