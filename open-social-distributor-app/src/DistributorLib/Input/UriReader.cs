@@ -51,7 +51,6 @@ public class UriReader
 
     public static string? AbsoluteLocalPath(Uri uri) 
         => uri.IsFile 
-            ? Path.GetFullPath(uri.OriginalString.Substring("file://".Length)) 
+            ? Path.GetFullPath(uri.OriginalString.Replace("file://", ""))
             : null;
-
 }
