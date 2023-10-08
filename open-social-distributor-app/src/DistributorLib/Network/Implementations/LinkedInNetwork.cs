@@ -285,6 +285,7 @@ public class LinkedInNetwork : AbstractNetwork
         {
             this.id = id;
             this.description = description;
+            this.uploadUrl = uploadUrl;
         }
         public string id { get; set; }
         public string? description { get; set; }
@@ -310,23 +311,23 @@ public class LinkedInNetwork : AbstractNetwork
 
     public class LinkedInImageResponse
     {
-        public LinkedInImageResponseValue value {get;set;}
+        public LinkedInImageResponseValue value {get;set;} = null!;
         
         public class LinkedInImageResponseValue
         {
             public long uploadUrlExpiresAt {get;set;}
-            public string uploadUrl {get;set;}
-            public string image {get;set;}
+            public string uploadUrl {get;set;} = null!;
+            public string image {get;set;} = null!;
         }
     }
 
     public class LinkedInPollResponse
     {
-        public string owner { get; set; }
+        public string owner { get; set; } = null!;
         public long downloadUrlExpiresAt { get; set; }
-        public string downloadUrl { get; set; }
-        public string id { get; set; }
-        public string status { get; set; }
+        public string downloadUrl { get; set; } = null!;
+        public string id { get; set; } = null!;
+        public string status { get; set; } = null!;
     }
 
 }
