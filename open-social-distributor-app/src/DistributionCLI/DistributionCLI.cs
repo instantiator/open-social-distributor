@@ -25,6 +25,9 @@ public class DistributionCLI
         [Option('s', "source-file", Required = false, HelpText = "Path or url to a source file containing posts.")]
         public string? DataPath { get; set; }
 
+        [Option('o', "offset", Required = false, HelpText = "Offset (index) of a post within the source file to use. Leave blank to send all posts in the source file.")]
+        public int? Offset { get; set; }
+
         [Option('f', "filter", Required = false, HelpText = "Regular expression filter for network short codes.")]
         public string? Filter { get; set; } = null;
 
@@ -132,7 +135,10 @@ public class DistributionCLI
         {
             var postListJson = UriReader.ReadStringAsync(dataPath).Result;
             var postList = new PostListReader().ReadJson(postListJson);
-            var messages = postList!.ToSocialMessages();
+            var messages = options.Offset == null 
+                ? postList!.ToSocialMessages()
+                : new[] { postList!.ToSocialMessages().ElementAt(options.Offset.Value) }; 
+
             var resultSets = new List<IEnumerable<PostResult>>();
             foreach (var message in messages)
             {

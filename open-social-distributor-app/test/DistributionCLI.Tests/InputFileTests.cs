@@ -9,9 +9,6 @@ public class InputFileTests
     private static string CreateTempFile(string data)
     {
         var tempPath = Path.GetFullPath(Path.Combine(Path.GetTempPath(), Path.GetTempFileName()));
-        // Console.WriteLine("Creating temporary file...");
-        // Console.WriteLine($"Data: {data}");
-        // Console.WriteLine($"Path: {tempPath}");
         File.WriteAllText(tempPath, data);
         return tempPath;
     }
@@ -24,6 +21,14 @@ public class InputFileTests
 
     private static string CreateSimplePostListFile()
         => CreateTempFile(@"{ ""posts"": [ { ""parts"": [ { ""part"": ""Text"", ""content"" : { ""any"": ""Hello"" } } ] } ] }");
+
+    private static string CreateSimpleMultiPostListFile()
+        => CreateTempFile(
+            @"{ ""posts"": [ 
+                { ""parts"": [ { ""part"": ""Text"", ""content"" : { ""any"": ""First post"" } } ] },
+                { ""parts"": [ { ""part"": ""Text"", ""content"" : { ""any"": ""Second post"" } } ] },
+                { ""parts"": [ { ""part"": ""Text"", ""content"" : { ""any"": ""Third post"" } } ] },
+            ] }");
 
     [Fact]
     public void RejectsNoParameters()
@@ -88,5 +93,42 @@ public class InputFileTests
         Assert.True(DistributionCLI.LastPostResults!.Single().Success);
         Assert.Equal("Hello", DistributionCLI.LastPostResults!.Single().Message.Parts.Single().Content[NetworkType.Any]);
     }
-    
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    public void AcceptsSimplePostListWithOffset(int offset)
+    {
+        DistributionCLI.Reset();
+        var configPath = CreateSimpleConfigFile();
+        var postsPath = CreateSimpleMultiPostListFile();
+
+        var inflated = new PostListReader().ReadFile(postsPath);
+        Assert.NotNull(inflated);
+        Assert.Equal(3, inflated!.Posts.Count());
+
+        int status = DistributionCLI.Main("post", "-c", configPath, "-s", postsPath, "-o", offset.ToString());
+        Assert.Equal(0, status);
+        Assert.Single(DistributionCLI.LastPostResults!);
+        Assert.True(DistributionCLI.LastPostResults!.Single().Success);
+        
+        string expectation;
+        switch (offset)
+        {
+            case 0:
+                expectation = "First post";
+                break;
+            case 1:
+                expectation = "Second post";
+                break;
+            case 2:
+                expectation = "Third post";
+                break;
+            default:
+            throw new NotImplementedException();
+        };
+
+        Assert.Equal(expectation, DistributionCLI.LastPostResults!.Single().Message.Parts.Single().Content[NetworkType.Any]);
+    }
 }
