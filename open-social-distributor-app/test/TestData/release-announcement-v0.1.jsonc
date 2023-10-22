@@ -1,0 +1,28 @@
+{
+    "posts": [
+        { 
+            "parts": [
+                { "part": "Text", "content": { "any": "🎉 Announcing release 0.1 of Open Social Distributor - a command line tool that can create posts and threads across a variety of social networks. $$ 🆓 It's open source and free - and you're welcome to contribute to it if you fancy getting involved. $$ 🧵 This post (and thread if you're looking at it on Mastodon!) is an early test for the Open Social Distributor... 🤞"} },
+                { "part": "Link", "content": { "any": "https://instantiator.dev/open-social-distributor/" } },
+                { "part": "Tag", "content": { "any": "SocialNetworks" } },
+                { "part": "Tag", "content": { "any": "SocialMedia" } },
+                { "part": "Tag", "content": { "any": "OpenSocialDistributor" } },
+                { "part": "Tag", "content": { "any": "OSD" } },
+                { "part": "Tag", "content": { "any": "Tool" } },
+                { "part": "Tag", "content": { "any": "CLI" } },
+                { "part": "Tag", "content": { "any": "OpenSource" } },
+                { "part": "Tag", "content": { "any": "OSS" } }
+            ], // list of parts
+            "images": [
+                {
+                    "uri": "file://sample-messages/social-distributor-icon.png",
+                    "description": "The icon for Open Social Distributor - clear arrows in the 4 ordinal directions overlay a cloud of colours."
+                },
+                {
+                    "uri": "file://sample-messages/2023-10-08-capabilities.png",
+                    "description": "A table showing the supported social networks: Mastodon, Discord, Facebook and LinkedIn all appear. All support threads, links, tags, and images - although Facebook and LinkedIn have not yet had their threading capability fully tested."
+                }
+            ] // list of images
+        } // individual message
+    ] // list of posts
+}

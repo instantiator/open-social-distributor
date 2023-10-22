@@ -1,9 +1,24 @@
+using DistributorLib.Network;
 using DistributorLib.Post.Formatters;
 
 namespace DistributorLib.Post.Formatters
 {
     public class PostFormatVariantFactory
     {
+        public static IPostFormatter For(NetworkType network)
+        {
+            return network switch
+            {
+                NetworkType.Console => Console,
+                NetworkType.Mastodon => Mastodon,
+                NetworkType.Facebook => Facebook,
+                NetworkType.LinkedIn => LinkedIn,
+                NetworkType.Discord => Discord,
+                NetworkType.Twitter => throw new NotImplementedException(network.ToString()),
+                _ => throw new NotImplementedException(network.ToString())
+            };
+        }
+
         public static IPostFormatter Console => new ConsolePostFormatter();
 
         public static IPostFormatter Mastodon => new LengthLimitedPostFormatter(

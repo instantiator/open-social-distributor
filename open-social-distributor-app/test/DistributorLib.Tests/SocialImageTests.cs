@@ -40,7 +40,7 @@ public class SocialImageTests
     [Fact]
     public async Task ResolvesHttpsUrls()
     {
-        await TestSocialImageUri("https://github.com/instantiator/consensus-chess-engine/blob/main/docs/images/cog-icon.png?raw=true", false, "cog-icon.png");
+        await TestSocialImageUri("https://instantiator.dev/hammer/hammer.png", false, "hammer.png");
     }
 
     private async Task TestSocialImageUri(string testUri, bool isFilePath, string testFilename)
