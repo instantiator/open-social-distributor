@@ -25,7 +25,7 @@ public class DistributionCLI
         [Option('s', "source-file", Required = false, HelpText = "Path or url to a source file containing posts.")]
         public string? DataPath { get; set; }
 
-        [Option('o', "offset", Required = false, HelpText = "Offset (index) of a post within the source file to use. Leave blank to send all posts in the source file.")]
+        [Option('o', "offset", Required = false, HelpText = "Offset (index) of a post within the source file. (Leave blank to send all posts in the source file.)")]
         public int? Offset { get; set; }
 
         [Option('f', "filter", Required = false, HelpText = "Regular expression filter for network short codes.")]

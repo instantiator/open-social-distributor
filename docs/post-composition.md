@@ -8,22 +8,38 @@ The CLI permits the specification of simple messages, using the `post` verb,
 DistributionCLI post <options>
 ```
 
-The following options are defined for `post`:
+The following options are defined for `post`...
+
+### Provide configuration
 
 ```text
 -c, --config-file           Required. Path to the config file.
--s, --source-file           Path or url to a source file containing posts.
 -f, --filter                Regular expression filter for network short codes.
+```
+
+### Retrieve post content from a [post list format](post-list-format.md) source file
+
+```text
+-s, --source-file           Path or url to a source file containing posts.
+-o, --offset                Offset (index) of a post within the source file. (Leave blank to send all posts in the source file.)
+```
+
+### Fashion a post from command line parameters
+
+```text
 -m, --message               Simple message text.
 -l, --link                  Link for this message.
 -i, --images                URIs to images, semi-colon separated (;)
 -d, --image-descriptions    Image descriptions, semi-colon separated (;)
 -t, --tags                  A list of tags (without # prefix), semi-colon separated (;)
+```
+
+### Application information
+
+```text
 --help                      Display this help screen.
 --version                   Display version information.
 ```
-
-Use the `--message` or `--source-file` option to provide content to post.
 
 ## Source file
 
