@@ -90,7 +90,7 @@ public class LinkedInNetwork : AbstractNetwork
                             thirdPartyDistributionChannels = new object[] { }
                         },
                         content = imagesContent,
-                        contentLandingPage = message.Link?.ToStringFor(NetworkType),
+                        contentLandingPage = message.Link?.ToStringFor(NetworkType) ?? "",
                         lifecycleState = "PUBLISHED",
                         isReshareDisabledByAuthor = false
                     };
