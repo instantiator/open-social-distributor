@@ -37,6 +37,8 @@ namespace DistributorLib.Post.Formatters
             tagBehaviour: LengthLimitedPostFormatter.DecorationBehaviour.FirstPost,
             indexBehaviour: LengthLimitedPostFormatter.IndexBehaviour.None);
 
+        // LinkedIn requires that reserved characters be escaped
+        // See: https://learn.microsoft.com/en-us/linkedin/marketing/integrations/community-management/shares/little-text-format?view=li-lms-2023-10#text
         public static IPostFormatter LinkedIn => new LengthLimitedPostFormatter(
             network: Network.NetworkType.LinkedIn, 
             limit: 3000, subsequentLimits: 1250, indices: false,
@@ -44,7 +46,7 @@ namespace DistributorLib.Post.Formatters
             breakBehaviour: LengthLimitedPostFormatter.BreakBehaviour.NewParagraph, 
             tagBehaviour: LengthLimitedPostFormatter.DecorationBehaviour.FirstPost,
             indexBehaviour: LengthLimitedPostFormatter.IndexBehaviour.None,
-            escapeCharacters: new[] { '(', ')' });
+            escapeCharacters: "\\|{}@[]()<>#*_~".ToCharArray());
 
         public static IPostFormatter Discord => new LengthLimitedPostFormatter(
             network: Network.NetworkType.Discord, 
