@@ -32,7 +32,7 @@ public class NetworkPostFormatterTests
 
 🆓 It's open source and free - and you're welcome to contribute to it if you fancy getting involved.
 
-🧵 This post (and thread if you're looking at it on Mastodon!) is an early test for the Open Social Distributor... 🤞 https://instantiator.dev/open-social-distributor/" })]
+🧵 This post \(and thread if you're looking at it on Mastodon!\) is an early test for the Open Social Distributor... 🤞 https://instantiator.dev/open-social-distributor/" })]
     [InlineData(NetworkType.Mastodon, 3, new[] {
 "🎉 Announcing release 0.1 of Open Social Distributor - a command line tool that can create posts and threads across a variety of social networks. https://instantiator.dev/open-social-distributor/ /1",
 "🆓 It's open source and free - and you're welcome to contribute to it if you fancy getting involved. /2",
@@ -54,7 +54,9 @@ public class NetworkPostFormatterTests
 
         Assert.Equal(expectedMessages, result.Count());
 
-        var expectedMinusHashTags = expectedText.Select(m => m.RemoveHashTags().Trim());
+        var expectedMinusHashTags = expectedText
+            .Select(m => m.RemoveHashTags().Trim());
+
         var resultMinusHashTags = result.Select(m => m.RemoveHashTags().Trim());
 
         Assert.Equal(expectedMinusHashTags, resultMinusHashTags);

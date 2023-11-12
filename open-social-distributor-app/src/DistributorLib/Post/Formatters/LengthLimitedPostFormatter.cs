@@ -20,6 +20,7 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
     protected DecorationBehaviour tagBehaviour;
     protected DecorationBehaviour linkBehaviour;
     protected IndexBehaviour indexBehaviour;
+    protected char[] escapeCharacters;
 
     public LengthLimitedPostFormatter(NetworkType network, 
         int limit, int subsequentLimits,
@@ -28,7 +29,8 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
         BreakBehaviour breakBehaviour = BreakBehaviour.NewPost,
         DecorationBehaviour tagBehaviour = DecorationBehaviour.FirstPost,
         IndexBehaviour indexBehaviour = IndexBehaviour.Slash,
-        decimal acceptableTagCoverage = DEFAULT_TAG_COVERAGE) : base(network)
+        decimal acceptableTagCoverage = DEFAULT_TAG_COVERAGE,
+        char[]? escapeCharacters = null) : base(network)
     {
         this.messageLengthLimit = limit;
         this.subsequentLimits = subsequentLimits;
@@ -38,6 +40,7 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
         this.tagBehaviour = tagBehaviour;
         this.indexBehaviour = indexBehaviour;
         this.acceptableTagCoverage = acceptableTagCoverage;
+        this.escapeCharacters = escapeCharacters ?? Array.Empty<char>();
     }
 
     public override IEnumerable<string> FormatText(ISocialMessage message)
@@ -52,6 +55,7 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
             .WithIndexBehaviour(indexBehaviour)
             .WithAcceptableTagCoverage(acceptableTagCoverage)
             .WithIndices(indices)
+            .WithEscapeCharacters(escapeCharacters)
             .Build(message);
     }
 
@@ -76,6 +80,7 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
         private IEnumerable<string> words = new List<string>();
         private IEnumerable<string> tagWords = new List<string>();
         private string? link = null;
+        private IEnumerable<char> escapeCharacters = Array.Empty<char>();
 
         public WordWrapFormatter WithNetwork(NetworkType network) { this.network = network; return this; }
         public WordWrapFormatter WithLimit(int limit) { this.limit = limit; return this; }
@@ -86,6 +91,7 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
         public WordWrapFormatter WithTagBehaviour(DecorationBehaviour behaviour) { this.tagBehaviour = behaviour; return this; }
         public WordWrapFormatter WithIndexBehaviour(IndexBehaviour behaviour) { this.indexBehaviour = behaviour; return this; }
         public WordWrapFormatter WithIndices(bool indices) { this.indices = indices; return this; }
+        public WordWrapFormatter WithEscapeCharacters(IEnumerable<char> escapeCharacters) { this.escapeCharacters = escapeCharacters; return this; }
 
         public void Reset(IEnumerable<string> words, string? link, IEnumerable<string> tagWords)
         {
@@ -118,7 +124,7 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
             // add words 1 at a time
             foreach (var word in words)
             {
-                PerformAction(word);
+                PerformAction(EscapeWord(word));
             }            
 
             // finish last message
@@ -134,6 +140,15 @@ public class LengthLimitedPostFormatter : AbstractPostFormatter
                 AddWordsIfFit(tags, m, tagBehaviour);
             }
             return Posts;
+        }
+
+        private string EscapeWord(string word)
+        {
+            foreach (var c in escapeCharacters)
+            {
+                word = word.Replace(c.ToString(), $"\\{c}");
+            }
+            return word;
         }
 
         private void AddWordsIfFit(IEnumerable<string> set, int index, DecorationBehaviour behaviour)

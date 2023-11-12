@@ -43,7 +43,8 @@ namespace DistributorLib.Post.Formatters
             linkBehaviour: LengthLimitedPostFormatter.DecorationBehaviour.FirstPost,
             breakBehaviour: LengthLimitedPostFormatter.BreakBehaviour.NewParagraph, 
             tagBehaviour: LengthLimitedPostFormatter.DecorationBehaviour.FirstPost,
-            indexBehaviour: LengthLimitedPostFormatter.IndexBehaviour.None);
+            indexBehaviour: LengthLimitedPostFormatter.IndexBehaviour.None,
+            escapeCharacters: new[] { '(', ')' });
 
         public static IPostFormatter Discord => new LengthLimitedPostFormatter(
             network: Network.NetworkType.Discord, 
