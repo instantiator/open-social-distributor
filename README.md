@@ -1,6 +1,7 @@
 # open-social-distributor
 
-**UNDER DEVELOPMENT**
+> ![WARNING]
+> This project is deprecated. Please see: [Presence](https://instantiator.dev/presence) - a suite of libraries and CLI tools for posting to social media
 
 [![CLI - build, test, release](https://github.com/instantiator/open-social-distributor/actions/workflows/CLI-build-test-release.yml/badge.svg)](https://github.com/instantiator/open-social-distributor/actions/workflows/CLI-build-test-release.yml)
 
